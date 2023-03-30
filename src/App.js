@@ -3,11 +3,11 @@ import RouteConfig from "./utility/routeConfig/RouteConfig";
 
 function App() {
 	return (<>
-		
+
 		<BrowserRouter>
-			<RouteConfig/>
+			<RouteConfig />
 		</BrowserRouter>
-		
+
 	</>);
 }
 

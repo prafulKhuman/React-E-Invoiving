@@ -1,12 +1,11 @@
-function ExpensesFrom()
-{
+function ExpensesFrom() {
 	return (
 		<>
 
 			<button type="button" className="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
 				<i className="bi bi-plus-circle" />
 				{" "}
-        Add Expenses
+				Add Expenses
 			</button>
 			<div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="true" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 				<div className="modal-dialog modal-fullscreen">
@@ -25,14 +24,14 @@ function ExpensesFrom()
 											<input type="text" className="form-control" aria-label="Default" placeholder="Expenses Category" aria-describedby="inputGroup-sizing-default" />
 										</div>
 									</div>
-                                    
+
 									<div className="invoice_No col-3 ">
 
 										<lable>Exp. No </lable>
 										<input type="text" className=" bottom_border " />
-                                      
+
 									</div>
-                                    
+
 								</div>
 
 								<div className="row ">
@@ -67,7 +66,7 @@ function ExpensesFrom()
 												<td>1</td>
 												<td>13000</td>
 												<td>12000</td>
-												
+
 											</tr>
 										</tbody>
 									</table>
@@ -88,8 +87,8 @@ function ExpensesFrom()
 					</div>
 				</div>
 			</div>
-        
-										
+
+
 		</>
 
 	);
