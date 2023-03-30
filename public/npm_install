@@ -1,0 +1,5 @@
+- React Router  = npm install react-router-dom@6
+- Prop Types  = npm install --save prop-types
+- Eslint = npm init @eslint/config
+- Rechart = npm install recharts
+- react Icons = npm install react-icons --save
