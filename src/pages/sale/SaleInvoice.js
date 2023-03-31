@@ -88,7 +88,7 @@ function SaleInvoice() {
 						<div className="card-header">
 							<span>Payment In</span>
 							<div className="invoice_No mr-3 " >
-								<SaleReport/>
+								<SaleReport />
 							</div>
 						</div>
 						<div className="card-body row ml-2">
