@@ -1,8 +1,9 @@
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
+
 import SortableTable from "../../components/Table/SortableTable";
 import PartiesFrom from "../../containers/Parties/PartiesFrom";
+import Report from "../../components/report/Report";
 function Parties() {
+	
 	const data = [
 
 		{
@@ -88,14 +89,13 @@ function Parties() {
 
 	return ( 
 		<>
-			<Header />
-			<Sidebar />
+			
 			<div className="main-content">
 
 				<div className="content-top-gap">
 					<div className="row">
 						<div className="col-sm-3  mb-md-0  ">
-							<div className="card ">
+							<div className="card">
 
 								<div className="card-header">
 
@@ -132,7 +132,7 @@ function Parties() {
 											<h5 className="card-title">Name - Khuman Praful</h5>
 										</div>
 										<div className="item_right mr-4">
-											<i className="bi bi-printer-fill  fa-2x"/>
+											<Report/>
 										</div>
 									</div>
 									

@@ -1,8 +1,7 @@
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
-import SortableTable from "../../components/Table/SortableTable";
-import OrderForm from "../../containers/sale/OrderForm";
 
+import SortableTable from "../../components/Table/SortableTable";
+// import OrderForm from "../../containers/sale/OrderForm";
+import Form from "../../components/forms/Form";
 function SaleOrder() {
 	const data = [
 
@@ -86,8 +85,7 @@ function SaleOrder() {
 
 	return (
 		<>
-			<Header />
-			<Sidebar />
+			
 
 			<div className="main-content">
 
@@ -118,7 +116,7 @@ function SaleOrder() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<OrderForm />
+									<Form file="Sale-Order"/>
 									{" "}
 								</div>
 							</div>

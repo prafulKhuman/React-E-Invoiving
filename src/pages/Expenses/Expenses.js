@@ -1,6 +1,4 @@
 import ExpensesFrom from "../../containers/Expense/ExpensesFrom";
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
 import SortableTable from "../../components/Table/SortableTable";
 
 function Expenses() {
@@ -99,8 +97,7 @@ function Expenses() {
 
 	return (
 		<>
-			<Header />
-			<Sidebar />
+			
 			<div className="main-content">
 				<div className="content-top-gap">
 					<div className="row">

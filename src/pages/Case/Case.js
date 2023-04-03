@@ -1,5 +1,4 @@
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
+
 import SortableTable from "../../components/Table/SortableTable";
 
 
@@ -59,8 +58,7 @@ function Case() {
 
 	return (
 		<>
-			<Header />
-			<Sidebar />
+			
 
 			<div className="main-content">
 

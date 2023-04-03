@@ -1,6 +1,6 @@
-import PaymentOutFrom from "../../containers/purchase/PaymentOutFrom";
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
+
+import PaymentInOut from "../../components/PaymentInOut/PaymentInOut";
+
 import SortableTable from "../../components/Table/SortableTable";
 function PaymentOut()
 {
@@ -92,9 +92,7 @@ function PaymentOut()
 
 	return (
 		<>
-			<Header />
-			<Sidebar />
-
+			
 			<div className="main-content">
 
 				<div className="content-top-gap">
@@ -113,7 +111,7 @@ function PaymentOut()
 
 							<span> TRANSACTIONS   </span>
 							<div className="invoice_No mr-3 ">
-								<PaymentOutFrom/>
+								<PaymentInOut file="Payment-Out"/>
 							</div>
 
 						

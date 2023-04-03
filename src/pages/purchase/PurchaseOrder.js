@@ -1,6 +1,6 @@
-import PurchaseOrderFrom from "../../containers/purchase/PurchaseOrderFrom";
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
+// import PurchaseOrderFrom from "../../containers/purchase/PurchaseOrderFrom";
+import Form from "../../components/forms/Form";
+
 import SortableTable from "../../components/Table/SortableTable";
 function PurchaseOrder()
 {
@@ -84,9 +84,7 @@ function PurchaseOrder()
 
 	return (
 		<>
-			<Header />
-			<Sidebar />
-
+			
 			<div className="main-content">
 
 				<div className="content-top-gap">
@@ -105,7 +103,7 @@ function PurchaseOrder()
 
 							<span> TRANSACTIONS   </span>
 							<div className="invoice_No mr-3 ">
-								<PurchaseOrderFrom/>
+								<Form file="Purchase-Order"/>
 							</div>
 
 							

@@ -1,8 +1,7 @@
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
-import SortableTable from "../../components/Table/SortableTable";
-import PurchaseBillForm from "../../containers/purchase/PurchaseBillForm";
 
+import SortableTable from "../../components/Table/SortableTable";
+// import PurchaseBillForm from "../../containers/purchase/PurchaseBillForm";
+import Form from "../../components/forms/Form";
 function PurchaseBill() {
 	const data = [
 
@@ -140,9 +139,7 @@ function PurchaseBill() {
 
 	return (
 		<>
-			<Header />
-			<Sidebar />
-
+			
 			<div className="main-content">
 
 				<div className="content-top-gap">
@@ -198,7 +195,7 @@ function PurchaseBill() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<PurchaseBillForm />
+									<Form file="Purchase-Bill" />
 									{" "}
 								</div>
 							</div>

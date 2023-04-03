@@ -1,8 +1,7 @@
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
-import SortableTable from "../../components/Table/SortableTable";
-import PaymentInForm from "../../containers/sale/PaymentInForm";
 
+import SortableTable from "../../components/Table/SortableTable";
+
+import PaymentInOut from "../../components/PaymentInOut/PaymentInOut";
 function PaymentIn() {
 	const data = [
 
@@ -82,8 +81,7 @@ function PaymentIn() {
 
 	return (
 		<>
-			<Header />
-			<Sidebar />
+		
 
 			<div className="main-content">
 
@@ -114,7 +112,7 @@ function PaymentIn() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<PaymentInForm />
+									<PaymentInOut file="Payment-In" />
 									{" "}
 								</div>
 							</div>

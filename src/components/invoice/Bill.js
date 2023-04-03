@@ -1,4 +1,4 @@
-import "./Invoice.css";
+	
 function Bill() {
 	const handlePrint = () => {
  

@@ -1,15 +1,12 @@
 import Charts from "../../utility/charts/Charts";
 import Linecharts from "../../utility/charts/Linecharts";
-import Header from "../../components/header/Header";
-import Sidebar from "../../components/sidebar/Sidebar";
+
 
 function Dashboard() {
 	return (
 		<section>
 
-			<Sidebar />
-
-			<Header />
+			
 			<div className="main-content">
 
 				<div className="container-fluid content-top-gap">

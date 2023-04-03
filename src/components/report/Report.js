@@ -1,13 +1,6 @@
-function SaleReport() {
-	const handlePrint = () => {
- 
-		let printContents = document.getElementById("Invoice").innerHTML;
-		let originalContents = document.body.innerHTML;
-		document.body.innerHTML = printContents;
-		window.print();
-		document.body.innerHTML  = originalContents; 
-   
-	};
+
+function Report() {
+	
 	return (
 		<>
 			<a data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
@@ -21,6 +14,9 @@ function SaleReport() {
 						<div className="modal-header">
 							<a className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i className="bi bi-x-lg" /></a>
 						</div>
+						<div id="react-no-print"></div>
+						<div id="print-mount"></div>
+					
 						<div className="modal-body" >
 							<div className="container-fluid">
 								<div className="row container">
@@ -102,16 +98,20 @@ function SaleReport() {
 									<div className="col-xs-6 margintop">
 										<p className="lead marginbottom font-weight-bold"> THANK YOU!<i className="bi bi-emoji-smile ml-2"></i></p><br />
 
-										<button className="btn btn-success" id="invoice-print" onClick={handlePrint}><i className="fa fa-print"></i> Print Report</button>
+										<button className="btn btn-success" id="invoice-print" ><i className="fa fa-print"></i> Print Report</button>
 
 									</div>
 								</div>
 							</div>
 						</div>
+						
+					
 					</div>
 				</div>
 			</div>
 		</>
 	);
+	
 }
-export default SaleReport;
+
+export default Report;

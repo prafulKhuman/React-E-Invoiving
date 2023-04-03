@@ -34,7 +34,7 @@ function Table({ data, config, keyfn , ...props}) {
 					{rendrecell}
 				</tr>
 			</thead>
-			<tbody className="overflow-auto">
+			<tbody>
 				{rendreddata}
 			</tbody>
 		</table>

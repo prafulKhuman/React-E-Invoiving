@@ -1,8 +1,8 @@
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
+// import Sidebar from "../../components/sidebar/Sidebar";
+// import Header from "../../components/header/Header";
 import SortableTable from "../../components/Table/SortableTable";
-import InvoiceForm from "../../containers/sale/InvoiceForm";
-import SaleReport from "../../components/report/SaleReport";
+import Form from "../../components/forms/Form";
+import Report from "../../components/report/Report";
 
 
 function SaleInvoice() {
@@ -78,8 +78,8 @@ function SaleInvoice() {
 
 	return (
 		<>
-			<Header />
-			<Sidebar />
+			{/* <Header />
+			<Sidebar /> */}
 
 			<div className="main-content">
 
@@ -88,7 +88,7 @@ function SaleInvoice() {
 						<div className="card-header">
 							<span>Payment In</span>
 							<div className="invoice_No mr-3 " >
-								<SaleReport />
+								<Report />
 							</div>
 						</div>
 						<div className="card-body row ml-2">
@@ -133,7 +133,7 @@ function SaleInvoice() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<InvoiceForm />
+									<Form file="Sale-Invoice" />
 									{" "}
 								</div>
 							</div>

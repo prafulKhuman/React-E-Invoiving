@@ -1,8 +1,7 @@
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
-import SortableTable from "../../components/Table/SortableTable";
-import PurchaseReturnForm from "../../containers/purchase/PurchaseReturnForm";
 
+import SortableTable from "../../components/Table/SortableTable";
+// import PurchaseReturnForm from "../../containers/purchase/PurchaseReturnForm";
+import Form from "../../components/forms/Form";
 function PurchasReturn()
 {
 	const data = [
@@ -94,9 +93,7 @@ function PurchasReturn()
 
 	return (
 		<>
-			<Header />
-			<Sidebar />
-
+		
 			<div className="main-content">
 
 				<div className="content-top-gap">
@@ -115,7 +112,7 @@ function PurchasReturn()
 
 							<span> TRANSACTIONS   </span>
 							<div className="invoice_No mr-3 ">
-								<PurchaseReturnForm/>
+								<Form file="Purchase-Return"/>
 							</div>
 
 							

@@ -1,6 +1,9 @@
 import { BrowserRouter } from "react-router-dom";
 import RouteConfig from "./utility/routeConfig/RouteConfig";
 
+
+
+
 function App() {
 	return (<>
 
@@ -8,6 +11,9 @@ function App() {
 			<RouteConfig />
 		</BrowserRouter>
 
+		
+		
+		
 	</>);
 }
 

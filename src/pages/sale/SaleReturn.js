@@ -1,8 +1,7 @@
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
-import SortableTable from "../../components/Table/SortableTable";
-import SaleReturnForm from "../../containers/sale/SaleReturnForm";
 
+import SortableTable from "../../components/Table/SortableTable";
+// import SaleReturnForm from "../../containers/sale/SaleReturnForm";
+import Form from "../../components/forms/Form";
 function SaleReturn() {
 	const data = [
 
@@ -86,9 +85,7 @@ function SaleReturn() {
 
 	return (
 		<>
-			<Header />
-			<Sidebar />
-
+			
 			<div className="main-content">
 
 				<div className="content-top-gap">
@@ -118,7 +115,7 @@ function SaleReturn() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<SaleReturnForm />
+									<Form file="Sale-Return"/>
 									{" "}
 								</div>
 							</div>

@@ -1,5 +1,4 @@
-import Sidebar from "../../components/sidebar/Sidebar";
-import Header from "../../components/header/Header";
+
 import SortableTable from "../../components/Table/SortableTable";
 import ItemsFrom from "../../containers/Items/ItemsFrom";
 
@@ -94,8 +93,7 @@ function Items()
 	return (
 		<>
 
-			<Header />
-			<Sidebar />
+			
 			<div className="main-content">
 
 				<div className="content-top-gap">
