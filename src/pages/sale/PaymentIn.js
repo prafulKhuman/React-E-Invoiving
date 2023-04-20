@@ -1,83 +1,149 @@
 
+import { useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import SortableTable from "../../components/Table/SortableTable";
-
+import Report from "../../components/report/Report";
 import PaymentInOut from "../../components/PaymentInOut/PaymentInOut";
+import {useAddPaymentInOutMutation , useFetchPaymentInOutQuery , useDeletePaymentInOutMutation} from "../../redux";
+import swal from "sweetalert";
+
 function PaymentIn() {
-	const data = [
+	const [AddPaymentInOut] = useAddPaymentInOutMutation();
+	const { data, error, isFetching } = useFetchPaymentInOutQuery();
+	const [DeletePaymentInOut] = useDeletePaymentInOutMutation();
+	const [searchTerm, setSearchTerm] = useState("");
+	const [printData , setPrintData] = useState([]);
 
-		{
-			Date: "01/02/2023",
-			Ref_No: 1,
-			Party_Name: "Praful khuman",
-			Category: "Payment In",
-			Total: 500,
-			Received: 300,
-			Balance: 200,
-			Status: "Unpaid",
-		},
-		{
-			Date: "01/02/2023",
-			Ref_No: 2,
-			Party_Name: "Jeenal",
-			Category: "Payment In",
-			Total: 500,
-			Received: 400,
-			Balance: 100,
-			Status: "Unpaid",
-		},
+	
+	const handleSubmit =async(key)=>{
+		console.log(key);
+		const response = await AddPaymentInOut(key);
+		if(response.data === "ok"){
+			swal({
+				title: "Data Saved Success!",
+				icon: "success",
+				button: "Done!",
+			});
+		}
+	};
 
-	];
+	const handleSearch = (e) => {
+		setSearchTerm(e.target.value);
+	};
 
+	const handleDeleteRow=async (ID)=>{
+		swal({
+			title: "Are you sure?",
+			text: "Once deleted, you will not be able to recover this Data!",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then(async (willDelete) => {
+			if (willDelete) {
+				const response = await DeletePaymentInOut(ID);
+				if (response.data === "ok") {
+					swal("Data Deleted Success", {
+						icon: "success",
+					});
+				}
+			} else {
+				swal("Your Data is safe!");
+			}
+		});
+		
+	};
+
+
+	const filteredData = data?.filter((item) =>
+
+		item.TransectionType === "Payment-In" ?
+			item.Amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.Date.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.receiptno.toLowerCase().includes(searchTerm.toLowerCase())  ||
+			item.timestamp.toLowerCase().includes(searchTerm.toLowerCase())
+			: ""
+	);
+
+	const handlePeintInvoice =(key)=>{
+		
+		const filteredPrintData = data?.filter((item) =>
+			item.id === key 
+		);
+
+		setPrintData(filteredPrintData);
+		//console.log(printData , " print");
+	};
+
+	// eslint-disable-next-line no-unused-vars
+	let Data = [];
+	// eslint-disable-next-line no-unused-vars
+	let content;
+	if (isFetching) {
+	
+		content = <Skeleton count={5} height={40} /> ;
+	}
+	else if (error) {
+		console.log(error);
+	} else {
+		
+		Data = filteredData?.map((item, index) => ({
+			ID : index+1 ,
+			PartyName : item.PartyName ,
+			receiptno : item.receiptno ,
+			Description : item.Description ,
+			Date : item.timestamp ,
+			Amount : item.Amount ,
+			Action : item.id
+		}));
+	}
+	
 	const config = [
 		{
-			label: "Date",
-			render: (data) => data.Date,
-			sortValue: (data) => data.Date,
+			label: "ID",
+			render: (Data) => Data.ID,
+			sortValue: (Data) => Data.ID,
 		},
 		{
-			label: "Ref No",
-			render: (data) => data.Ref_No,
+			label: "Receipt No",
+			render: (Data) => Data.receiptno,
+			sortValue: (Data) => Data.receiptno,
 		},
 		{
 			label: "Party Name",
-			render: (data) => data.Party_Name,
-			sortValue: (data) => data.Party_Name,
+			render: (Data) => Data.PartyName,
+			sortValue: (Data) => Data.PartyName,
 
 		},
 		{
-			label: "Category",
-			render: (data) => data.Category,
-			sortValue: (data) => data.Category,
+			label: "Description",
+			render: (Data) => Data.Description,
+			sortValue: (Data) => Data.Description,
 
 		},
 		{
-			label: "Total",
-			render: (data) => data.Total,
-			sortValue: (data) => data.Total,
+			label: "Date",
+			render: (Data) => Data.Date,
+			sortValue: (Data) => Data.Date,
 
 		},
 		{
-			label: "Received",
-			render: (data) => data.Received,
-			sortValue: (data) => data.Received,
+			label: "Amount",
+			render: (Data) => Data.Amount,
+			sortValue: (Data) => Data.Amount,
 
 		},
 		{
-			label: "Balance",
-			render: (data) => data.Balance,
-			sortValue: (data) => data.Balance,
+			label: "Action",
+			render: (Data) => Data.Action,
+			sortValue: (Data) => Data.Action,
 
-		},
-		{
-			label: "Status",
-			render: (data) => data.Status,
-			sortValue: (data) => data.Status,
-
-		},
-
+		}
 	];
 
-	const keyfn = (item) => item.name;
+	const keyfn = (item) => item.ID;
 
 	return (
 		<>
@@ -88,9 +154,9 @@ function PaymentIn() {
 				<div className="content-top-gap">
 					<div className="card ">
 						<div className="card-header">
-							<span>Payment In</span>
+							<span className=" font-weight-bold">Payment In</span>
 							<div className="invoice_No mr-3 " >
-								<i className="bi bi-printer-fill fa-2x"  />
+								<Report file="PAYMENT-IN" data={Data} config={config}/>
 							</div>
 						</div>
 
@@ -99,7 +165,7 @@ function PaymentIn() {
 					<div className="card mt-3 " >
 						<div className="card-header">
 
-							<span> TRANSACTIONS   </span>
+							<span className=" font-weight-bold"> TRANSACTIONS   </span>
 							<div className="item_right row">
 								
 								<div className="col">
@@ -107,21 +173,23 @@ function PaymentIn() {
 										<div className="input-group-prepend">
 											<span className="input-group-text"><i className=" bi bi-search"/></span>
 										</div>
-										<input type="text" className="form-control" placeholder="Search Transaction" aria-label="Username" aria-describedby="basic-addon1" />
+										<input type="text" onChange={handleSearch} className="form-control" placeholder="Search Transaction" aria-label="Username" aria-describedby="basic-addon1" />
 									</div>
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<PaymentInOut file="Payment-In" />
+									<PaymentInOut file="Payment-In" AddData={handleSubmit}/>
 									{" "}
 								</div>
+								
 							</div>
 
 							
 						</div>
 						<div className="card-body panel_height">
 
-							<SortableTable data={data} config={config} keyfn={keyfn} />
+							{content || <SortableTable data={Data} config={config} keyfn={keyfn}  ID={handleDeleteRow} file={"PAYMENT-IN"} billInfo={printData} printID={handlePeintInvoice}  /> }
+
 
 						</div>
 					</div>

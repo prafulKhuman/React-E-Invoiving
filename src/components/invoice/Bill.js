@@ -1,27 +1,25 @@
-	
-function Bill() {
-	const handlePrint = () => {
- 
-		let printContents = document.getElementById("Invoice").innerHTML;
-		let originalContents = document.body.innerHTML;
-		document.body.innerHTML = printContents;
-		window.print();
-		document.body.innerHTML = originalContents; 
-   
-	};
-   
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+function Bill({ file, billInfo }) {
+
+	console.log(billInfo, "billInfo");
+
+	const myRef = useRef(null);
+	const handlePrint = useReactToPrint({
+		content: () => myRef.current
+	});
+
 	return (<>
 
 		<a  data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
 			<i className="bi bi-printer-fill fa-lg"/>
 		</a>
 
-
 		<div className="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 			<div className="modal-dialog  modal-fullscreen">
 				<div className="modal-content">
 					<div className="modal-header">
-						<h5 className="modal-title" id="staticBackdropLabel">Sale Invoice</h5>
+						<h5 className="modal-title" id="staticBackdropLabel">{file}</h5>
 						<a type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i className="bi bi-x-lg" /></a>
 					</div>
 					<div className="modal-body " id="Invoice">
@@ -32,7 +30,7 @@ function Bill() {
 
 
 						<div className="card mt-5 mr-5 ml-5 " >
-							<div className="card-body">
+							<div className="card-body" ref={myRef}>
 
 								<div className="invoice-ribbon"><div className="ribbon-inner">PAID</div></div>
 								<div>
@@ -170,11 +168,12 @@ function Bill() {
 					</div>
 					<div className="modal-footer">
 						<button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        
+
 					</div>
 				</div>
 			</div>
 		</div>
+			
 	</>);
 }
 

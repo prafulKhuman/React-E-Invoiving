@@ -4,3 +4,5 @@
 - Rechart = npm install recharts
 - react Icons = npm install react-icons --save
 - print pdf = npm i react-to-printcls
+- toster = npm i react-toastify
+

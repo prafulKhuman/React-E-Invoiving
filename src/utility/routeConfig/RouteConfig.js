@@ -13,7 +13,7 @@ const PaymentOut = lazy(() => import("../../pages/purchase/PaymentOut"));
 const PurchaseOrder = lazy(() => import("../../pages/purchase/PurchaseOrder"));
 const PurchaseReturn = lazy(() => import("../../pages/purchase/PurchasReturns"));
 const Expanses = lazy(() => import("../../pages/Expenses/Expenses"));
-const Case = lazy(() => import("../../pages/Case/Case"));
+const Case = lazy(() => import("../../components/invoice/Invoice"));
 // import Sidebar from "../../components/sidebar/Sidebar";
 // import Header from "../../components/header/Header";
 const Header = lazy(() => import("../../components/header/Header"));

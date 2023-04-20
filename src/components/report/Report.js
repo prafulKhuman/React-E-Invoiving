@@ -1,6 +1,31 @@
+import { useRef ,useState } from "react";
+import { useReactToPrint } from "react-to-print";
 
-function Report() {
+import SaleTable from "./SaleTable";
+import PaymentTable from "./PaymentTable";
+
+function Report({file , data , config}) {
+	const [month , setMonth] = useState("");
 	
+	// console.log(data[0]?.Date , "month");
+	const handleFilter =(e)=>{
+		if(e.target.value === "--- Select ---"){
+			setMonth("");
+		}else{
+			setMonth(e.target.value);
+		}
+			
+	};
+	const filteredData = data?.filter((Month)=>
+		Month.Date.toLowerCase().includes(month.toLowerCase()) 
+	);
+	const myRef=useRef(null);
+	const handlePrint  = useReactToPrint ({
+		content: ()=>myRef.current
+	});
+	
+	
+
 	return (
 		<>
 			<a data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
@@ -8,103 +33,54 @@ function Report() {
 			</a>
 
 
-			<div className="modal fade" id="staticBackdrop2"  tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div  className="modal fade" id="staticBackdrop2"  tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 				<div className="modal-dialog modal-dialog-centered modal-xl">
 					<div className="modal-content" id="Invoice">
 						<div className="modal-header">
 							<a className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i className="bi bi-x-lg" /></a>
 						</div>
-						<div id="react-no-print"></div>
-						<div id="print-mount"></div>
 					
-						<div className="modal-body" >
+
+						<div className="modal-body" ref={myRef}>
 							<div className="container-fluid">
 								<div className="row container">
 									<div className="col-7">
-										<p className="modal-title text-right"><ins><strong><h2>Sale Report</h2></strong></ins></p>
+										<p className=" text-right lead font-weight-bold marginbottom"><ins><strong>{file}</strong></ins></p>
 									</div>
 								</div>
 								<br />
-								<div className="row">
-									<div className="col">
-										<h5 className="font-weight-bold">Duration: From 01/03/2023 to 31/03/2023</h5>
+								<div className="row mt-4">
+									<div className="col-2">
+										<label htmlFor="Select" className="lead font-weight-bold ">Select Month : </label>
+									</div>
+									<div className="form-group col-3">
+										<select className="form-control" id="Select" onChange={handleFilter}>
+											<option>--- Select ---</option>
+											<option>Jan</option>
+											<option>Feb</option>
+											<option>Mar</option>
+											<option>Apr</option>
+											<option>May</option>
+											<option>Jun</option>
+											<option>July</option>
+											<option>Aug</option>
+											<option>Sep</option>
+											<option>Oct</option>
+											<option>Nov</option>
+											<option>Dec</option>
+										</select>
 									</div>
 								</div>
-								<div className="mt-5">
-									<table className="table">
-										<thead className="table-dark">
-											<tr>
-
-												<th>Data</th>
-												<th>Ref No</th>
-												<th>Party Name</th>
-												<th>Category</th>
-												<th>Total</th>
-												<th>Received</th>
-												<th>Balance</th>
-												<th>Status</th>
-
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>01/02/2023</td>
-												<td>1</td>
-												<td>praful Khuman</td>
-												<td>case</td>
-												<td>Sale</td>
-												<td>10500</td>
-												<td>500</td>
-												<td>Paid</td>
-
-											</tr>
-											<tr>
-												<td>01/02/2023</td>
-												<td>2</td>
-												<td>mahi patel</td>
-												<td>case</td>
-												<td>Sale</td>
-												<td>10500</td>
-												<td>500</td>
-												<td>Paid</td>
-
-
-											</tr>
-										</tbody>
-
-									</table>
-
-								</div>
-								<hr />
-								<br />
-								<div className="row">
-									<div className="col text-right pull-right invoice-total">
-										<p>
-											<label className="font-weight-bold">Total Amount : </label>
-											<span> ₹ 300 </span>
-										</p>
-										<p>
-											<label className="font-weight-bold"> Balance : </label>
-											<span> ₹ 200</span>
-										</p>
-										<p>
-											<label className="font-weight-bold">Received : </label>
-											<span> ₹ 100</span>
-										</p>
-									</div>
-								</div>
-
-								<div className="row">
-									<div className="col-xs-6 margintop">
-										<p className="lead marginbottom font-weight-bold"> THANK YOU!<i className="bi bi-emoji-smile ml-2"></i></p><br />
-
-										<button className="btn btn-success" id="invoice-print" ><i className="fa fa-print"></i> Print Report</button>
-
-									</div>
-								</div>
+								{file === "PAYMENT-IN" ? <PaymentTable filteredData={filteredData} config={config}/> : <SaleTable filteredData={filteredData} config={config}/>}
+							
+																
 							</div>
 						</div>
+						<div className="modal-footer">
 						
+							<button type="button" className="btn btn-primary" id="invoice-print" onClick={handlePrint} ><i className="fa fa-print"></i> Print Report</button>
+							<button type="button" className="btn btn-secondary" data-bs-dismiss="modal"><i className="bi bi-x-circle"></i> Close</button>
+						</div>
 					
 					</div>
 				</div>

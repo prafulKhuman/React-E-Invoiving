@@ -11,14 +11,14 @@ function Sidebar() {
 		<div className="sidebar-menu sticky-sidebar-menu">
 
 			<div className="logo">
-				<h1><a>E-Invoicing</a></h1>
+				<h1> <Link to="/"> E-Invoicing </Link></h1>
 			</div>
 
 			<div className="logo-icon text-center">
-				<a >
+				<Link to="/">
 					<img src="../assets/images/logo.png" alt="logo-icon" />
 					{" "}
-				</a>
+				</Link>
 			</div>
 
 			<div className="sidebar-menu-inner">
@@ -37,20 +37,20 @@ function Sidebar() {
         <li><a href="#all"><i className="fa fa-th"></i> <span>Content blocks</span></a></li> */}
 					<li  >
 						<Link to="/Parties">
-							<a >
-								<i className="bi bi-people-fill" />
-								{" "}
-								<span>  Parties  </span>
-							</a>
+
+							<i className="bi bi-people-fill" />
+							{" "}
+							<span>  Parties  </span>
+
 						</Link>
 					</li>
 					<li>
 						<Link to="/Items">
-							<a>
-								<i className="bi bi-box-fill" />
-								{" "}
-								<span> Items  </span>
-							</a>
+
+							<i className="bi bi-box-fill" />
+							{" "}
+							<span> Items  </span>
+
 						</Link>
 					</li>
 					<li className={saleOpen} onClick={() => { setSaleOpen(saleOpen === "menu-list" ? "menu-list nav-active" : "menu-list"); }}>
@@ -100,18 +100,18 @@ function Sidebar() {
 
 							<li>
 								<Link to="/PaymentOut">
-									<a > Payment Out</a>
+									Payment Out
 									{" "}
 								</Link>
 							</li>
 
 
-							<li><Link to="/PurchaseOrder"><a > Purchase Order </a>	</Link></li>
+							<li><Link to="/PurchaseOrder">Purchase Order </Link></li>
 
 
 							<li>
 								<Link to="/PurchaseReturn">
-									<a>Purchase Return</a>
+									Purchase Return
 									{" "}
 								</Link>
 							</li>
@@ -121,20 +121,20 @@ function Sidebar() {
 					</li>
 					<li>
 						<Link to="/Expanses">
-							<a >
-								<i className="bi bi-wallet2" />
-								{" "}
-								<span>Expanses</span>
-							</a>
+
+							<i className="bi bi-wallet2" />
+							{" "}
+							<span>Expanses</span>
+
 						</Link>
 					</li>
 					<li>
 						<Link to="/Cash">
-							<a >
-								<i className="bi bi-cash-stack" />
-								{" "}
-								<span>Cash</span>
-							</a>
+
+							<i className="bi bi-cash-stack" />
+							{" "}
+							<span>Cash</span>
+
 						</Link>
 					</li>
 

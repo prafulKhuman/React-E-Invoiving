@@ -80,6 +80,11 @@ body {
   width: 100%;
 }
 
+.height{
+  height: 255px;
+  overflow: auto;
+}
+
 .panel_height{
   height: 350px;
   overflow: auto;
@@ -101,6 +106,9 @@ body {
   align-items: center;
   
 }
+
+
+
 
 i{
   cursor: pointer;

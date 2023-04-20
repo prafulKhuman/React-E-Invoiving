@@ -1,87 +1,201 @@
-
+import { useAddSaleOrderMutation , useFetchSaleOrderQuery , useDeleteSaleOrderMutation } from "../../redux";
+import { useAddSaleInvoiceMutation} from "../../redux";
 import SortableTable from "../../components/Table/SortableTable";
-// import OrderForm from "../../containers/sale/OrderForm";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { useState } from "react";
+import Report from "./../../components/report/Report";
 import Form from "../../components/forms/Form";
+import swal from "sweetalert";
+	
 function SaleOrder() {
-	const data = [
+	const [ addSaleOrder ] = useAddSaleOrderMutation(); 
+	const [AddSaleInvoice] = useAddSaleInvoiceMutation();
+	const {data , error, isFetching } = useFetchSaleOrderQuery();
+	const [DeleteSaleOrder] = useDeleteSaleOrderMutation();
 
-		{
-			Id: 1,
-			Party_Name: "Khuman Praful",
-			Order_No: 1,
-			Date: "01/02/2023",
-			Due_Date: "02/02/2023",
-			Total_Amount: 500,
-			Balance: 200,
-			Type: "Case",
-			Status: "Unpaid",
-			Action: "Print",
-		},
+	const [searchTerm , setSearchTerm] = useState("");
+	const [printData , setPrintData] = useState([]);
 
-	];
+	const handlesubmit =async(row)=>{
+		const response = await addSaleOrder(row);
+		if(response.data === "ok"){
+			swal({
+				title: "Data Saved Success!",
+				icon: "success",
+				button: "Done!",
+			});
+		}
 
+		
+	};
+	const filteredData = data?.filter((item) =>
+		item[1].PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+		item[1].ID.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+		item.timestamp.toLowerCase().includes(searchTerm.toLowerCase()) ||
+		item[1].DueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
+		item[1].Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+		item[1].Advance.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+		(item[1].Total - item[1].Advance).toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+		(item[1].Total - item[1].Advance === 0 ? "Paid" : "Unpaid").toLowerCase().includes(searchTerm.toLowerCase())
+
+	);
+	
+	const handleSearch =(e)=>{
+		setSearchTerm(e.target.value);
+	};
+	const handleDeleteRow = async (ID) => {
+		swal({
+			title: "Are you sure?",
+			text: "Once deleted, you will not be able to recover this Data!",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then(async (willDelete) => {
+			if (willDelete) {
+				const response = await DeleteSaleOrder(ID);
+				if (response.data === "ok") {
+					swal("Data Deleted Success", {
+						icon: "success",
+					});
+				}
+			} else {
+				swal("Your Data is safe!");
+			}
+		});
+	};
+	
+	const handlePeintInvoice =(key)=>{
+		const filteredPrintData = data?.filter((item) =>
+			item.id == key 
+		);
+
+		setPrintData(filteredPrintData);
+		
+	};
+	const handleConvert=async(key)=>{
+
+
+		swal({
+			title: "Are you sure?",
+			text: "Once Converted, you will not be able to recover this Data!",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then(async (willDelete) => {
+
+			if (willDelete) {
+				const ConvertOrder = data?.filter((item) =>
+					item.id == key
+				);
+				const object = ConvertOrder[0];
+
+				const response = await AddSaleInvoice(object);
+				if (response.data === "ok") {
+					swal({
+						title: "Converted Success!",
+						icon: "success",
+						button: "Done!",
+					});
+					await DeleteSaleOrder(key);
+				}
+			} else {
+				swal("Your Data  is safe!");
+			}
+		});
+		
+	};
+	
+	
+	let Data = [];
+	let content ;
+	if(isFetching){
+		// eslint-disable-next-line no-unused-vars
+		content = <Skeleton count={5} height={40}/>;
+	}else if(error){
+		console.log("error");
+	}else{ 
+		Data = filteredData?.map((item , index) => ({
+			Id: index+1,
+			Party_Name: item[1].PartyName,
+			Order_No: item[1].ID,
+			Date: item.timestamp,
+			Due_Date: item[1].DueDate,
+			Total_Amount: item[1].Total,
+			Advance: item[1].Advance,
+			Balance: item[1].Total - parseInt(item[1].Advance),
+			Status: (item[1].Total - parseInt(item[1].Advance) === 0 ? "Paid" : "Unpaid"), 
+			Action: item.id ,
+			
+		}));
+	}
+	
 	const config = [
 		{
 			label: "#",
-			render: (data) => data.Id,
-			sortValue: (data) => data.Id,
+			render: (Data) => Data.Id,
+			sortValue: (Data) => Data.Id,
 		},
 		{
 			label: "Party Name",
-			render: (data) => data.Party_Name,
-			sortValue: (data) => data.Party_Name,
+			render: (Data) => Data.Party_Name,
+			sortValue: (Data) => Data.Party_Name,
 		},
 		{
 			label: "Order No",
-			render: (data) => data.Order_No,
-			sortValue: (data) => data.Order_No,
+			render: (Data) => Data.Order_No,
+			sortValue: (Data) => Data.Order_No,
 
 		},
 		{
 			label: "Order Date",
-			render: (data) => data.Date,
-			sortValue: (data) => data.Date,
+			render: (Data) => Data.Date,
+			sortValue: (Data) => Data.Date,
 
 		},
 		{
 			label: "Due Date",
-			render: (data) => data.Due_Date,
-			sortValue: (data) => data.Due_Date,
+			render: (Data) => Data.Due_Date,
+			sortValue: (Data) => Data.Due_Date,
 
 		},
 		{
 			label: "Total Amount",
-			render: (data) => data.Total_Amount,
-			sortValue: (data) => data.Total_Amount,
+			render: (Data) => Data.Total_Amount,
+			sortValue: (Data) => Data.Total_Amount,
+
+		},
+		{
+			label: "Advance",
+			render: (Data) => Data.Advance,
+			sortValue: (Data) => Data.Advance,
 
 		},
 		{
 			label: "Balance",
-			render: (data) => data.Balance,
-			sortValue: (data) => data.Balance,
-
-		},
-		{
-			label: "Transection Type",
-			render: (data) => data.Type,
-			sortValue: (data) => data.Type,
+			render: (Data) => Data.Balance,
+			sortValue: (Data) => Data.Balance,
 
 		},
 		{
 			label: "Status",
-			render: (data) => data.Status,
-			sortValue: (data) => data.Status,
+			render: (Data) => Data.Status,
+			sortValue: (Data) => Data.Status,
 
 		},
 		{
 			label: "Action",
-			render: (data) => data.Action,
-
+			render: (Data) => Data.Action,
 		},
+		
+		
+		
 
 	];
 
-	const keyfn = (item) => item.name;
+	
+	
+	const keyfn = (item) => item.Id;
 
 	return (
 		<>
@@ -92,10 +206,16 @@ function SaleOrder() {
 				<div className="content-top-gap">
 					<div className="card ">
 						<div className="card-header">
-							<span>Sale Order</span>
-							<div className="invoice_No mr-3 ">
-								<i className="bi bi-printer-fill fa-2x" />
+							<div className="row">
+								<div className="col">
+									<span className="text-left lead font-weight-bold mt-3">Sale Order</span>			
+								</div>
+								<div className="text-right mr-3">
+									<Report file="SALE-ORDER" data={Data} config={config}/>
+								</div>
 							</div>
+								
+							
 						</div>
 
 					</div>
@@ -111,23 +231,20 @@ function SaleOrder() {
 										<div className="input-group-prepend">
 											<span className="input-group-text"><i className=" bi bi-search"/></span>
 										</div>
-										<input type="text" className="form-control" placeholder="Search Transaction" aria-label="Username" aria-describedby="basic-addon1" />
+										<input type="text" className="form-control" onChange={handleSearch} placeholder="Search Transaction" aria-label="Username" aria-describedby="basic-addon1" />
 									</div>
 								</div>
+								
 								<div className="col-5 ">
+									
 									{" "}
-									<Form file="Sale-Order"/>
+									<Form file="Sale-Order" onsubmit={handlesubmit}/>
 									{" "}
 								</div>
 							</div>
-
-							
-
 						</div>
 						<div className="card-body panel_height">
-
-							<SortableTable data={data} config={config} keyfn={keyfn} file={"Invoice"}/>
-
+							{content || <SortableTable data={Data} config={config} keyfn={keyfn} file={"Sale-Order"} convert={handleConvert} ID={handleDeleteRow}  billInfo={printData} printID={handlePeintInvoice}/> }
 						</div>
 					</div>
 
