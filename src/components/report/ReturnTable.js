@@ -1,18 +1,11 @@
 import sign from "./../Table/Sign/signature.png";
-function SaleTable({filteredData , config}) {
+function ReturnTable({filteredData , config}) {
 	
 	const totalAmount = filteredData?.reduce(getTotal , 0);
 	function getTotal(total , num){
 		return total + num.Total_Amount ;
 	}
-	const totalBalance = filteredData?.reduce(getBalance , 0);
-	function getBalance(total , num){
-		return total + num.Balance ;
-	}
-	const totalReceived = filteredData?.reduce(getReceived , 0);
-	function getReceived(total , num){
-		return total + parseInt(num.Advance) ;
-	}
+
 	
 	return ( <>
 		<div className="mt-5 table-responsive" >
@@ -44,9 +37,7 @@ function SaleTable({filteredData , config}) {
 								<td>{row.Date}</td>
 								<td>{row.Due_Date}</td>
 								<td>{row.Total_Amount}</td>
-								<td>{row.Advance}</td>
-								<td>{row.Balance}</td>
-								<td>{row.Status}</td>
+								
 
 							</tr>);
 					})}
@@ -67,17 +58,10 @@ function SaleTable({filteredData , config}) {
 					<label className="font-weight-bold">Total Amount : </label>
 					<span> ₹ {totalAmount} </span>
 				</p>
-				<p>
-					<label className="font-weight-bold"> Balance : </label>
-					<span> ₹ {totalBalance}</span>
-				</p>
-				<p>
-					<label className="font-weight-bold">Advance : </label>
-					<span> ₹ {totalReceived}</span>
-				</p>
+				
 			</div>
 		</div>
 	</> );
 }
 
-export default SaleTable;
+export default ReturnTable;

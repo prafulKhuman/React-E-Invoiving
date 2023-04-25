@@ -1,10 +1,11 @@
 
-import { useState } from "react";
+import { useState  , useEffect} from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import SortableTable from "../../components/Table/SortableTable";
 import Report from "../../components/report/Report";
 import PaymentInOut from "../../components/PaymentInOut/PaymentInOut";
+import { useUpdateSalePaymentMutation ,  useFatchSalePaymentQuery  } from "../../redux";
 import {useAddPaymentInOutMutation , useFetchPaymentInOutQuery , useDeletePaymentInOutMutation} from "../../redux";
 import swal from "sweetalert";
 
@@ -14,10 +15,22 @@ function PaymentIn() {
 	const [DeletePaymentInOut] = useDeletePaymentInOutMutation();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [printData , setPrintData] = useState([]);
+	const [rows , setrows] = useState([]);
+
+	const [UpdateSalePayment] = useUpdateSalePaymentMutation();
+	const SalePayment = useFatchSalePaymentQuery();
+
+	useEffect(()=>{
+		if(SalePayment.data){
+			const data=SalePayment.data;
+			setrows(data);
+			
+		}
+	},[SalePayment]);
 
 	
 	const handleSubmit =async(key)=>{
-		console.log(key);
+		
 		const response = await AddPaymentInOut(key);
 		if(response.data === "ok"){
 			swal({
@@ -25,6 +38,25 @@ function PaymentIn() {
 				icon: "success",
 				button: "Done!",
 			});
+		}
+		const filter = rows?.filter((item) => item.partyName === key.PartyName);
+
+		if (filter) {
+			/* eslint-disable no-unused-vars */
+			const id = filter[0].id;
+			
+			const updatedPayment = {
+				partyName: filter[0].partyName,
+				total: filter[0].total ,
+				Received:  filter[0].Received ,
+				Pending: filter[0].Pending - parseInt(key.Amount)
+			};
+
+			const ans = await UpdateSalePayment({id , updatedPayment});
+			console.log(ans ,"ans");
+			
+		} else {
+			//
 		}
 	};
 

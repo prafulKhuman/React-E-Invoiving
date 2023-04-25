@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useAddPartiesMutation , useFetchPartiesQuery , useDeletePartiesMutation} from "../../redux";
 import {useFatchSaleInvoiceQuery , useFetchSaleReturnQuery , useFetchPaymentInOutQuery} from "../../redux";
 let Combine ;
-function Parties() {
+function Seller() {
 	const [AddParties] = useAddPartiesMutation();
 	const [DeleteParties] = useDeletePartiesMutation();
 	const SaleInvoice = useFatchSaleInvoiceQuery();
@@ -73,7 +73,9 @@ function Parties() {
 		setSearchParties(e.target.value);
 	};
 
-	const filteredData = data?.filter((item) =>
+	const filterType = data?.filter((item)=> item.PartyType === "Saller");
+	
+	const filteredData = filterType?.filter((item) =>
 		item.PartyName.toLowerCase().includes(searchParties.toLowerCase())
 	);
 
@@ -261,7 +263,7 @@ function Parties() {
 									<div className="row">
 										<div className="col mt-4">
 											
-											<span className="font-weight-bold h5" ><u>  Custommer </u></span>
+											<span className="font-weight-bold h5" >  Seller  </span>
 										</div>
 
 										<div className="col-4 mr-2" >
@@ -379,4 +381,4 @@ function Parties() {
 	);
 }
 
-export default Parties;
+export default Seller;

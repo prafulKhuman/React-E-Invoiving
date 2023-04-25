@@ -1,5 +1,5 @@
 import { createApi , fakeBaseQuery} from "@reduxjs/toolkit/query/react";
-import { db } from "../../firebase";
+import { db } from "../../../firebase";
 import { addDoc , collection, getDocs , doc , deleteDoc } from "firebase/firestore";
 const date = new Date();
 const options = { day: "2-digit", month: "short", year: "numeric", hour: "numeric", minute: "numeric", second: "numeric", hour12: true };

@@ -1,20 +1,32 @@
 
 import SortableTable from "../../components/Table/SortableTable";
 // import SaleReturnForm from "../../containers/sale/SaleReturnForm";
-import { useAddSaleReturnMutation  , useFetchSaleReturnQuery , useDeleteSaleReturnMutation} from "../../redux";
+import { useUpdateSalePaymentMutation ,  useFatchSalePaymentQuery  } from "../../redux";
+import { useAddSaleReturnMutation , useFetchSaleReturnQuery , useDeleteSaleReturnMutation} from "../../redux";
 import Form from "../../components/forms/Form";
 import swal from "sweetalert";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useState } from "react";
+import { useState ,useEffect } from "react";
 import Report from "../../components/report/Report";
 function SaleReturn() {
-
+	
+	const [UpdateSalePayment] = useUpdateSalePaymentMutation();
+	const SalePayment = useFatchSalePaymentQuery();
 	const [AddSaleReturn] = useAddSaleReturnMutation();
 	const {data , error, isFetching } = useFetchSaleReturnQuery();
 	const [DeleteSaleReturn] = useDeleteSaleReturnMutation();
 	const [searchTerm , setSearchTerm] = useState("");
 	const [printData , setPrintData] = useState([]);
+	const [rows , setrows] = useState([]);
+
+	useEffect(()=>{
+		if(SalePayment.data){
+			const data=SalePayment.data;
+			setrows(data);
+			
+		}
+	},[SalePayment]);
 
 	const handlesubmit =async (row)=>{
 		const response = await AddSaleReturn(row);
@@ -25,17 +37,44 @@ function SaleReturn() {
 				button: "Done!",
 			});
 		}
-		
+		const filter = rows?.filter((item) => item.partyName === row[1].PartyName);
+
+		if (filter) {
+			/* eslint-disable no-unused-vars */
+			const id = filter[0].id;
+			let Received ;
+			let Pending ;
+			
+			if(filter[0].Pending >= row[1].Total){
+				Pending = filter[0].Pending - row[1].Total ;
+				Received = filter[0].Received ;
+			} else{
+				let Sub = row[1].Total - filter[0].Pending ;
+				Pending = 0 ;
+				Received = filter[0].Received - Sub ;
+			}
+			
+			
+			const updatedPayment = {
+				partyName: filter[0].partyName,
+				total: filter[0].total - row[1].Total,
+				Received: Received ,
+				Pending: Pending
+			};
+
+			await UpdateSalePayment({id , updatedPayment});
+			
+		} else {
+			//
+		}
 	};
 	const filteredData = data?.filter((item) =>
 		item[1].PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
 		item[1].ID.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
 		item.timestamp.toLowerCase().includes(searchTerm.toLowerCase()) ||
 		item[1].DueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].Advance.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		(item[1].Total - item[1].Advance).toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		(item[1].Total - item[1].Advance === 0 ? "Paid" : "Unpaid").toLowerCase().includes(searchTerm.toLowerCase())
+		item[1].Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) 
+		
 
 	);
 	
@@ -87,11 +126,8 @@ function SaleReturn() {
 			Party_Name: item[1].PartyName,
 			Order_No: item[1].ID,
 			Date: item.timestamp,
-			
+			Due_Date:item[1].DueDate,
 			Total_Amount: item[1].Total,
-			Advance: item[1].Advance,
-			Balance: item[1].Total - parseInt(item[1].Advance),
-			Status: (item[1].Total - parseInt(item[1].Advance) === 0 ? "Paid" : "Unpaid"), 
 			Action: item.id ,
 			
 		}));
@@ -120,29 +156,17 @@ function SaleReturn() {
 			sortValue: (Data) => Data.Date,
 
 		},
+		{
+			label: "Due Date",
+			render: (Data) => Data.Due_Date,
+			sortValue: (Data) => Data.Due_Date,
+
+		},
 		
 		{
 			label: "Total Amount",
 			render: (Data) => Data.Total_Amount,
 			sortValue: (Data) => Data.Total_Amount,
-
-		},
-		{
-			label: "Paid",
-			render: (Data) => Data.Advance,
-			sortValue: (Data) => Data.Advance,
-
-		},
-		{
-			label: "Balance",
-			render: (Data) => Data.Balance,
-			sortValue: (Data) => Data.Balance,
-
-		},
-		{
-			label: "Status",
-			render: (Data) => Data.Status,
-			sortValue: (Data) => Data.Status,
 
 		},
 		{

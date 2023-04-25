@@ -1,22 +1,50 @@
 
 import SortableTable from "../../components/Table/SortableTable";
 import Form from "../../components/forms/Form";
-import { useAddSaleInvoiceMutation, useFatchSaleInvoiceQuery , useDeleteSaleInvoiceMutation} from "../../redux";
+import {useAddSaleInvoiceMutation ,   useFatchSaleInvoiceQuery , useDeleteSaleInvoiceMutation , } from "../../redux";
+import { useAddSalePaymentMutation , useFatchSalePaymentQuery  , useUpdateSalePaymentMutation} from "../../redux";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import Report from "../../components/report/Report";
 import swal from "sweetalert";
 
+
 function SaleInvoice() {
 	const [AddSaleInvoice] = useAddSaleInvoiceMutation();
+	const [AddSalePayment] = useAddSalePaymentMutation();
+	const [UpdateSalePayment] = useUpdateSalePaymentMutation();
+	const SalePayment = useFatchSalePaymentQuery();
 	const { data, error, isFetching } = useFatchSaleInvoiceQuery();
 	const [DeleteSaleInvoice] = useDeleteSaleInvoiceMutation();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [printData , setPrintData] = useState([]);
+	const [rows , setrows] = useState([]);
 
+	useEffect(()=>{
+		if(SalePayment.data){
+			const data=SalePayment.data;
+			setrows(data);
+		}
+	},[SalePayment]);
+	
+	const TotalSale = rows?.reduce(getTotal , 0);
+	function getTotal(total , num){
+		return total + num.total ;
+	}
 
+	const TotalReceived = rows?.reduce(getReceived , 0);
+	function getReceived(total , num){
+		return total + num.Received ;
+	}
+
+	const TotalPending = rows?.reduce(getPending , 0);
+	function getPending(total , num){
+		return total + num.Pending ;
+	}
+	// console.log(rows.partyName);
 	const handlesubmit =async (row) => {
+		
 		const response = await AddSaleInvoice(row);
 		if(response.data === "ok"){
 			swal({
@@ -25,8 +53,38 @@ function SaleInvoice() {
 				button: "Done!",
 			});
 		}
-	};
+		
+		const filter = rows?.filter((item) => item.partyName === row[1].PartyName);
+		
+		if (filter[0]?.partyName === row[1].PartyName) {
+			const id = filter[0].id;
+			const updatedPayment = {
+				partyName: filter[0].partyName,
+				total: filter[0].total + row[1].Total,
+				Received: filter[0].Received + parseInt(row[1].Advance),
+				Pending: filter[0].Pending + (row[1].Total - parseInt(row[1].Advance))
+			};
 
+			await UpdateSalePayment({id , updatedPayment});
+			
+		} else {
+			const newPayment = {
+				partyName: row[1].PartyName,
+				total: row[1].Total,
+				Received: parseInt(row[1].Advance),
+				Pending: row[1].Total - parseInt(row[1].Advance)
+			};
+
+			await AddSalePayment(newPayment);
+			
+		}
+
+		
+		
+	};
+	
+	
+	
 	const handleSearch = (e) => {
 		setSearchTerm(e.target.value);
 	};
@@ -65,7 +123,7 @@ function SaleInvoice() {
 
 	);
 
-	console.log(filteredData , "sale") ;
+	//console.log(filteredData , "sale") ;
 	const handlePeintInvoice =(key)=>{
 		
 		const filteredPrintData = data?.filter((item) =>
@@ -101,15 +159,15 @@ function SaleInvoice() {
 	}
 
 	
-	const totalPaid = Data?.reduce(getPaid , 0);
-	function getPaid(total , num){
-		return total + num.Advance ;
-	}
+	// const totalPaid = Data?.reduce(getPaid , 0);
+	// function getPaid(total , num){
+	// 	return total + num.Advance ;
+	// }
 
-	const totalUnPaid = Data?.reduce(getUnPaid , 0);
-	function getUnPaid(total , num){
-		return total + num.Balance ;
-	}
+	// const totalUnPaid = Data?.reduce(getUnPaid , 0);
+	// function getUnPaid(total , num){
+	// 	return total + num.Balance ;
+	// }
 	// // const SumPaidUnPaid = filteredData?.reduce(getReceived , 0);
 	// // function getReceived(total , num){
 	// // 	return total + parseInt(num.Advance) ;
@@ -127,7 +185,7 @@ function SaleInvoice() {
 			sortValue: (Data) => Data.Party_Name,
 		},
 		{
-			label: "Invoice No",
+			label: "Ref No",
 			render: (Data) => Data.Order_No,
 			sortValue: (Data) => Data.Order_No,
 
@@ -145,7 +203,7 @@ function SaleInvoice() {
 
 		},
 		{
-			label: "Total Amount",
+			label: "Amount",
 			render: (Data) => Data.Total_Amount,
 			sortValue: (Data) => Data.Total_Amount,
 
@@ -193,25 +251,25 @@ function SaleInvoice() {
 							<span className="lead font-weight-bold">Payment</span>
 							<div className="invoice_No mr-3 " >
 								<Report file="SALE-INVOICE" data={Data} config={config}/>
-
+								
 							</div>
 						</div>
 						<div className="card-body row ml-2">
 
 							<div className="card panel col-mg-3" style={{ backgroundColor: "#cce6ff" }}>
-								<h6 className="card-title">Paid</h6>
-								<h5 className="card-text"> ₹ {totalPaid}</h5>
+								<h6 className="card-title">Received</h6>
+								<h5 className="card-text"> ₹ {TotalReceived}</h5>
 							</div>
 							<span className="ml-3 mr-3 mt-4">+</span>
 							<div className="card panel col-mg-3 " style={{ backgroundColor: "#ccf2ff" }}>
-								<h6 className="card-title">Unpaid</h6>
-								<h5 className="card-text"> ₹ {totalUnPaid}</h5>
+								<h6 className="card-title">Pending</h6>
+								<h5 className="card-text"> ₹ {TotalPending}</h5>
 							</div>
 							
 							<span className="ml-3 mr-3 mt-4">=</span>
 							<div className="card panel col-mg-3" style={{ backgroundColor: "#cce6ff" }}>
 								<h6 className="card-title">Total</h6>
-								<h5 className="card-text"> ₹ {totalPaid + totalUnPaid}</h5>
+								<h5 className="card-text"> ₹ {TotalSale}</h5>
 							</div>
 
 						</div>

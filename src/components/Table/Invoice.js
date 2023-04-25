@@ -1,5 +1,5 @@
 import sign from "./Sign/signature.png";
-function Invoice({billInfo}) {
+function Invoice({billInfo , file}) {
 
 	const Info = billInfo?.map((info) => ({
 		invoiceNo: info[1].ID,
@@ -50,15 +50,15 @@ function Invoice({billInfo}) {
 	return ( <>
 		<div className="card-body" >
 
-			<div className="invoice-ribbon"><div className="ribbon-inner">{((Details?.TotalAmount) - (advance)) === 0 ? "PAID" : "UNPAID"}</div></div><div>
+			<div className="invoice-ribbon"><div className="ribbon-inner">{ file === "Sale-Return" || file === "Purchase-Return" ? "" : ((Details?.TotalAmount) - (advance)) === 0 ? "PAID" : "UNPAID"}</div></div><div>
 
 
 
 				<div className="row">
-					<div id="boot-icon" className="col" style={{ fontSize: "30px" }}> Invoice</div>
+					<div id="boot-icon" className="col" style={{ fontSize: "30px" }}> {file === "Sale-Return" || file === "Purchase-Return" ? "Return Invoice" : "Invoice"} </div>
 
 					<div className="col mr-5 text-right">
-						<h4 className="">INVOICE - {Details?.invoiceNo} </h4>
+						<h4 className="">Ref No - {Details?.invoiceNo} </h4>
 						<span className="">{Details?.Date}</span>
 					</div>
 				</div>
@@ -142,14 +142,15 @@ function Invoice({billInfo}) {
 						<label className="font-weight-bold">Total Amount : </label>
 						<span> {Details?.TotalAmount} </span>
 					</p>
-					<p>
-						<label className="font-weight-bold"> Balance : </label>
-						<span>{Details?.TotalAmount - advance}</span>
-					</p>
-					<p>
-						<label className="font-weight-bold">Received : </label>
-						<span> {advance} </span>
-					</p>
+					{file === "Sale-Return" || file === "Purchase-Return" ? "" :
+						<><p>
+							<label className="font-weight-bold"> Balance : </label>
+							<span>{Details?.TotalAmount - advance}</span>
+						</p><p>
+							<label className="font-weight-bold">Received : </label>
+							<span> {advance} </span>
+						</p></>
+					}
 				</div>
 			</div><div className="col-md-2">
 

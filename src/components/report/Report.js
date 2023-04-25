@@ -3,6 +3,8 @@ import { useReactToPrint } from "react-to-print";
 
 import SaleTable from "./SaleTable";
 import PaymentTable from "./PaymentTable";
+import ReturnTable from "./ReturnTable";
+
 
 function Report({file , data , config}) {
 	const [month , setMonth] = useState("");
@@ -71,8 +73,11 @@ function Report({file , data , config}) {
 										</select>
 									</div>
 								</div>
-								{file === "PAYMENT-IN" ? <PaymentTable filteredData={filteredData} config={config}/> : <SaleTable filteredData={filteredData} config={config}/>}
-							
+								{file === "PAYMENT-IN" ? <PaymentTable filteredData={filteredData} config={config} /> :
+									file === "PURCHASE-RETURN" || file === "SALE-RETURN" ? <ReturnTable filteredData={filteredData} config={config} />
+										: <SaleTable filteredData={filteredData} config={config} />
+								}
+
 																
 							</div>
 						</div>

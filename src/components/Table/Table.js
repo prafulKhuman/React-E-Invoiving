@@ -92,7 +92,7 @@ function Table({ data, config, keyfn, ...props }) {
 							{file === "PAYMENT-IN" ? 
 								<Receipt billInfo={billInfo}/>
 								:
-								<Invoice billInfo={billInfo}/>
+								<Invoice billInfo={billInfo } file={file}/>
 							}
 							
 							

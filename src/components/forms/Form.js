@@ -2,6 +2,11 @@ import { useFormik } from "formik";
 import {SaleOrderSchema} from "../../utility/schema";
 import { useState } from "react";
 import swal from "sweetalert";
+
+
+
+import { useFetchPartiesQuery } from "../../redux";
+
 let initialValues = {
 	No: "",
 	Item: "",
@@ -22,19 +27,39 @@ const intial ={
 	Advance:"",
 };
 
-function Form( {file ,onsubmit } ) {
+let options  ;
+
+function  Form ( {file ,onsubmit } ) {
+	
+	const response = useFetchPartiesQuery();
 	const fileName = file;
 	const [data , setData] = useState([]);
 	const [filds , setFilds] = useState(intial);
+	//const [party , setParty] = useState([]);
 
 	
-	// let total = 0;
-		
+
 	
+	if(response.data){
+		const parties =  response.data?.map((user)=>{
+			return user.PartyName ;
+		});
+		// console.log(parties,"party");
+		options = parties ;
+	}
+	
+
+	//console.log(parties ,"party");
+	
+	//const options = [ " khuman ", "praful"];
 	const handleChange2 = (e) => {
 		const { name, value } = e.target;
 		setFilds({ ...filds, [name]: value });
 	
+	};
+
+	const handleParty =(value)=>{
+		console.log(value);
 	};
 	
 	const handleSubmit2 = (e) => {
@@ -134,10 +159,10 @@ function Form( {file ,onsubmit } ) {
 								<div className="container-fluid">
 								
 									<div className="row">
-										<div className="col-sm-2">
-
+										<div className="col-sm-3">
+											
 											<div className="input-group mb-3">
-
+											
 												<input type="text"
 													className="form-control"
 													name="PartyName"
@@ -145,13 +170,15 @@ function Form( {file ,onsubmit } ) {
 													value={filds.PartyName}
 													onChange={handleChange2}
 													aria-label="Default"
-													placeholder="Party Name"
-													aria-describedby="inputGroup-sizing-default" />
+													aria-describedby="inputGroup-sizing-default" 
+													list="browsers"
+													placeholder="Party Name"/> 
+
 												
-												
+
 											</div>
 										</div>
-										<div className="col-sm-2">
+										<div className="col-sm-3">
 											<div className="input-group">
 
 												<input type="text" 
@@ -166,11 +193,11 @@ function Form( {file ,onsubmit } ) {
 												
 											</div>
 										</div>
-										<div className="col-sm-8  text-right">
+										<div className="col-sm-6  text-right">
 
 											<label htmlFor="ID">
 												{fileName==="Sale-Invoice" ? "Invoice No ": ""}
-												{fileName==="Sale-Order" || fileName==="Purchase-Order" ? "Order No ": ""} 
+												
 												{fileName==="Sale-Return" || fileName==="Purchase-Return" ? "Return No ": ""}
 												{fileName==="Purchase-Bill" ? "Bill No": ""} 
 											
@@ -181,7 +208,7 @@ function Form( {file ,onsubmit } ) {
 												value={filds.ID}
 												required
 												onChange={handleChange2}
-												className=" bottom_border  " />
+												className=" bottom_border  ml-1" />
 											
 										</div>
 										
@@ -189,7 +216,7 @@ function Form( {file ,onsubmit } ) {
 									
 									<div className="row ">
 
-										<div className="col-2 input-group">
+										<div className="col-3 input-group">
 
 											<input type="text"
 												className="form-control"
@@ -204,7 +231,7 @@ function Form( {file ,onsubmit } ) {
 
 										</div>
 
-										<div className="col-2 input-group">
+										<div className="col-3 input-group">
 
 											<textarea 
 												className="form-control"
@@ -235,6 +262,9 @@ function Form( {file ,onsubmit } ) {
 									</div>
 								
 								
+									
+
+
 									<div className="mt-4 scroll">
 										<div className="text-right">
 											<button type="button" className="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -292,40 +322,42 @@ function Form( {file ,onsubmit } ) {
 											</tbody>
 										</table>
 									</div>
-									<div className="mt-4 item_right row">
-										<div className="input-group col-md-7">
+									<div className="mt-4">
+										<div className="input-group item_right ">
 											<div className="row">
-												<label className="col-3 mt-2">Total </label>
+												<label className="col-sm-3 mt-2">Total </label>
 											
 												<input type="text"  
 													name="Total"  
 													required
 													onChange={handleEmpty}
 													value={filds.Total}
-													className="form-control col-8 ml-4"
+													className="form-control col-6"
 												/>
 												
 											</div>
 										</div>
-
-										<div className="input-group col-md-7 mt-3 mb-3">
-											<div className="row">
-												<label className="col-4 mt-2">
-													{fileName==="Sale-Invoice" || fileName==="Purchase-Return" || fileName==="Sale-Order" ? "Received" : ""}
+										{fileName === "Sale-Return" || fileName === "Purchase-Return" ? "" : 
+											<div className="input-group  item_right mt-3">
+												<div className="row">
+													<label className="col-sm-4 mt-2">
+														{fileName==="Sale-Invoice"  ? "Received" : ""}
 												
-													{fileName==="Sale-Return"  || fileName==="Purchase-Bill" || fileName==="Purchase-Order" ? "Paid" : ""}
+														{ fileName==="Purchase-Bill"  ? "Paid" : ""}
 											
-												</label>
-												<input type="text" 
-													name="Advance" 
-													required
-													value={filds.Advance}
-													onChange={handleChange2}
-													className="form-control col-8" />
+													</label>
 												
+													<input type="text" 
+														name="Advance" 
+														required
+														value={filds.Advance}
+														onChange={handleChange2}
+														className="form-control col-5" />
+												
+												
+												</div>
 											</div>
-										</div>
-
+										}
 									
 
 									

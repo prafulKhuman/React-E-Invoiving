@@ -1,28 +1,28 @@
 import { createApi , fakeBaseQuery} from "@reduxjs/toolkit/query/react";
 import { addDoc , collection , deleteDoc, doc, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db } from "../../../firebase";
 
 
-const PartiesApi = createApi({
-	reducerPath: "Parties" ,
+const IteamApi = createApi({
+	reducerPath: "Item" ,
 	baseQuery: fakeBaseQuery(),
-	tagTypes:["Parties"],
+	tagTypes:["Item"],
 	endpoints(builder){
 		return{
-			FetchParties: builder.query({
+			FetchItem: builder.query({
 				async queryFn(){
 					try{
-						const partiesRef = collection(db,"Parties");
-						const querySnapshot = await getDocs(partiesRef);
-						let Parties = [];
+						const ItemRef = collection(db,"Item");
+						const querySnapshot = await getDocs(ItemRef);
+						let Items = [];
 						querySnapshot?.forEach((doc)=>{
-							Parties.push({
+							Items.push({
 								id: doc.id,
 								...doc.data(),
 
 							});
 						});
-						return { data: Parties};
+						return { data: Items};
 					} catch (err){
 						const errorMessage = err.message;
 						return{ error: errorMessage};
@@ -30,23 +30,23 @@ const PartiesApi = createApi({
 				},
 				providesTags:["Parties"],
 			}),
-			DeleteParties: builder.mutation({
+			DeleteItem: builder.mutation({
 				async queryFn(id){
 					try{
-						await deleteDoc(doc(db, "Parties" , id));
+						await deleteDoc(doc(db, "Item" , id));
 						return { data : "ok"};
 					}catch(err){
 						const errorMessage = err.message;
 						return{ error : errorMessage};
 					}
 				},
-				invalidatesTags: ["Parties"],
+				invalidatesTags: ["Item"],
 			}),
-			AddParties: builder.mutation({
-				async queryFn(Parties){
+			AddItem: builder.mutation({
+				async queryFn(Item){
 					try{
-						await addDoc(collection(db,"Parties"),{
-							...Parties,
+						await addDoc(collection(db,"Item"),{
+							...Item,
 							
 						});
 						return{ data: "ok"};
@@ -56,7 +56,7 @@ const PartiesApi = createApi({
 					}
 				
 				},
-				invalidatesTags: ["Parties"],
+				invalidatesTags: ["Item"],
                 
 			}),
 			
@@ -66,9 +66,9 @@ const PartiesApi = createApi({
 });
 
 export const {
-	useAddPartiesMutation ,
-	useDeletePartiesMutation ,
-	useFetchPartiesQuery
-} = PartiesApi ;
+	useAddItemMutation ,
+	useDeleteItemMutation ,
+	useFetchItemQuery 
+} = IteamApi ;
 
-export {PartiesApi};
+export {IteamApi};

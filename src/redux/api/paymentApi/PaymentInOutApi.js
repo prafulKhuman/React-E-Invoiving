@@ -1,55 +1,55 @@
 import { createApi , fakeBaseQuery} from "@reduxjs/toolkit/query/react";
 import { addDoc , collection , deleteDoc, doc, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db } from "../../../firebase";
 const date = new Date();
 const options = { day: "2-digit", month: "short", year: "numeric", hour: "numeric", minute: "numeric", second: "numeric", hour12: true };
 const formattedDate = date.toLocaleString("en-US", options);
 
-const SaleOrderApi = createApi({
-	reducerPath: "SaleOrder" ,
+const PaymentInOutApi = createApi({
+	reducerPath: "PaymentInOut" ,
 	baseQuery: fakeBaseQuery(),
-	tagTypes:["SaleOrder"],
+	tagTypes:["PaymentInOut"],
 	endpoints(builder){
 		return{
-			FetchSaleOrder: builder.query({
+			FetchPaymentInOut: builder.query({
 				async queryFn(){
 					try{
-						const orderRef = collection(db,"SaleOrder");
-						const querySnapshot = await getDocs(orderRef);
-						let order = [];
+						const paymentRef = collection(db,"PaymentInOut");
+						const querySnapshot = await getDocs(paymentRef);
+						let PaymentInfo = [];
 						querySnapshot?.forEach((doc)=>{
-							order.push({
+							PaymentInfo.push({
 								id: doc.id,
 								timestamp: doc.timestamp,
 								...doc.data(),
 
 							});
 						});
-						return { data: order};
+						return { data: PaymentInfo};
 					} catch (err){
 						const errorMessage = err.message;
 						return{ error: errorMessage};
 					}
 				},
-				providesTags:["SaleOrder"],
+				providesTags:["PaymentInOut"],
 			}),
-			DeleteSaleOrder: builder.mutation({
+			DeletePaymentInOut: builder.mutation({
 				async queryFn(id){
 					try{
-						await deleteDoc(doc(db, "SaleOrder" , id));
+						await deleteDoc(doc(db, "PaymentInOut" , id));
 						return { data : "ok"};
 					}catch(err){
 						const errorMessage = err.message;
 						return{ error : errorMessage};
 					}
 				},
-				invalidatesTags: ["SaleOrder"],
+				invalidatesTags: ["PaymentInOut"],
 			}),
-			AddSaleOrder: builder.mutation({
-				async queryFn(order){
+			AddPaymentInOut: builder.mutation({
+				async queryFn(Transaction){
 					try{
-						await addDoc(collection(db,"SaleOrder"),{
-							...order,
+						await addDoc(collection(db,"PaymentInOut"),{
+							...Transaction,
 							timestamp : formattedDate ,
 						});
 						return{ data: "ok"};
@@ -59,19 +59,19 @@ const SaleOrderApi = createApi({
 					}
 				
 				},
-				invalidatesTags: ["SaleOrder"],
+				invalidatesTags: ["PaymentInOut"],
                 
 			}),
-			
             
 		};
 	}
 });
 
 export const {
-	useAddSaleOrderMutation ,
-	useFetchSaleOrderQuery ,
-	useDeleteSaleOrderMutation
-} = SaleOrderApi ;
+	useAddPaymentInOutMutation ,
+	useDeletePaymentInOutMutation ,
+	useFetchPaymentInOutQuery
+} = PaymentInOutApi ;
 
-export {SaleOrderApi};
+export {PaymentInOutApi};
+	

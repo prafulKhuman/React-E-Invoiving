@@ -7,7 +7,7 @@ function PartiesFrom({onsubmit}) {
 		Email: Yup.string().min(5).required("Can't Empty Email"),
 		PhoneNo: Yup.number().min(10).required("Can't Empty Phone No") ,
 		BillingAddress: Yup.string().min(5).required("Can't Empty Billing Address"),
-		ShipingAddress: Yup.string().min(5).required("Can't Empty Shiping Address"),
+		PartyType : Yup.string().required("Can't Empty Party Type")
 	});
 
 	const { values , errors, touched , handleBlur, handleChange, handleSubmit } = 
@@ -16,8 +16,8 @@ function PartiesFrom({onsubmit}) {
 			PartyName: "",
 			Email: "",
 			PhoneNo: "",
-			BillingAddress: "",
-			ShipingAddress: "",
+			PartyType : "" ,
+			BillingAddress: ""
 			
 		},
 		validationSchema: PartiesSchema ,
@@ -79,7 +79,7 @@ function PartiesFrom({onsubmit}) {
 										</div>
 										<div className="input-group  col-md-4">
 											<input 
-												type="text" 
+												type="number" 
 												className="form-control" 
 												aria-label="Default" 
 												name="PhoneNo"
@@ -96,6 +96,22 @@ function PartiesFrom({onsubmit}) {
 									</div>
 									<br />
 									<div className="row">
+
+										<div className=" col-md-6 ms-auto">
+											<div className="form-group">
+												
+												<select className="form-control" id="SelectPartyType" name="PartyType" value={values.PartyType} onChange={handleChange}>
+													<option>--- Select Party Type ---</option>
+													<option>Saller</option>
+													<option>Custommer</option>
+													
+												</select>
+											</div>
+											{errors.PartyType && touched.PartyType ? (
+												<p className="form-error text-danger">{errors.PartyType}</p>
+											) : null}
+										</div>
+
 										<div className="input-group col-md-6">
 											<textarea 
 												className="form-control" 
@@ -110,20 +126,7 @@ function PartiesFrom({onsubmit}) {
 												<p className="form-error text-danger">{errors.BillingAddress}</p>
 											) : null}
 										</div>
-										<div className=" col-md-6 ms-auto">
-											<textarea 
-												className="form-control" 
-												aria-label="With textarea"
-												name="ShipingAddress"
-												value={values.ShipingAddress}
-												onChange={handleChange}
-												onBlur={handleBlur} 
-												placeholder="Shipping Address" 
-											/>
-											{errors.BillingAddress && touched.BillingAddress ? (
-												<p className="form-error text-danger">{errors.BillingAddress}</p>
-											) : null}
-										</div>
+										
 
 									</div>
 									<br />

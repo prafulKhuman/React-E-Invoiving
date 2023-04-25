@@ -10,18 +10,20 @@ import { useState } from "react";
 
 
 import { useAddPartiesMutation , useFetchPartiesQuery , useDeletePartiesMutation} from "../../redux";
-import {useFatchSaleInvoiceQuery , useFetchSaleReturnQuery , useFetchPaymentInOutQuery} from "../../redux";
+import {useFatchSaleInvoiceQuery , useFetchSaleReturnQuery , useFetchPaymentInOutQuery , useFatchSalePaymentQuery} from "../../redux";
 let Combine ;
-function Parties() {
+function Custommer() {
 	const [AddParties] = useAddPartiesMutation();
 	const [DeleteParties] = useDeletePartiesMutation();
 	const SaleInvoice = useFatchSaleInvoiceQuery();
+	const SalePayment = useFatchSalePaymentQuery();
 	const SaleReturn = useFetchSaleReturnQuery();
 	const PaymentIn = useFetchPaymentInOutQuery();
 	const {data , error, isFetching } = useFetchPartiesQuery();
 	const [openParty , setOpenParty] = useState();
 	const [search , setSearch] = useState("");
 	const [searchParties , setSearchParties] = useState("");
+	const [salePayment , setSalePayment] = useState();
 	
 	
 	const handleSearch =(e)=>{
@@ -73,7 +75,9 @@ function Parties() {
 		setSearchParties(e.target.value);
 	};
 
-	const filteredData = data?.filter((item) =>
+	const filterType = data?.filter((item)=> item.PartyType === "Custommer");
+	
+	const filteredData = filterType?.filter((item) =>
 		item.PartyName.toLowerCase().includes(searchParties.toLowerCase())
 	);
 
@@ -127,7 +131,12 @@ function Parties() {
 		
 		const Saleinvoice = SaleInvoice.data?.filter((item) => item[1].PartyName === key);
 		const Salereturn = SaleReturn.data?.filter((item) => item[1].PartyName === key);
+		const Salepayment = SalePayment.data?.filter((item) => item.partyName === key);
 		const Paymentin = PaymentIn.data?.filter((item) => item.PartyName === key && item.TransectionType === "Payment-In");
+		if(Salepayment){
+			setSalePayment(Salepayment[0]);
+		}
+		
 
 		const Obj1 = Saleinvoice.map((item)=>({
 			
@@ -163,7 +172,8 @@ function Parties() {
 			Type : item.TransectionType 
 			
 		}));
-		console.log(Obj2 , "obj3");
+		
+
 		Combine = [...Obj1 , ...Obj2 , ...Obj3] ;
 		
 	};
@@ -261,7 +271,7 @@ function Parties() {
 									<div className="row">
 										<div className="col mt-4">
 											
-											<span className="font-weight-bold h5" ><u>  Custommer </u></span>
+											<span className="font-weight-bold h5" >  Custommer </span>
 										</div>
 
 										<div className="col-4 mr-2" >
@@ -336,16 +346,16 @@ function Parties() {
 									
 										<div className="col">
 											
-											<label className="btn btn-outline-success" style={{width : "100%"}}>Total <br/><span></span></label>
+											<label className="btn btn-outline-success" style={{width : "100%"}}>Total <br/><span>{salePayment?.total}</span></label>
 										</div>
 
 										<div className="col">
 
-											<label className="btn btn-outline-success" style={{width : "100%"}}>Advance <br/> <span></span></label>
+											<label className="btn btn-outline-success" style={{width : "100%"}}>Received <br/> <span>{salePayment?.Received}</span></label>
 										</div>
 
 										<div className="col">
-											<label className="btn btn-outline-success" style={{width : "100%"}}>Balance <br/> <span></span></label>
+											<label className="btn btn-outline-success" style={{width : "100%"}}>Pending <br/> <span>{salePayment?.Pending}</span></label>
 											
 										</div>
 
@@ -379,4 +389,4 @@ function Parties() {
 	);
 }
 
-export default Parties;
+export default Custommer;

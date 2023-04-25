@@ -1,56 +1,54 @@
-import { useState } from "react";
-// import * as Yup from "yup";
-// import { useFormik } from "formik";
+// import { useState } from "react";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 // import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
 function PaymentInOut({file , AddData}) {
 	
-	const initialValues = {
-		PartyName: "",
-		receiptno: "",
-		Date: "",
-		Description: "",
-		Amount: "",
-		TransectionType: file
-	};
-	const [paymentInfo , setPaymentInfo] = useState(initialValues);
+	// const initialValues = {
+	// 	PartyName: "",
+	// 	receiptno: "",
+	// 	Date: "",
+	// 	Description: "",
+	// 	Amount: "",
+	// 	TransectionType: file
+	// };
+	// const [paymentInfo , setPaymentInfo] = useState(initialValues);
 	
 	
-	// const PaymentInOutSchema = Yup.object().shape({
-	// 	PartyName : Yup.string().min(5).required("Can't Empty This Field"),
-	// 	receiptno : Yup.number().min(1).required("Can't Empty This Field "),
-	// 	PaymentType: Yup.string().min(1).required("Can't Empty This Field"),
-	// 	Date: Yup.string().min(1).required("Can't Empty This Field"),
-	// 	Description: Yup.string().min(5).required("Can't Empty This Field"),
-	// 	Amount: Yup.number().min(1).required("Can't Empty This Field")
-	// });
+	const PaymentInOutSchema = Yup.object().shape({
+		PartyName : Yup.string().min(5).required("Can't Empty This Field"),
+		receiptno : Yup.number().min(1).required("Can't Empty This Field "),
+		Description: Yup.string().min(5).required("Can't Empty This Field"),
+		Amount: Yup.number().min(1).required("Can't Empty This Field")
+	});
 
-	// const { values  , errors , touched ,  handleBlur, handleChange, handleSubmit } = 
-	// useFormik({
-	// 	initialValues : {
-	// 		PartyName: "",
-	// 		receiptno: "",
-	// 		Date: "",
-	// 		Description: "",
-	// 		Amount: "",
-	// 	},
-	// 	validationSchema: PaymentInOutSchema ,
-	// 	onSubmit: (values , action)=>{
-	// 		console.log(values);
-	// 		action.resetForm();			
-	// 	},
-	// });
+	const { values  , errors , touched ,  handleBlur, handleChange, handleSubmit } = 
+	useFormik({
+		initialValues : {
+			PartyName: "",
+			receiptno: "",
+			Description: "",
+			Amount: "",
+			TransectionType: file
+		},
+		validationSchema: PaymentInOutSchema ,
+		onSubmit: (values , action)=>{
+			AddData(values);
+			action.resetForm();			
+		},
+	});
 
-	const handleChange =(e)=>{
-		setPaymentInfo({...paymentInfo , [e.target.name]: e.target.value });
-	};
+	// const handleChange =(e)=>{
+	// 	setPaymentInfo({...paymentInfo , [e.target.name]: e.target.value });
+	// };
 
-	const handleSubmit =(e)=>{
-		e.preventDefault();
-		AddData(paymentInfo);
-		setPaymentInfo(initialValues);
-	};
+	// const handleSubmit =(e)=>{
+	// 	e.preventDefault();
+	// 	AddData(paymentInfo);
+	// 	setPaymentInfo(initialValues);
+	// };
 
 
 	return (
@@ -79,17 +77,17 @@ function PaymentInOut({file , AddData}) {
 												className="form-control"
 												name="PartyName"
 												required
-												value={paymentInfo.PartyName}
+												value={values.PartyName}
 												onChange={handleChange}
-												//onBlur={handleBlur}
+												onBlur={handleBlur}
 												placeholder="PartyName"
 												aria-describedby="inputGroup-sizing-default"
 												aria-label="Default"
 
 											/>
-											{/* {errors.PartyName && touched.PartyName ? (
+											{errors.PartyName && touched.PartyName ? (
 												<p className="form-error text-danger">{errors.PartyName}</p>
-											) : null} */}
+											) : null}
 
 										</div>
 										<div className="invoice_No  col-md-4 ms-auto">
@@ -99,13 +97,13 @@ function PaymentInOut({file , AddData}) {
 												name="receiptno"
 												required
 												className=" bottom_border ml-2 "
-												value={paymentInfo.receiptno}
+												value={values.receiptno}
 												onChange={handleChange}
-												//onBlur={handleBlur}
+												onBlur={handleBlur}
 											/>
-											{/* {errors.receiptno && touched.receiptno ? (
+											{errors.receiptno && touched.receiptno ? (
 												<p className="form-error text-danger">{errors.receiptno}</p>
-											) : null} */}
+											) : null}
 
 										</div>
 									</div>
@@ -116,15 +114,15 @@ function PaymentInOut({file , AddData}) {
 												className="form-control"
 												aria-label="With textarea"
 												required
-												value={paymentInfo.Description}
+												value={values.Description}
 												onChange={handleChange}
-												//onBlur={handleBlur}
+												onBlur={handleBlur}
 												placeholder="Description"
 												name="Description"
 											/>
-											{/* {errors.Description && touched.Description ? (
+											{errors.Description && touched.Description ? (
 												<p className="form-error text-danger">{errors.Description}</p>
-											) : null} */}
+											) : null}
 
 
 										</div>
@@ -147,15 +145,15 @@ function PaymentInOut({file , AddData}) {
 														aria-label="Default"
 														name="Amount"
 														required
-														value={paymentInfo.Amount}
+														value={values.Amount}
 														onChange={handleChange}
-														//onBlur={handleBlur}
+														onBlur={handleBlur}
 														placeholder="Amount"
 														aria-describedby="inputGroup-sizing-default"
 													/>
-													{/* {errors.Amount && touched.Amount ? (
+													{errors.Amount && touched.Amount ? (
 														<p className="form-error text-danger">{errors.Amount}</p>
-													) : null} */}
+													) : null}
 
 												</div>
 											</div>
