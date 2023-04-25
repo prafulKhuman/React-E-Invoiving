@@ -1,6 +1,6 @@
 import sign from "./Sign/signature.png";
 function Invoice({billInfo , file}) {
-
+	
 	const Info = billInfo?.map((info) => ({
 		invoiceNo: info[1].ID,
 		Date: info.timestamp,
@@ -137,17 +137,17 @@ function Invoice({billInfo , file}) {
 					<img src={sign} alt="Signature" style={{ width : "250px" , height : "100px"}}/>
 
 				</div>
-				<div className="col text-right pull-right invoice-total">
+				<div className="col text-right pull-right invoice-total mt-4">
 					<p>
 						<label className="font-weight-bold">Total Amount : </label>
 						<span> {Details?.TotalAmount} </span>
 					</p>
 					{file === "Sale-Return" || file === "Purchase-Return" ? "" :
 						<><p>
-							<label className="font-weight-bold"> Balance : </label>
+							<label className="font-weight-bold"> {file === "Purchase-Bill" ? "UnPaid" : "Balance" } : </label>
 							<span>{Details?.TotalAmount - advance}</span>
 						</p><p>
-							<label className="font-weight-bold">Received : </label>
+							<label className="font-weight-bold"> {file === "Purchase-Bill" ? "Paid" : "Received" }: </label>
 							<span> {advance} </span>
 						</p></>
 					}

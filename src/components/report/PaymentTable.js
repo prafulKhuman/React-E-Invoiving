@@ -3,7 +3,7 @@ function PaymentTable({filteredData , config}) {
 
 	const totalAmount = filteredData?.reduce(getTotal , 0);
 	function getTotal(total , num){
-		return total + num.Amount ;
+		return total + parseInt(num.Amount) ;
 	}
 	
 	return ( <>

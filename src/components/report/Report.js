@@ -73,7 +73,7 @@ function Report({file , data , config}) {
 										</select>
 									</div>
 								</div>
-								{file === "PAYMENT-IN" ? <PaymentTable filteredData={filteredData} config={config} /> :
+								{file === "PAYMENT-IN" || file === "PAYMENT-OUT"? <PaymentTable filteredData={filteredData} config={config} /> :
 									file === "PURCHASE-RETURN" || file === "SALE-RETURN" ? <ReturnTable filteredData={filteredData} config={config} />
 										: <SaleTable filteredData={filteredData} config={config} />
 								}

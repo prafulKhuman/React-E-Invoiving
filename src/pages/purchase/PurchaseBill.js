@@ -203,7 +203,7 @@ function PurchaseBill() {
 									<h5 className="card-title">Purchase Bill</h5>
 								</div>
 								<div className="item_right mr-4">
-									<Report file="SALE-INVOICE" data={Data} config={config}/>
+									<Report file="PURCHASE-BILL" data={Data} config={config}/>
 								</div>
 							</div>
 						</div>

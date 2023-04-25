@@ -76,10 +76,8 @@ function PurchasReturn()
 	item[1].ID.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
 	item.timestamp.toLowerCase().includes(searchTerm.toLowerCase()) ||
 	item[1].DueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
-	item[1].Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-	item[1].Advance.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-	(item[1].Total - item[1].Advance).toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-	(item[1].Total - item[1].Advance === 0 ? "Paid" : "Unpaid").toLowerCase().includes(searchTerm.toLowerCase())
+	item[1].Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) 
+
 
 	);
 	const handleSearch = (e) =>{
@@ -93,6 +91,7 @@ function PurchasReturn()
 			item.id === key
 		);
 		setPrintData(filteredPrintData);
+		
 	};
 	let Data = [];
 	let content;
@@ -110,10 +109,8 @@ function PurchasReturn()
 			Date:item.timestamp,
 			Due_Date:item[1].DueDate,
 			Total_Amount:item[1].Total,
-			Advance:item[1].Advance,
-			Balance:item[1].Total-parseInt(item[1].Advance),
-			Status:(item[1].Total-parseInt(item[1].Advance)===0 ? "paid":"Unpaid"),
-			Action: item.Id
+			
+			Action: item.id
 		}));
 
 	}
@@ -155,22 +152,12 @@ function PurchasReturn()
 
 		},
 		{
-			label: "Received",
-			render: (Data) => Data.Advance,
-			sortValue: (Data) => Data.Advance,
+			label: "Paid",
+			render: (Data) => Data.Total_Amount,
+			sortValue: (Data) => Data.Total_Amount,
 
 		},
-		{
-			label: "Balance",
-			render: (Data) => Data.Balance,
-			sortValue: (Data) => Data.Balance,
-		},
-		{
-			label: "Status",
-			render: (Data) => Data.Status,
-			sortValue: (Data) => Data.Status,
-
-		},
+		
 		{
 			label: "Action",
 			render: (Data) => Data.Action,
@@ -222,7 +209,7 @@ function PurchasReturn()
 							</div>
 						</div>
 						<div className="card-body panel_height">
-							{content || <SortableTable data={Data} config={config} keyfn={keyfn} file={"Sale-Order"} ID={handleDeleteRow}  billInfo={printData} printID={handlePeintInvoice}/> }
+							{content || <SortableTable data={Data} config={config} keyfn={keyfn} file={"Purchase-Return"} ID={handleDeleteRow}  billInfo={printData} printID={handlePeintInvoice}/> }
 						</div>
 					</div>
 

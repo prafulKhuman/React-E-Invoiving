@@ -1,11 +1,11 @@
 import sign from "./Sign/signature.png";
-function Receipt({ billInfo }) {
+function Receipt({ billInfo , file }) {
 	let receiptData =[] ;
 	if(billInfo){
 		receiptData = billInfo[0] ;
 	}
 	
-	
+
 
 	return ( <>
 		<div className="card-body" >
@@ -31,8 +31,8 @@ function Receipt({ billInfo }) {
 						<p className="lead marginbottom font-weight-bold mt-3">Party Name : <span> {receiptData?.PartyName} </span></p><br />
 						<p></p>
 
-						<p><label className="font-weight-bold">Phone : </label> <span></span></p>
-						<p> <label className="font-weight-bold">Email : </label> <span></span></p>
+						<p><label className="font-weight-bold">Description : </label> <span>{receiptData?.Description}</span></p>
+						
 					</div>
 
 
@@ -64,17 +64,10 @@ function Receipt({ billInfo }) {
 
 				</div>
 				<div className="col text-right pull-right invoice-total">
+					
 					<p>
-						<label className=" font-weight-bold">Total Amount : </label>
-						<span className="font-weight-bold"> </span>
-					</p>
-					<p>
-						<label className=" font-weight-bold"> Balance : </label>
-						<span className="font-weight-bold" ></span>
-					</p>
-					<p>
-						<label className=" font-weight-bold">Received : </label>
-						<span > {receiptData?.Amount} </span>
+						<label className="lead font-weight-bold"> {file === "PAYMENT-IN" ? "Received " : file === "PAYMENT-OUT" ? "Paid" : "" } : </label>
+						<span className="lead font-weight-bold"> {receiptData?.Amount} </span>
 					</p>
 				</div>
 			</div><div className="col-md-2">

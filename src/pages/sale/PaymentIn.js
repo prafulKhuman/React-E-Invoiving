@@ -34,7 +34,7 @@ function PaymentIn() {
 		const response = await AddPaymentInOut(key);
 		if(response.data === "ok"){
 			swal({
-				title: "Data Saved Success!",
+				title: "Payment In Success!",
 				icon: "success",
 				button: "Done!",
 			});
@@ -48,7 +48,7 @@ function PaymentIn() {
 			const updatedPayment = {
 				partyName: filter[0].partyName,
 				total: filter[0].total ,
-				Received:  filter[0].Received ,
+				Received:  filter[0].Received  + parseInt(key.Amount),
 				Pending: filter[0].Pending - parseInt(key.Amount)
 			};
 

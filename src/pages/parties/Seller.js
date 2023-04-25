@@ -10,18 +10,24 @@ import { useState } from "react";
 
 
 import { useAddPartiesMutation , useFetchPartiesQuery , useDeletePartiesMutation} from "../../redux";
-import {useFatchSaleInvoiceQuery , useFetchSaleReturnQuery , useFetchPaymentInOutQuery} from "../../redux";
+import {useFetchPurchaseBillQuery , useFetchPaymentInOutQuery , useFetchPurchaseReturnQuery , useFatchPurchasePaymentQuery} from "../../redux";
+import { useDeletePaymentInOutMutation , useDeletePurchaseBillMutation ,useDeletePurchaseReturnMutation } from "../../redux";
 let Combine ;
 function Seller() {
 	const [AddParties] = useAddPartiesMutation();
 	const [DeleteParties] = useDeletePartiesMutation();
-	const SaleInvoice = useFatchSaleInvoiceQuery();
-	const SaleReturn = useFetchSaleReturnQuery();
-	const PaymentIn = useFetchPaymentInOutQuery();
+	const PurchaseBill = useFetchPurchaseBillQuery();
+	const PurchaseReturn = useFetchPurchaseReturnQuery();
+	const PurchasePayment = useFatchPurchasePaymentQuery();
+	const PaymentOut = useFetchPaymentInOutQuery();
+	const [DeletePaymentInOut] = useDeletePaymentInOutMutation();
+	const [DeletePurchaseBill]= useDeletePurchaseBillMutation();
+	const [DeletePurchaseReturn]= useDeletePurchaseReturnMutation();
 	const {data , error, isFetching } = useFetchPartiesQuery();
 	const [openParty , setOpenParty] = useState();
 	const [search , setSearch] = useState("");
 	const [searchParties , setSearchParties] = useState("");
+	const [purchasePayment , setPurchasePayment] = useState();
 	
 	
 	const handleSearch =(e)=>{
@@ -121,51 +127,82 @@ function Seller() {
 	];
 	
 
+	const handleDeleteRow=async (ID)=>{
+		swal({
+			title: "Are you sure?",
+			text: "Once deleted, you will not be able to recover this Data!",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then(async (willDelete) => {
+			if (willDelete) {
+				
+				const Response1 = await DeletePaymentInOut(ID);
+				const Response2 = await DeletePurchaseBill(ID);
+				const Response3 = await DeletePurchaseReturn(ID);
+				if (Response1.data === "ok" || Response2.data === "ok" || Response3.data === "ok") {
+					swal("Data Deleted Success", {
+						icon: "success",
+					});
+				}
+			} else {
+				swal("Your Data is safe!");
+			}
+		});
+	};
 	
 	
 	const handleOpenParty = (key) => {
 		const filteredParty = Data?.filter((item) => item.PartiesName === key);
 		setOpenParty(filteredParty);	
 		
-		const Saleinvoice = SaleInvoice.data?.filter((item) => item[1].PartyName === key);
-		const Salereturn = SaleReturn.data?.filter((item) => item[1].PartyName === key);
-		const Paymentin = PaymentIn.data?.filter((item) => item.PartyName === key && item.TransectionType === "Payment-In");
+		const Purchasebill = PurchaseBill.data?.filter((item) => item[1].PartyName === key);
+		const Purchasereturn = PurchaseReturn.data?.filter((item) => item[1].PartyName === key);
+		const Purchasepayment = PurchasePayment.data?.filter((item) => item.partyName === key);
+		const Paymentout = PaymentOut.data?.filter((item) => item.PartyName === key && item.TransectionType === "Payment-Out");
 
-		const Obj1 = Saleinvoice.map((item)=>({
+		if(Purchasepayment){
+			setPurchasePayment(Purchasepayment[0]);
+		}
+
+		const Obj1 = Purchasebill.map((item)=>({
 			
 			Order_No: item[1].ID,
 			Date: item.timestamp,
 			Due_Date: item[1].DueDate,
 			Total_Amount: item[1].Total,
 			Advance: item[1].Advance ,
-			Type : "Sale-Invoice"
+			Action: item.id ,
+			Type : "Purchase-Bill"
 			
 		}));
 
 		
 		
-		const Obj2 = Salereturn?.map((item )=>({
+		const Obj2 = Purchasereturn?.map((item )=>({
 			
 			Order_No: item[1].ID,
 			Date: item.timestamp,
 			Due_Date: item[1].DueDate,
 			Total_Amount: item[1].Total,
 			Advance: item[1].Total ,
-			Type : "Sale-Return"
+			Action: item.id ,
+			Type : "Purchase-Return"
 			
 		}));
 
-		const Obj3 = Paymentin?.map((item)=>({
+		const Obj3 = Paymentout?.map((item)=>({
 			
 			Order_No: item.receiptno,
 			Date: item.timestamp,
 			Due_Date: item.timestamp,
 			Total_Amount: item.Amount,
 			Advance: item.Amount ,
+			Action: item.id ,
 			Type : item.TransectionType 
 			
 		}));
-		console.log(Obj2 , "obj3");
+		//console.log(Obj3 ,"records");
 		Combine = [...Obj1 , ...Obj2 , ...Obj3] ;
 		
 	};
@@ -181,7 +218,7 @@ function Seller() {
 		item.Type?.toString().toLowerCase().includes(search.toLowerCase()) 
 
 	);
-	// console.log(filteredRecord , "fil");
+	//console.log(filteredRecord , "fil");
 	const Record = filteredRecord?.map((item , index)=>({
 		No: index + 1,
 		Order_No: item.Order_No,
@@ -189,8 +226,10 @@ function Seller() {
 		Due_Date: item.Due_Date,
 		Total_Amount: item.Total_Amount,
 		Advance: item.Advance ,
+		Action: item.Action ,
 		Type: item.Type
 	}));
+	
 	// console.log(Record , "record");
 	const Finalconfig = [
 		{
@@ -233,6 +272,12 @@ function Seller() {
 			label: "Done",
 			render: (Record) => Record.Advance,
 			sortValue: (Record) => Record.Advance,
+
+		},
+		{
+			label: "",
+			render: (Record) => Record.Action,
+			sortValue: (Record) => Record.Action,
 
 		}
 		
@@ -338,16 +383,16 @@ function Seller() {
 									
 										<div className="col">
 											
-											<label className="btn btn-outline-success" style={{width : "100%"}}>Total <br/><span></span></label>
+											<label className="btn btn-outline-success" style={{width : "100%"}}>Total <br/><span>{purchasePayment?.total}</span></label>
 										</div>
 
 										<div className="col">
 
-											<label className="btn btn-outline-success" style={{width : "100%"}}>Advance <br/> <span></span></label>
+											<label className="btn btn-outline-success" style={{width : "100%"}}>Paid <br/> <span>{purchasePayment?.Paid}</span></label>
 										</div>
 
 										<div className="col">
-											<label className="btn btn-outline-success" style={{width : "100%"}}>Balance <br/> <span></span></label>
+											<label className="btn btn-outline-success" style={{width : "100%"}}>UnPaid <br/> <span>{purchasePayment?.Unpaid}</span></label>
 											
 										</div>
 
@@ -368,7 +413,7 @@ function Seller() {
 								</div>
 								<div className="card-body height">						
 									<div>
-										{Combine ? 	<SortableTable data={Record} config={Finalconfig} keyfn={keyfn} /> : <Skeleton count={5} height={40}/>}
+										{Combine ? 	<SortableTable data={Record} config={Finalconfig} keyfn={keyfn} file={"Saller"} ID={handleDeleteRow}/> : <Skeleton count={5} height={40}/>}
 									</div>
 									
 								</div>

@@ -11,6 +11,7 @@ import { useState } from "react";
 
 import { useAddPartiesMutation , useFetchPartiesQuery , useDeletePartiesMutation} from "../../redux";
 import {useFatchSaleInvoiceQuery , useFetchSaleReturnQuery , useFetchPaymentInOutQuery , useFatchSalePaymentQuery} from "../../redux";
+import { useDeleteSaleInvoiceMutation , useDeletePaymentInOutMutation , useDeleteSaleReturnMutation } from "../../redux";
 let Combine ;
 function Custommer() {
 	const [AddParties] = useAddPartiesMutation();
@@ -19,6 +20,9 @@ function Custommer() {
 	const SalePayment = useFatchSalePaymentQuery();
 	const SaleReturn = useFetchSaleReturnQuery();
 	const PaymentIn = useFetchPaymentInOutQuery();
+	const [DeleteSaleInvoice] = useDeleteSaleInvoiceMutation();
+	const [DeletePaymentInOut] = useDeletePaymentInOutMutation();
+	const [DeleteSaleReturn] = useDeleteSaleReturnMutation();
 	const {data , error, isFetching } = useFetchPartiesQuery();
 	const [openParty , setOpenParty] = useState();
 	const [search , setSearch] = useState("");
@@ -123,7 +127,30 @@ function Custommer() {
 	];
 	
 
-	
+	const handleDeleteRow=async (ID)=>{
+		
+		swal({
+			title: "Are you sure?",
+			text: "Once deleted, you will not be able to recover this Data!",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then(async (willDelete) => {
+			if (willDelete) {
+				
+				const Response1 = await DeleteSaleInvoice(ID);
+				const Response2 = await DeletePaymentInOut(ID);
+				const Response3 = await DeleteSaleReturn(ID);
+				if (Response1.data === "ok" || Response2.data === "ok" || Response3.data === "ok") {
+					swal("Data Deleted Success", {
+						icon: "success",
+					});
+				}
+			} else {
+				swal("Your Data is safe!");
+			}
+		});
+	};
 	
 	const handleOpenParty = (key) => {
 		const filteredParty = Data?.filter((item) => item.PartiesName === key);
@@ -145,6 +172,7 @@ function Custommer() {
 			Due_Date: item[1].DueDate,
 			Total_Amount: item[1].Total,
 			Advance: item[1].Advance ,
+			Action : item.id ,
 			Type : "Sale-Invoice"
 			
 		}));
@@ -158,6 +186,7 @@ function Custommer() {
 			Due_Date: item[1].DueDate,
 			Total_Amount: item[1].Total,
 			Advance: item[1].Total ,
+			Action : item.id ,
 			Type : "Sale-Return"
 			
 		}));
@@ -169,6 +198,7 @@ function Custommer() {
 			Due_Date: item.timestamp,
 			Total_Amount: item.Amount,
 			Advance: item.Amount ,
+			Action : item.id ,
 			Type : item.TransectionType 
 			
 		}));
@@ -197,6 +227,7 @@ function Custommer() {
 		Due_Date: item.Due_Date,
 		Total_Amount: item.Total_Amount,
 		Advance: item.Advance ,
+		Action: item.Action ,
 		Type: item.Type
 	}));
 	// console.log(Record , "record");
@@ -232,15 +263,21 @@ function Custommer() {
 
 		},
 		{
-			label: "Total Amount",
+			label: "Amount",
 			render: (Record) => Record.Total_Amount,
 			sortValue: (Record) => Record.Total_Amount,
 
 		},
 		{
-			label: "Done",
+			label: "Received",
 			render: (Record) => Record.Advance,
 			sortValue: (Record) => Record.Advance,
+
+		},
+		{
+			label: "",
+			render: (Record) => Record.Action,
+			sortValue: (Record) => Record.Action,
 
 		}
 		
@@ -376,7 +413,7 @@ function Custommer() {
 								</div>
 								<div className="card-body height">						
 									<div>
-										{Combine ? 	<SortableTable data={Record} config={Finalconfig} keyfn={keyfn} /> : <Skeleton count={5} height={40}/>}
+										{Combine ? 	<SortableTable data={Record} config={Finalconfig} keyfn={keyfn}  file={"Custommer"} ID={handleDeleteRow}/> : <Skeleton count={5} height={40}/>}
 									</div>
 									
 								</div>

@@ -1,94 +1,183 @@
 
 import PaymentInOut from "../../components/PaymentInOut/PaymentInOut";
-
+import { useUpdatePurchasePaymentMutation , useFatchPurchasePaymentQuery} from "../../redux";
+import {useAddPaymentInOutMutation , useFetchPaymentInOutQuery , useDeletePaymentInOutMutation} from "../../redux";
+import swal from "sweetalert";
 import SortableTable from "../../components/Table/SortableTable";
+import { useState  , useEffect} from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import Report from "../../components/report/Report";
 function PaymentOut()
 {
-	const data = [
+	const [AddPaymentInOut] = useAddPaymentInOutMutation();
+	const { data, error, isFetching } = useFetchPaymentInOutQuery();
+	const [DeletePaymentInOut] = useDeletePaymentInOutMutation();
+	const [searchTerm, setSearchTerm] = useState("");
+	const [printData , setPrintData] = useState([]);
+	const [rows , setrows] = useState([]);
 
-		{
-			Id: 1,
-			Date: "01/01/2023",
-			Ref_No: 1,
-			Party_Name: "Khuman Praful",
-			Category: "Sale Return",
-			Type: "Case",
-			Total: 200,
-			Received: 100,
-			Balance: 100,
-			Duedate:"10/02/2023",
-			Status: "Unpaid",
-		},
+	const [UpdatePurchasePayment] = useUpdatePurchasePaymentMutation();
+	const PurchasePayment = useFatchPurchasePaymentQuery();
 
-	];
+	useEffect(()=>{
+		if(PurchasePayment.data){
+			const data=PurchasePayment.data;
+			setrows(data);
+			
+		}
+	},[PurchasePayment]);
+
+	
+	const handleSubmit =async(key)=>{
+		
+		const response = await AddPaymentInOut(key);
+		if(response.data === "ok"){
+			swal({
+				title: "Payment Out Success!",
+				icon: "success",
+				button: "Done!",
+			});
+		}
+		const filter = rows?.filter((item) => item.partyName === key.PartyName);
+
+		if (filter) {
+			/* eslint-disable no-unused-vars */
+			const id = filter[0].id;
+			
+			const updatedPayment = {
+				partyName: filter[0].partyName,
+				total: filter[0].total ,
+				Paid:  filter[0].Paid  + parseInt(key.Amount),
+				Unpaid: filter[0].Unpaid - parseInt(key.Amount)
+			};
+
+			const ans = await UpdatePurchasePayment({id , updatedPayment});
+			
+			
+		} else {
+			//
+		}
+	};
+
+	const handleSearch = (e) => {
+		setSearchTerm(e.target.value);
+	};
+
+	const handleDeleteRow=async (ID)=>{
+		swal({
+			title: "Are you sure?",
+			text: "Once deleted, you will not be able to recover this Data!",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then(async (willDelete) => {
+			if (willDelete) {
+				const response = await DeletePaymentInOut(ID);
+				if (response.data === "ok") {
+					swal("Data Deleted Success", {
+						icon: "success",
+					});
+				}
+			} else {
+				swal("Your Data is safe!");
+			}
+		});
+		
+	};
+
+
+	const filteredData = data?.filter((item) =>
+
+		item.TransectionType === "Payment-Out" ?
+			item.Amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.Date.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.receiptno.toLowerCase().includes(searchTerm.toLowerCase())  ||
+			item.timestamp.toLowerCase().includes(searchTerm.toLowerCase())
+			: ""
+	);
+
+	const handlePeintInvoice =(key)=>{
+		
+		const filteredPrintData = data?.filter((item) =>
+			item.id === key 
+		);
+
+		setPrintData(filteredPrintData);
+		//console.log(printData , " print");
+	};
+
+	// eslint-disable-next-line no-unused-vars
+	let Data = [];
+	// eslint-disable-next-line no-unused-vars
+	let content;
+	if (isFetching) {
+	
+		content = <Skeleton count={5} height={40} /> ;
+	}
+	else if (error) {
+		console.log(error);
+	} else {
+		
+		Data = filteredData?.map((item, index) => ({
+			ID : index+1 ,
+			PartyName : item.PartyName ,
+			receiptno : item.receiptno ,
+			Description : item.Description ,
+			Date : item.timestamp ,
+			Amount : item.Amount ,
+			Action : item.id
+		}));
+	}
+	
 	const config = [
 		{
-			label: "#",
-			render: (data) => data.Id,
-			sortValue: (data) => data.Id,
+			label: "ID",
+			render: (Data) => Data.ID,
+			sortValue: (Data) => Data.ID,
 		},
 		{
-			label: "Date",
-			render: (data) => data.Date,
-			sortValue: (data) => data.Date,
-		},
-		{
-			label: "Ref No",
-			render: (data) => data.Ref_No,
-			sortValue: (data) => data.Ref_No,
-
+			label: "Receipt No",
+			render: (Data) => Data.receiptno,
+			sortValue: (Data) => Data.receiptno,
 		},
 		{
 			label: "Party Name",
-			render: (data) => data.Party_Name,
-			sortValue: (data) => data.Party_Name,
+			render: (Data) => Data.PartyName,
+			sortValue: (Data) => Data.PartyName,
 
 		},
 		{
-			label: "Category",
-			render: (data) => data.Category,
-			sortValue: (data) => data.Category,
+			label: "Description",
+			render: (Data) => Data.Description,
+			sortValue: (Data) => Data.Description,
 
 		},
 		{
-			label: "Type",
-			render: (data) => data.Type,
-			sortValue: (data) => data.Type,
+			label: "Date",
+			render: (Data) => Data.Date,
+			sortValue: (Data) => Data.Date,
 
 		},
 		{
-			label: "Total",
-			render: (data) => data.Total,
-			sortValue: (data) => data.Total,
+			label: "Amount",
+			render: (Data) => Data.Amount,
+			sortValue: (Data) => Data.Amount,
 
 		},
 		{
-			label: "Received",
-			render: (data) => data.Received,
-			sortValue: (data) => data.Received,
+			label: "Action",
+			render: (Data) => Data.Action,
+			sortValue: (Data) => Data.Action,
 
-		},
-		{
-			label: "Balance",
-			render: (data) => data.Balance,
-			sortValue: (data) => data.Balance,
-
-		},
-		{
-			label:"Due date",
-			render:(data)=> data.Duedate,
-			sortValue:(data) =>data.Duedate,
-		},
-		{
-			label: "Status",
-			render: (data) => data.Status,
-			sortValue:(data) => data.Status,
-
-		},
-
+		}
 	];
 
-	const keyfn = (item) => item.name;
+	const keyfn = (item) => item.ID;
+
+
 
 	return (
 		<>
@@ -98,9 +187,9 @@ function PaymentOut()
 				<div className="content-top-gap">
 					<div className="card ">
 						<div className="card-header">
-							<span className="card-text">PaymentOut</span>
+							<span className="card-text font-weight-bold">PaymentOut</span>
 							<div className="invoice_No mr-3 ">
-								<i className="bi bi-printer-fill fa-2x" />
+								<Report file="PAYMENT-OUT" data={Data} config={config}/>
 							</div>
 						</div>
 
@@ -108,18 +197,29 @@ function PaymentOut()
 
 					<div className="card mt-3">
 						<div className="card-header">
-
-							<span> TRANSACTIONS   </span>
-							<div className="invoice_No mr-3 ">
-								<PaymentInOut file="Payment-Out"/>
+							<span className=" font-weight-bold"> TRANSACTIONS   </span>
+							<div className="item_right row">
+								
+								<div className="col">
+									<div className="input-group">
+										<div className="input-group-prepend">
+											<span className="input-group-text"><i className=" bi bi-search"/></span>
+										</div>
+										<input type="text" onChange={handleSearch} className="form-control" placeholder="Search Transaction" aria-label="Username" aria-describedby="basic-addon1" />
+									</div>
+								</div>
+								<div className="col-5 ">
+									{" "}
+									<PaymentInOut file="Payment-Out" AddData={handleSubmit}/>
+									{" "}
+								</div>
+								
 							</div>
-
-						
-
 						</div>
 						<div className="card-body panel_height">
 
-							<SortableTable data={data} config={config} keyfn={keyfn} />
+							{content || <SortableTable data={Data} config={config} keyfn={keyfn}  ID={handleDeleteRow} file={"PAYMENT-OUT"} billInfo={printData} printID={handlePeintInvoice}  /> }
+
 
 						</div>
 					</div>

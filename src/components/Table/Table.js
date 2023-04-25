@@ -17,8 +17,7 @@ function Table({ data, config, keyfn, ...props }) {
 	});
 
 	
-
-	//console.log(billInfo[0][0]);
+	
 
 
 
@@ -50,7 +49,9 @@ function Table({ data, config, keyfn, ...props }) {
 							<i className="bi bi-printer-fill fa-lg" onClick={() => handlePrint(configitem.render(item))} />
 						</a>
 						{file === "Sale-Order" ? <i className="bi bi-check2-circle fa-lg ml-1" onClick={() => handleConvert(configitem.render(item))}></i> : ""}
-					</> : configitem.render(item)}
+					</> : file === "Saller"  && configitem.label ===""  ?  <i className="ml-2 bi bi-trash fa-lg mr-1" onClick={() => handledeleteItem(configitem.render(item))} /> :
+						file==="Custommer" && configitem.label ===""	? <i className="ml-2 bi bi-trash fa-lg mr-1" onClick={() => handledeleteItem(configitem.render(item))} /> :
+							configitem.render(item)}
 				
 			</td>
 		));
@@ -89,8 +90,8 @@ function Table({ data, config, keyfn, ...props }) {
 					<div className="modal-body " id="Invoice">
 						<div className="card mt-5 mr-5 ml-5 " ref={myRef}>
 
-							{file === "PAYMENT-IN" ? 
-								<Receipt billInfo={billInfo}/>
+							{file === "PAYMENT-IN"  || file === "PAYMENT-OUT"? 
+								<Receipt billInfo={billInfo} file={file}/>
 								:
 								<Invoice billInfo={billInfo } file={file}/>
 							}
