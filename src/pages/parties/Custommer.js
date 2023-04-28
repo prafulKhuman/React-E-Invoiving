@@ -4,11 +4,9 @@ import MainTable from "../../components/Table/MainTable";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import PartiesFrom from "../../containers/Parties/PartiesFrom";
-import swal from "sweetalert";
+import  swal from "sweetalert";
 import { useState } from "react";
-// import Report from "../../components/report/Report";
-
-
+import Report from "../../components/report/Report";
 import { useAddPartiesMutation , useFetchPartiesQuery , useDeletePartiesMutation} from "../../redux";
 import {useFatchSaleInvoiceQuery , useFetchSaleReturnQuery , useFetchPaymentInOutQuery , useFatchSalePaymentQuery} from "../../redux";
 import { useDeleteSaleInvoiceMutation , useDeletePaymentInOutMutation , useDeleteSaleReturnMutation } from "../../redux";
@@ -46,6 +44,8 @@ function Custommer() {
 				icon: "success",
 				button: "Done!",
 			});
+		}else{
+			swal("Oops...!", "Something went wrong!", "error");
 		}
 	};
 
@@ -91,7 +91,7 @@ function Custommer() {
 		// eslint-disable-next-line no-unused-vars
 		content = <Skeleton count={5} height={40}/>;
 	}else if(error){
-		console.log("error");
+		swal("Oops...!", "Something went wrong!", "error");
 	}else{ 
 		// eslint-disable-next-line no-unused-vars
 		Data = filteredData?.map((item , index) => ({
@@ -145,6 +145,8 @@ function Custommer() {
 					swal("Data Deleted Success", {
 						icon: "success",
 					});
+				}else{
+					swal("Oops...!", "Something went wrong!", "error");
 				}
 			} else {
 				swal("Your Data is safe!");
@@ -153,6 +155,7 @@ function Custommer() {
 	};
 	
 	const handleOpenParty = (key) => {
+		
 		const filteredParty = Data?.filter((item) => item.PartiesName === key);
 		setOpenParty(filteredParty);	
 		
@@ -343,7 +346,8 @@ function Custommer() {
 											<h5 className="card-title">Name - {PartyData?.PartiesName}</h5>
 										</div>
 										<div className="item_right mr-4">
-											{/* <Report/> */}
+											<Report file="CUSTOMMER" data={Record} config={Finalconfig} parties={openParty}/>
+
 										</div>
 									</div>
 									

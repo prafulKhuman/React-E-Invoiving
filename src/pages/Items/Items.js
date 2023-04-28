@@ -1,21 +1,27 @@
 
-// import SortableTable from "../../components/Table/SortableTable";
+import SortableTable from "../../components/Table/SortableTable";
 import ItemsFrom from "../../containers/Items/ItemsFrom";
-import {useAddItemMutation , useFetchItemQuery , useDeleteItemMutation} from "../../redux";
+import {useAddItemMutation , useFetchItemQuery , useDeleteItemMutation } from "../../redux";
+import {useFetchStockQuery , useDeleteStockMutation} from "../../redux";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import swal from "sweetalert";
 import MainTable from "../../components/Table/MainTable";
-import { useState } from "react";
+import { useState  } from "react";
+import Stock from "../../containers/Items/Stock";
 
 function Items(){
 	const [AddItem] = useAddItemMutation();
-	const {data , error, isFetching } = useFetchItemQuery();
 	const [DeleteItem] = useDeleteItemMutation();
+	const [DeleteStock] =  useDeleteStockMutation();
+	const Response = useFetchStockQuery();
+	const {data , error, isFetching } = useFetchItemQuery();
 	const [searchItem , setSearchItem] = useState("");
 	const [openItem , setOpenItem] = useState();
-	const [Choise , setChoise] = useState();
-
+	const [show , setShow] = useState(false);
+	
+	
+	
 	const handleSubmit =async(key)=>{
 		const response = await AddItem(key);
 		if(response.data === "ok"){
@@ -24,6 +30,8 @@ function Items(){
 				icon: "success",
 				button: "Done!",
 			});
+		}else{
+			swal("Oops...!", "Something went wrong!", "error");
 		}
 	};
 
@@ -67,7 +75,7 @@ function Items(){
 		// eslint-disable-next-line no-unused-vars
 		content = <Skeleton count={5} height={40}/>;
 	}else if(error){
-		console.log("error");
+		swal("Oops...!", "Something went wrong!", "error");
 	}else{ 
 		// eslint-disable-next-line no-unused-vars
 		Data= filteredData?.map((item , index) => ({
@@ -106,8 +114,10 @@ function Items(){
 	
 	const handleOpenItem = (key) => {
 		
-		const filteredParty = Data?.filter((item) => item.itemName === key);
-		setOpenItem(filteredParty);
+		const filteredItem = Data?.filter((item) => item.itemName === key);
+		setOpenItem(filteredItem);
+		setShow(true);
+		
 		
 		// if(SaleResponse.data){
 		// 	const PartiesObj = SaleResponse.data?.filter((item) => item[1].PartyName === key);
@@ -120,10 +130,35 @@ function Items(){
 		// }
 					
 	};
-	const handleChoise = (e) => {
-		setChoise(e.target.value);
+	
+
+	const handleDeleteRow =(key)=>{
+		
+		swal({
+			title: "Are you sure?",
+			text: "Once Converted, you will not be able to recover this Data!",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then(async (willDelete) => {
+
+			if (willDelete) {
+				const response = await DeleteStock(key);
+				if (response.data === "ok") {
+					swal({
+						title: "Stock Record Removed!",
+						icon: "success",
+						button: "Done!",
+					});
+					
+				}
+			} else {
+				swal("Your Data  is safe!");
+			}
+		});
 	};
-	console.log(Choise);
+	
+
 
 	
 	let Item;
@@ -132,7 +167,78 @@ function Items(){
 		Item = openItem[0];
 	}
 	
-	console.log(openItem);
+	let Records = [];
+	let Content = <Skeleton count={5} height={40} />;
+	if (Response?.error) {
+		swal("Oops...!", "Something went wrong!", "error");
+	} else {
+		//eslint-disable-next-line no-unused-vars
+		const filterRecord = Response?.data?.filter((item) => item.ItemID === Item?.Action);
+		
+		Records = filterRecord?.map((item, index) => ({
+			id: index + 1,
+			timestamp: item.timestamp,
+			ItemCode: item.ItemCode,
+			MRP: item.MRP,
+			PurchasePrice: item.PurchasePrice,
+			SalePrice: item.SalePrice,
+			Quantity: item.Quantity,
+			Type : item.TYPE ,
+			Action: item.id
+		}));
+
+
+	}
+	const StockConfig = [
+		{
+			label: "#",
+			render: (Records) => Records.id,
+			
+		},
+		{
+			label: "Date",
+			render: (Records) => Records.timestamp,
+			
+		},
+		{
+			label: "Item Code",
+			render: (Records) => Records.ItemCode,
+			
+		},
+		{
+			label: "MRP",
+			render: (Records) => Records.MRP,
+			
+		},
+		{
+			label: "Purchase Price",
+			render: (Records) => Records.PurchasePrice,
+			
+		},
+		{
+			label: "Sale Price",
+			render: (Records) => Records.SalePrice,
+			
+		},
+		{
+			label: "Type",
+			render: (Records) => Records.Type,
+			
+		},
+		{
+			label: "Quantity",
+			render: (Records) => Records.Quantity,
+			
+		},
+		{
+			label: "",
+			render: (Records) => Records.Action,
+			
+		},
+		
+
+	];
+	const keyfn = (item) => item.id;
 	return (
 		<>
 
@@ -154,9 +260,9 @@ function Items(){
 									<div className="input-group-prepend">
 										<span className="input-group-text ml-5"><i className=" bi bi-search" /></span>
 									</div>
-									<input type="text" className="form-control"  onChange={handleSearchIteam} placeholder="Search Items" aria-label="Username" aria-describedby="basic-addon1" />
+									<input type="search" className="form-control"  onChange={handleSearchIteam} placeholder="Search Items" aria-label="Username" aria-describedby="basic-addon1" />
 								</div>
-								<div className="card-body  p_height">
+								<div className="card-body Par_height">
 									
 									<div className="card-text"> 
 
@@ -170,17 +276,34 @@ function Items(){
 						</div>
 						<div className="col-sm-9">
 							<div className="card">
+								<div className="card-header">
+									<div className="row">
+										<div className="col">
+											<h5 className="card-title">Item Name : {Item?.itemCode}</h5>
+										</div>
+										<div className="col text-right">
+											<Stock ID={Item?.Action} data={Item}/>
+										</div>
+									</div>
+									
+
+									
+
+								</div>
 								<div className="card-body">
-									<h5 className="card-title">Item Name : {Item?.itemCode}</h5>
+									
+									
+									
+
 									<div className="card-text">		
 										<div className="row">
 											<div className="col">
 												<div className="mt-1">
-													<label>Sale Price : {Item?.salePrice}</label>
+													<label>Item Code: {Item?.itemCode}</label>
 												</div>
                                         
 												<div className="mt-2">
-													<label>Purchase Price : {Item?.PurchasePrice}</label>
+													<label>Sale Price : {Item?.salePrice}</label>
 												</div>
 											</div>
                                     
@@ -191,7 +314,7 @@ function Items(){
 												
 
 												<div className="mt-2">
-													<label>Purchase Price : 0</label>
+													<label>Purchase Price : {Item?.PurchasePrice}</label>
 												</div>
 											</div>
 										</div>
@@ -201,30 +324,14 @@ function Items(){
 								</div>
 							</div>
 							<div className="card mt-3 ">
-								<div className="card-header row">
+								<div className="card-header ">
 
 									<span className="col"> TRANSACTIONS   </span>
-
-
-
-									<div className="col text-right">
-										<div className="form-check form-check-inline">
-											<input className="form-check-input" type="radio" name="inlineRadioOptions" onChange={handleChoise} id="inlineRadio1" value="Sale"/>
-											<label className="form-check-label" htmlFor="inlineRadio1">Sale</label>
-										</div>
-										<div className="form-check form-check-inline">
-											<input className="form-check-input" type="radio" onChange={handleChoise} name="inlineRadioOptions" id="inlineRadio2" value="Purchase"/>
-											<label className="form-check-label" htmlFor="inlineRadio2">Purchase</label>
-										</div>
-										
-									</div>
-
-
 
 								</div>
 								<div className="card-body height">						
 									<div>
-										{/* <SortableTable data={itemdata} config={itemconfig} keyfn={keyfn} />  */}
+										{show? <SortableTable data={Records} config={StockConfig} keyfn={keyfn} ID={handleDeleteRow} file="Item"/> : Content }
 									</div>
 									
 								</div>

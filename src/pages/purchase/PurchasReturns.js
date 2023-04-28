@@ -38,6 +38,8 @@ function PurchasReturn()
 				icon: "success",
 				button: "Done!",
 			});
+		}else{
+			swal("Oops...!", "Something went wrong!", "error");
 		}
 
 		const filter = rows?.filter((item) => item.partyName === row[1]?.PartyName);
@@ -67,9 +69,7 @@ function PurchasReturn()
 
 			await UpdatePurchasePayment({id , updatedPayment});
 			
-		} else {
-			//
-		}  
+		} 
 	};
 	const filteredData =data?.filter((item)=>
 		item[1].PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -84,7 +84,25 @@ function PurchasReturn()
 		setSearchTerm(e.target.value);
 	};
 	const handleDeleteRow = async (ID) =>{
-		await DeletePurchaseReturn(ID);
+		swal({
+			title: "Are you sure?",
+			text: "Once deleted, you will not be able to recover this Data!",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then(async (willDelete) => {
+			if (willDelete) {
+				const response = await DeletePurchaseReturn(ID);
+				if (response.data === "ok") {
+					swal("Data Deleted Success", {
+						icon: "success",
+					});
+				}
+			} else {
+				swal("Your Data is safe!");
+			}
+		});
+		
 	};
 	const handlePeintInvoice = (key) =>{
 		const filteredPrintData = data?.filter((item)=>
@@ -99,7 +117,7 @@ function PurchasReturn()
 		content = <Skeleton count={5} height={40} />;
 	}
 	else if(error){
-		console.log("error");
+		swal("Oops...!", "Something went wrong!", "error");
 	}
 	else{
 		Data = filteredData?.map((item,index)=>({
@@ -203,7 +221,7 @@ function PurchasReturn()
 								<div className="col-5 ">
 									
 									{" "}
-									<Form file="Purchase-Return" onsubmit={handlesubmit}/>
+									<Form file="Purchase-Return" onsubmit={handlesubmit}  ID={data?.length}/>
 									{" "}
 								</div>
 							</div>

@@ -49,9 +49,7 @@ function Table({ data, config, keyfn, ...props }) {
 							<i className="bi bi-printer-fill fa-lg" onClick={() => handlePrint(configitem.render(item))} />
 						</a>
 						{file === "Sale-Order" ? <i className="bi bi-check2-circle fa-lg ml-1" onClick={() => handleConvert(configitem.render(item))}></i> : ""}
-					</> : file === "Saller"  && configitem.label ===""  ?  <i className="ml-2 bi bi-trash fa-lg mr-1" onClick={() => handledeleteItem(configitem.render(item))} /> :
-						file==="Custommer" && configitem.label ===""	? <i className="ml-2 bi bi-trash fa-lg mr-1" onClick={() => handledeleteItem(configitem.render(item))} /> :
-							configitem.render(item)}
+					</> : configitem.label ===""  ?  <i className="ml-2 bi bi-trash fa-lg mr-1" onClick={() => handledeleteItem(configitem.render(item))} /> : configitem.render(item)}
 				
 			</td>
 		));

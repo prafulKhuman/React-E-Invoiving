@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 // import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
-function PaymentInOut({file , AddData}) {
+function PaymentInOut({file , AddData , ID}) {
 	
 	// const initialValues = {
 	// 	PartyName: "",
@@ -95,6 +95,7 @@ function PaymentInOut({file , AddData}) {
 											<label>Receipt No . </label>
 											<input type="text"
 												name="receiptno"
+												placeholder={`ID - ${ID+1}`}
 												required
 												className=" bottom_border ml-2 "
 												value={values.receiptno}

@@ -81,12 +81,12 @@ body {
 }
 
 .height{
-  height: 290px;
+  height: 278px;
   overflow: auto;
 }
 
 .panel_height{
-  height: 350px;
+  height: 360px;
   overflow: auto;
 }
 
@@ -97,6 +97,23 @@ body {
 
 .p_height{
   height: 350px;
+ overflow: auto;
+ 
+}
+.Expheight{
+  height: 370px;
+ overflow: auto;
+ 
+}
+
+.Exp_height{
+  height: 290px;
+ overflow: auto;
+ 
+}
+
+.Par_height{
+  height: 370px;
  overflow: auto;
  
 }
@@ -13326,3 +13343,28 @@ img {
     line-height: 30px; } }
 
 /*# sourceMappingURL=style-starter.css.map */
+/* tooltip */
+
+.sidebar li .tooltip{
+  position: absolute;
+  top: -20px;
+  left: calc(100% + 15px);
+  z-index: 3;
+  background: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 400;
+  opacity: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: 0s;
+}
+.sidebar li:hover .tooltip{
+  opacity: 1;
+  pointer-events: auto;
+  transition: all 0.4s ease;
+  top: 50%;
+  transform: translateY(-50%);
+}

@@ -1,6 +1,7 @@
 import { useState , useEffect} from "react";
 import { Link } from "react-router-dom";
 
+
 function Sidebar() {
 	const [toggleBtn, setToggleBtn] = useState("toggle-btn");
 	const [saleOpen, setSaleOpen] = useState("menu-list");
@@ -45,6 +46,7 @@ function Sidebar() {
 							<span> Dashboard</span>
 
 						</Link>
+						<span className="tooltip">DashBord</span>
 					</li>
 
 					{/* <li><a href="#all"><i className="fa fa-table"></i> <span>Pricing tables</span></a></li>
@@ -58,6 +60,7 @@ function Sidebar() {
 								<i className="lnr lnr-chevron-right" />
 							</span>
 						</a>
+						<span className="tooltip">Parties</span>
 						<ul className="sub-menu-list">
 							<li>
 								<Link to="/Seller">Seller</Link>
@@ -95,6 +98,10 @@ function Sidebar() {
 								<Link to="/PaymentIn">Payment In</Link>
 								{" "}
 							</li>
+							<li>
+								<Link to="/SaleOrder">Sale Order</Link>
+								{" "}
+							</li>
 						
 							<li>
 								<Link to="/SaleReturn">Sale Return</Link>
@@ -111,6 +118,7 @@ function Sidebar() {
 								<i className="lnr lnr-chevron-right" />
 							</span>
 						</a>
+						<span className="tooltip">Purchase</span>
 						<ul className="sub-menu-list">
 
 							<li>

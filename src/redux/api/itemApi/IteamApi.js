@@ -1,5 +1,5 @@
 import { createApi , fakeBaseQuery} from "@reduxjs/toolkit/query/react";
-import { addDoc , collection , deleteDoc, doc, getDocs } from "firebase/firestore";
+import { addDoc , collection , deleteDoc, doc, getDocs , updateDoc} from "firebase/firestore";
 import { db } from "../../../firebase";
 
 
@@ -28,7 +28,21 @@ const IteamApi = createApi({
 						return{ error: errorMessage};
 					}
 				},
-				providesTags:["Parties"],
+				providesTags:["Item"],
+			}),
+			UpdateItem : builder.mutation({
+				async queryFn({ID , UpdateQTY}){
+					
+					try{
+						await updateDoc(doc(db , "Item" , ID) ,{
+							...UpdateQTY
+						});
+						return {data: "ok"} ;
+					} catch (err) {
+						return {error : err};
+					}
+				},
+				invalidatesTags:["Item"],
 			}),
 			DeleteItem: builder.mutation({
 				async queryFn(id){
@@ -68,7 +82,8 @@ const IteamApi = createApi({
 export const {
 	useAddItemMutation ,
 	useDeleteItemMutation ,
-	useFetchItemQuery 
+	useFetchItemQuery ,
+	useUpdateItemMutation
 } = IteamApi ;
 
 export {IteamApi};

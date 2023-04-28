@@ -6,7 +6,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Form from "../../components/forms/Form";
 import Report from "../../components/report/Report";
-import swal from "sweetalert";
+import swal  from "sweetalert";
 import { useState , useEffect } from "react";
 
 function PurchaseBill() {
@@ -26,7 +26,10 @@ function PurchaseBill() {
 		if(PurchasePayment.data){
 			const data=PurchasePayment.data;
 			setrows(data);
+			
 		}
+		
+		
 	},[PurchasePayment]);
 
 
@@ -38,7 +41,10 @@ function PurchaseBill() {
 				icon: "success",
 				button: "Done!",
 			});
+		}else{
+			swal("Oops...!", "Something went wrong!", "error");
 		}
+		
 		const filter = rows?.filter((item) => item.partyName === row[1].PartyName);
 		
 		if (filter[0]?.partyName === row[1].PartyName) {
@@ -82,7 +88,25 @@ function PurchaseBill() {
 		setSearchTerm(e.target.value);
 	};
 	const handleDeleteRow=async (ID)=>{
-		await DeletePurchaseBill(ID);
+		
+		swal({
+			title: "Are you sure?",
+			text: "Once deleted, you will not be able to recover this Data!",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then(async (willDelete) => {
+			if (willDelete) {
+				const response = await DeletePurchaseBill(ID);
+				if (response.data === "ok") {
+					swal("Data Deleted Success", {
+						icon: "success",
+					});
+				}
+			} else {
+				swal("Your Data is safe!");
+			}
+		});
 	};
 	
 	const handlePeintInvoice =(key)=>{
@@ -117,6 +141,7 @@ function PurchaseBill() {
 	}
 	
 	
+
 	const totalPaid = Data?.reduce(getPaid , 0);
 	function getPaid(total , num){
 		return total + parseInt(num.Advance) ;
@@ -244,7 +269,7 @@ function PurchaseBill() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<Form file="Purchase-Bill" onsubmit={handlesubmit}/>
+									<Form file="Purchase-Bill" onsubmit={handlesubmit}  ID={data?.length}/>
 									{" "}
 								</div>
 							</div>

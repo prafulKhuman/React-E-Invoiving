@@ -1,8 +1,38 @@
 import Charts from "../../utility/charts/Charts";
 import Linecharts from "../../utility/charts/Linecharts";
+import {useFatchSalePaymentQuery , useFetchExpenseQuery , useFatchPurchasePaymentQuery , useFatchSaleInvoiceQuery , useFetchPurchaseBillQuery} from "../../redux";
 
 
 function Dashboard() {
+	const SalePayment = useFatchSalePaymentQuery();
+	const PurchasePayment = useFatchPurchasePaymentQuery();
+	const SaleOrder = useFatchSaleInvoiceQuery();
+	const Expenses = useFetchExpenseQuery();
+	const PurchaseOrder = useFetchPurchaseBillQuery();
+
+
+
+	
+	const TotalPayIn = SalePayment.data?.reduce(getTotalSale, 0);
+	function getTotalSale(total, num) {
+		return total + num.total;
+	}
+
+
+	const TotalPayOut = PurchasePayment.data?.reduce(getTotalPayOut, 0);
+	function getTotalPayOut(total, num) {
+		return total + num.total;
+	}
+
+	const TotalExp = Expenses.data?.reduce(getTotalExp, 0);
+	function getTotalExp(total, num) {
+		return total + parseInt(num.ExpAmount);
+	}
+
+	const Sub = (TotalPayIn - TotalPayOut - TotalExp) ;
+
+	const SaleLength = SaleOrder.data?.length ;
+	const PurchaseLength = PurchaseOrder.data?.length ;
 	return (
 		<section>
 
@@ -23,14 +53,22 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-primary number">29.75 M</h3>
+											<h3 className="text-primary number">₹{TotalPayIn ? TotalPayIn :
+												<div className="spinner-border" role="status">
+													<span className="sr-only">Loading...</span>
+												</div>
+											}</h3>
 											<p className="stat-text ">Total Receive</p>
 										</div>
 									</div>
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-secondary number">51.25 K</h3>
+											<h3 className="text-secondary number">₹{TotalPayOut ? TotalPayOut :
+												<div className="spinner-border" role="status">
+													<span className="sr-only">Loading...</span>
+												</div>
+											}</h3>
 											<p className="stat-text">Total Pay</p>
 										</div>
 									</div>
@@ -41,14 +79,22 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-success number">166.89 M</h3>
+											<h3 className="text-success number">{SaleLength ? SaleLength :
+												<div className="spinner-border" role="status">
+													<span className="sr-only">Loading...</span>
+												</div>
+											}</h3>
 											<p className="stat-text">Sale Order</p>
 										</div>
 									</div>
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-danger number">1,250k</h3>
+											<h3 className="text-danger number">{PurchaseLength ? PurchaseLength :
+												<div className="spinner-border" role="status">
+													<span className="sr-only">Loading...</span>
+												</div>
+											}</h3>
 											<p className="stat-text">Purchased Order</p>
 										</div>
 									</div>
@@ -103,14 +149,22 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-primary number">29.75 M</h3>
+											<h3 className="text-primary number">₹{PurchaseLength ? (Sub > 0 ? Sub : 0 ) :
+												<div className="spinner-border" role="status">
+													<span className="sr-only">Loading...</span>
+												</div>
+											}</h3>
 											<p className="stat-text ">Profit</p>
 										</div>
 									</div>
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-secondary number">51.25 K</h3>
+											<h3 className="text-secondary number">₹{PurchaseLength ? (Sub < 0 ? Sub : 0 )  :
+												<div className="spinner-border" role="status">
+													<span className="sr-only">Loading...</span>
+												</div>
+											}</h3>
 											<p className="stat-text">Loss</p>
 										</div>
 									</div>
@@ -121,14 +175,18 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-success number">166.89 M</h3>
+											<h3 className="text-success number">₹ 166.89 M</h3>
 											<p className="stat-text">Cash In Hand</p>
 										</div>
 									</div>
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-danger number">1,250k</h3>
+											<h3 className="text-danger number">₹{TotalExp ? TotalExp :
+												<div className="spinner-border" role="status">
+													<span className="sr-only">Loading...</span>
+												</div>
+											}</h3>
 											<p className="stat-text">Expanses</p>
 										</div>
 									</div>

@@ -1,22 +1,24 @@
 
 import SortableTable from "../../components/Table/SortableTable";
 import Form from "../../components/forms/Form";
-import {useAddSaleInvoiceMutation ,   useFatchSaleInvoiceQuery , useDeleteSaleInvoiceMutation , } from "../../redux";
+import {useAddSaleInvoiceMutation ,   useFatchSaleInvoiceQuery , useDeleteSaleInvoiceMutation , useUpdateItemMutation} from "../../redux";
 import { useAddSalePaymentMutation , useFatchSalePaymentQuery  , useUpdateSalePaymentMutation} from "../../redux";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useState , useEffect } from "react";
 import Report from "../../components/report/Report";
 import swal from "sweetalert";
-
+import { useFetchItemQuery } from "../../redux";
 
 function SaleInvoice() {
 	const [AddSaleInvoice] = useAddSaleInvoiceMutation();
 	const [AddSalePayment] = useAddSalePaymentMutation();
 	const [UpdateSalePayment] = useUpdateSalePaymentMutation();
+	const [UpdateItem]  = useUpdateItemMutation();
 	const SalePayment = useFatchSalePaymentQuery();
 	const { data, error, isFetching } = useFatchSaleInvoiceQuery();
 	const [DeleteSaleInvoice] = useDeleteSaleInvoiceMutation();
+	const ItemResponse = useFetchItemQuery();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [printData , setPrintData] = useState([]);
 	const [rows , setrows] = useState([]);
@@ -52,33 +54,52 @@ function SaleInvoice() {
 				icon: "success",
 				button: "Done!",
 			});
-		}
+			const filter = rows?.filter((item) => item.partyName === row[1].PartyName);
 		
-		const filter = rows?.filter((item) => item.partyName === row[1].PartyName);
-		
-		if (filter[0]?.partyName === row[1].PartyName) {
-			const id = filter[0].id;
-			const updatedPayment = {
-				partyName: filter[0].partyName,
-				total: filter[0].total + row[1].Total,
-				Received: filter[0].Received + parseInt(row[1].Advance),
-				Pending: filter[0].Pending + (row[1].Total - parseInt(row[1].Advance))
-			};
+			if (filter[0]?.partyName === row[1].PartyName) {
+				const id = filter[0].id;
+				const updatedPayment = {
+					partyName: filter[0].partyName,
+					total: filter[0].total + row[1].Total,
+					Received: filter[0].Received + parseInt(row[1].Advance),
+					Pending: filter[0].Pending + (row[1].Total - parseInt(row[1].Advance))
+				};
 
-			await UpdateSalePayment({id , updatedPayment});
+				await UpdateSalePayment({id , updatedPayment});
 			
-		} else {
-			const newPayment = {
-				partyName: row[1].PartyName,
-				total: row[1].Total,
-				Received: parseInt(row[1].Advance),
-				Pending: row[1].Total - parseInt(row[1].Advance)
-			};
+			} else {
+				const newPayment = {
+					partyName: row[1].PartyName,
+					total: row[1].Total,
+					Received: parseInt(row[1].Advance),
+					Pending: row[1].Total - parseInt(row[1].Advance)
+				};
 
-			await AddSalePayment(newPayment);
+				await AddSalePayment(newPayment);
 			
+			}
+			row[0]?.map(async (record)=>{
+				const filterID = ItemResponse?.data?.filter((item)=> item.ItemName === record.Item );
+				const ID = filterID[0].id ;
+				const UpdateQTY = {
+					Quantity : filterID[0].Quantity - record.QTY 
+				};
+				await UpdateItem({ ID , UpdateQTY});
+			});
+
+		}else{
+			swal("Oops...!", "Something went wrong!", "error");
 		}
 
+		
+		
+		
+		
+		// console.log(row[0][0].Item , "row");
+		// console.log(row[0][0].QTY , "row");
+		// console.log(ID , "ID");
+		
+		
 		
 		
 	};
@@ -140,7 +161,7 @@ function SaleInvoice() {
 		content = <Skeleton count={5} height={40} /> ;
 	}
 	else if (error) {
-		console.log(error);
+		swal("Oops...!", "Something went wrong!", "error");
 	} else {
 		Data = filteredData?.map((item, index) => ({
 
@@ -236,8 +257,7 @@ function SaleInvoice() {
 
 	const keyfn = (item) => item.Id;
 
-
-
+	
 	return(
 		<>
 			{/* <Header />
@@ -292,7 +312,7 @@ function SaleInvoice() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<Form file="Sale-Invoice" onsubmit={handlesubmit} />
+									<Form file="Sale-Invoice" onsubmit={handlesubmit} ID={data?.length}/>
 									{" "}
 								</div>
 							</div>

@@ -38,6 +38,8 @@ function PaymentIn() {
 				icon: "success",
 				button: "Done!",
 			});
+		}else{
+			swal("Oops...!", "Something went wrong!", "error");
 		}
 		const filter = rows?.filter((item) => item.partyName === key.PartyName);
 
@@ -52,12 +54,10 @@ function PaymentIn() {
 				Pending: filter[0].Pending - parseInt(key.Amount)
 			};
 
-			const ans = await UpdateSalePayment({id , updatedPayment});
-			console.log(ans ,"ans");
+			await UpdateSalePayment({id , updatedPayment});
 			
-		} else {
-			//
-		}
+			
+		} 
 	};
 
 	const handleSearch = (e) => {
@@ -118,7 +118,7 @@ function PaymentIn() {
 		content = <Skeleton count={5} height={40} /> ;
 	}
 	else if (error) {
-		console.log(error);
+		swal("Oops...!", "Something went wrong!", "error");
 	} else {
 		
 		Data = filteredData?.map((item, index) => ({
@@ -210,7 +210,7 @@ function PaymentIn() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<PaymentInOut file="Payment-In" AddData={handleSubmit}/>
+									<PaymentInOut file="Payment-In" AddData={handleSubmit} ID={filteredData?.length}/>
 									{" "}
 								</div>
 								

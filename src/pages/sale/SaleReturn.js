@@ -1,8 +1,8 @@
 
 import SortableTable from "../../components/Table/SortableTable";
 // import SaleReturnForm from "../../containers/sale/SaleReturnForm";
-import { useUpdateSalePaymentMutation ,  useFatchSalePaymentQuery  } from "../../redux";
-import { useAddSaleReturnMutation , useFetchSaleReturnQuery , useDeleteSaleReturnMutation} from "../../redux";
+import { useUpdateSalePaymentMutation ,  useFatchSalePaymentQuery , useFetchItemQuery  } from "../../redux";
+import { useAddSaleReturnMutation , useFetchSaleReturnQuery , useUpdateItemMutation , useDeleteSaleReturnMutation} from "../../redux";
 import Form from "../../components/forms/Form";
 import swal from "sweetalert";
 import Skeleton from "react-loading-skeleton";
@@ -16,6 +16,8 @@ function SaleReturn() {
 	const [AddSaleReturn] = useAddSaleReturnMutation();
 	const {data , error, isFetching } = useFetchSaleReturnQuery();
 	const [DeleteSaleReturn] = useDeleteSaleReturnMutation();
+	const ItemResponse = useFetchItemQuery();
+	const [UpdateItem]  = useUpdateItemMutation();
 	const [searchTerm , setSearchTerm] = useState("");
 	const [printData , setPrintData] = useState([]);
 	const [rows , setrows] = useState([]);
@@ -36,37 +38,55 @@ function SaleReturn() {
 				icon: "success",
 				button: "Done!",
 			});
-		}
-		const filter = rows?.filter((item) => item.partyName === row[1].PartyName);
 
-		if (filter) {
+			const filter = rows?.filter((item) => item.partyName === row[1].PartyName);
+
+			if (filter) {
 			/* eslint-disable no-unused-vars */
-			const id = filter[0].id;
-			let Received ;
-			let Pending ;
+				const id = filter[0].id;
+				let Received ;
+				let Pending ;
 			
-			if(filter[0].Pending >= row[1].Total){
-				Pending = filter[0].Pending - row[1].Total ;
-				Received = filter[0].Received ;
-			} else{
-				let Sub = row[1].Total - filter[0].Pending ;
-				Pending = 0 ;
-				Received = filter[0].Received - Sub ;
-			}
+				if(filter[0].Pending >= row[1].Total){
+					Pending = filter[0].Pending - row[1].Total ;
+					Received = filter[0].Received ;
+				} else{
+					let Sub = row[1].Total - filter[0].Pending ;
+					Pending = 0 ;
+					Received = filter[0].Received - Sub ;
+				}
 			
 			
-			const updatedPayment = {
-				partyName: filter[0].partyName,
-				total: filter[0].total - row[1].Total,
-				Received: Received ,
-				Pending: Pending
-			};
+				const updatedPayment = {
+					partyName: filter[0].partyName,
+					total: filter[0].total - row[1].Total,
+					Received: Received ,
+					Pending: Pending
+				};
 
-			await UpdateSalePayment({id , updatedPayment});
+				await UpdateSalePayment({id , updatedPayment});
+
+
+				row[0]?.map(async (record)=>{
+					const filterID = ItemResponse?.data?.filter((item)=> item.ItemName === record.Item );
+					const ID = filterID[0].id ;
+					const UpdateQTY = {
+						Quantity : filterID[0].Quantity + record.QTY 
+					};
+					await UpdateItem({ ID , UpdateQTY});
+				});
 			
-		} else {
-			//
+			}
+
+			
+
+
+
+		}else{
+			swal("Oops...!", "Something went wrong!", "error");
 		}
+
+		
 	};
 	const filteredData = data?.filter((item) =>
 		item[1].PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -119,7 +139,7 @@ function SaleReturn() {
 		// eslint-disable-next-line no-unused-vars
 		content = <Skeleton count={5} height={40}/>;
 	}else if(error){
-		console.log("error");
+		swal("Oops...!", "Something went wrong!", "error");
 	}else{ 
 		Data = filteredData?.map((item , index) => ({
 			Id: index+1,
@@ -215,7 +235,7 @@ function SaleReturn() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<Form file="Sale-Return"  onsubmit={handlesubmit}/>
+									<Form file="Sale-Return"  onsubmit={handlesubmit}  ID={data?.length}/>
 									{" "}
 								</div>
 							</div>

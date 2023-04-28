@@ -6,7 +6,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import PartiesFrom from "../../containers/Parties/PartiesFrom";
 import swal from "sweetalert";
 import { useState } from "react";
-// import Report from "../../components/report/Report";
+import Report from "../../components/report/Report";
 
 
 import { useAddPartiesMutation , useFetchPartiesQuery , useDeletePartiesMutation} from "../../redux";
@@ -46,6 +46,8 @@ function Seller() {
 				icon: "success",
 				button: "Done!",
 			});
+		}else{
+			swal("Oops...!", "Something went wrong!", "error");
 		}
 	};
 
@@ -67,6 +69,8 @@ function Seller() {
 						button: "Done!",
 					});
 					
+				}else{
+					swal("Oops...!", "Something went wrong!", "error");
 				}
 			} else {
 				swal("Your Data  is safe!");
@@ -91,7 +95,7 @@ function Seller() {
 		// eslint-disable-next-line no-unused-vars
 		content = <Skeleton count={5} height={40}/>;
 	}else if(error){
-		console.log("error");
+		swal("Oops...!", "Something went wrong!", "error");
 	}else{ 
 		// eslint-disable-next-line no-unused-vars
 		Data = filteredData?.map((item , index) => ({
@@ -144,6 +148,8 @@ function Seller() {
 					swal("Data Deleted Success", {
 						icon: "success",
 					});
+				}else{
+					swal("Oops...!", "Something went wrong!", "error");
 				}
 			} else {
 				swal("Your Data is safe!");
@@ -343,7 +349,8 @@ function Seller() {
 											<h5 className="card-title">Name - {PartyData?.PartiesName}</h5>
 										</div>
 										<div className="item_right mr-4">
-											{/* <Report/> */}
+	
+											<Report file="SALLER" data={Record} config={Finalconfig} parties={openParty}/>
 										</div>
 									</div>
 									

@@ -38,6 +38,8 @@ function PaymentOut()
 				icon: "success",
 				button: "Done!",
 			});
+		}else{
+			swal("Oops...!", "Something went wrong!", "error");
 		}
 		const filter = rows?.filter((item) => item.partyName === key.PartyName);
 
@@ -56,7 +58,7 @@ function PaymentOut()
 			
 			
 		} else {
-			//
+			swal("Oops...!", "Something went wrong!", "error");
 		}
 	};
 
@@ -118,7 +120,7 @@ function PaymentOut()
 		content = <Skeleton count={5} height={40} /> ;
 	}
 	else if (error) {
-		console.log(error);
+		swal("Oops...!", "Something went wrong!", "error");
 	} else {
 		
 		Data = filteredData?.map((item, index) => ({
@@ -210,7 +212,7 @@ function PaymentOut()
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<PaymentInOut file="Payment-Out" AddData={handleSubmit}/>
+									<PaymentInOut file="Payment-Out" AddData={handleSubmit} ID={filteredData?.length}/>
 									{" "}
 								</div>
 								

@@ -3,7 +3,7 @@ import * as Yup from "yup";
 
 export const SaleOrderSchema = Yup.object({
 	No: Yup.number().min(1).required("Enter Product Number"),
-	Item: Yup.string().min(2).required("Please Enter Item Name"),
+	Item: Yup.string().required("Please Enter Item Name"),
 	ItemCode: Yup.string().min(2).required("Please Enter Item Code"),
 	MRP: Yup.number().min(1).required("Please Enter Amount "),
 	QTY: Yup.number().min(1).required("Please Enter QTY"),
