@@ -35,8 +35,9 @@
         "no-unused-vars": "off" ,
         "react/prop-types": ["off"],
         "indent": [
-            "error",
-            "tab"
+            // "error",
+            // "tab"
+            "off"
         ],
         "linebreak-style": 0,
         "quotes": [

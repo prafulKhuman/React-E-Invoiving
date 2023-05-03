@@ -2,8 +2,10 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import {useAddExpensesMutation} from "../../redux";
 import swal from "sweetalert";
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
 function ExpensesFrom({Cat}) {
+	const {user} = useUserAuth();
 	const [AddExpenses] = useAddExpensesMutation();
 	const CategorySchema = Yup.object().shape({
 		ExpNo : Yup.string().min(1).required("Can't Empty ExpNo") ,
@@ -22,7 +24,11 @@ function ExpensesFrom({Cat}) {
 		},
 		validationSchema: CategorySchema ,
 		onSubmit: async(values , action)=>{
-			const response = await AddExpenses(values);
+			const Exp = {
+				...values ,
+				UID : user.uid
+			};
+			const response = await AddExpenses(Exp);
 			if(response.data === "ok"){
 				swal({
 					title: "Data Saved Success!",

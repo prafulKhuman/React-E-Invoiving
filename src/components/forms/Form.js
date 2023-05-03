@@ -4,6 +4,8 @@ import { useState } from "react";
 import swal from "sweetalert";
 import { useFetchItemQuery } from "../../redux";
 import { useFetchPartiesQuery } from "../../redux";
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
+
 
 let initialValues = {
 	No: "",
@@ -14,7 +16,6 @@ let initialValues = {
 	Unit: "",
 	Amount: "",
 };
-
 
 let options;
 let Row;
@@ -31,16 +32,18 @@ function Form({ file, onsubmit, ID }) {
 		Total: "",
 		Advance: "",
 	};
+	const { user } = useUserAuth();
 	const response = useFetchPartiesQuery();
 	const ItemResponse = useFetchItemQuery();
 	const fileName = file;
 	const [data, setData] = useState([]);
 	const [filds, setFilds] = useState(intial);
 	const [Select, setSelect] = useState("");
-
+	
 
 	if (ItemResponse.data) {
-		const Item = ItemResponse.data?.map((key) => ({
+		const filterUID = ItemResponse.data?.filter((item)=> item.UID === user.uid);
+		const Item = filterUID?.map((key) => ({
 			ItemName: key.ItemName,
 			ItemCode: key.ItemCode,
 			MRP: key.SalePrice ,
@@ -51,7 +54,8 @@ function Form({ file, onsubmit, ID }) {
 	}
 
 	if (response.data) {
-		const parties = response.data?.map((user) => {
+		const filterUID = response.data?.filter((item)=> item.UID === user.uid);
+		const parties = filterUID?.map((user) => {
 			return user.PartyName;
 		});
 		// console.log(parties,"party");
@@ -73,7 +77,7 @@ function Form({ file, onsubmit, ID }) {
 
 	const handleSubmit2 = (e) => {
 		e.preventDefault();
-		const main = [data , filds ];
+		const main = [data , filds ,{ ["UID"] : user.uid }];
 
 		onsubmit(main);
 		setData([]);
@@ -156,6 +160,8 @@ function Form({ file, onsubmit, ID }) {
 		SelectItem = filterItem[0];
 		ID = SelectItem?.id ;
 	}
+
+
 	
 	return (
 
@@ -192,9 +198,8 @@ function Form({ file, onsubmit, ID }) {
 													aria-describedby="inputGroup-sizing-default"
 													list="browsers"
 													placeholder="Party Name" />
-
-
-
+												
+												
 											</div>
 										</div>
 										<div className="col-sm-3">
@@ -445,6 +450,7 @@ function Form({ file, onsubmit, ID }) {
 														return <option key={index + 1} >{item.ItemName}</option>;
 													})}
 												</select>
+												
 											</div>
 										</div>
 									</div>

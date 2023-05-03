@@ -40,7 +40,7 @@ function Sidebar() {
 
 				<ul className="nav nav-pills nav-stacked custom-nav">
 					<li className="active">
-						<Link to="/">
+						<Link to="/Home">
 
 							<i className="fa fa-tachometer" />
 							<span> Dashboard</span>

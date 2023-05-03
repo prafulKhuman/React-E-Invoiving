@@ -3,7 +3,9 @@ import * as Yup from "yup";
 import {useUpdateItemMutation , useAddStockMutation } from "../../redux";
 import { useFormik } from "formik";
 import swal from "sweetalert";
+
 function Stock({ID , data}) {
+	
 	const [switchBox , setSwitchBox] = useState(true) ;
 	const [type , setType] = useState("ADD");
 	const [UpdateItem] = useUpdateItemMutation();
@@ -44,25 +46,27 @@ function Stock({ID , data}) {
 		},
 		validationSchema: ItemSchema ,
 		onSubmit: async (values , action)=>{
-			const response = await AddStock({...values , ["ItemID"] : ID , ["ItemCode"] : data?.itemCode , ["TYPE"] : type }  );
+			const response = await AddStock({...values , ["ItemID"] : ID , ["ItemCode"] : data?.itemCode , ["TYPE"] : type  }  );
 			if(switchBox){
 				const Stock = {
 					MRP : values.MRP ,
 					SalePrice : values.SalePrice ,
 					PurchasePrice : values.PurchasePrice ,
-					Quantity : data.quantity + values.Quantity ,
+					Quantity : parseInt(data.quantity) + parseInt(values.Quantity) ,
 					
 				};
-				await UpdateItem({ID , Stock});
+				const res = await UpdateItem({ID , Stock});
+				
 			}else{
 				const Stock = {
 					MRP : values.MRP ,
 					SalePrice : values.SalePrice ,
 					PurchasePrice : values.PurchasePrice ,
-					Quantity : data.quantity - values.Quantity ,
+					Quantity : parseInt(data.quantity) - parseInt(values.Quantity) ,
 					
 				};
-				await UpdateItem({ID , Stock});
+				const res = await UpdateItem({ID , Stock});
+				
 			}
 			//await UpdateItem({ID , values});
 			action.resetForm();

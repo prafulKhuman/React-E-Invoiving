@@ -9,8 +9,10 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useState ,useEffect } from "react";
 import Report from "../../components/report/Report";
+import {useUserAuth} from "../../context/Auth/UserAuthContext";
+
 function SaleReturn() {
-	
+	const {user} = useUserAuth();
 	const [UpdateSalePayment] = useUpdateSalePaymentMutation();
 	const SalePayment = useFatchSalePaymentQuery();
 	const [AddSaleReturn] = useAddSaleReturnMutation();
@@ -24,8 +26,8 @@ function SaleReturn() {
 
 	useEffect(()=>{
 		if(SalePayment.data){
-			const data=SalePayment.data;
-			setrows(data);
+			const filterUID = SalePayment.data?.filter((item)=> item.UID === user.uid);
+			setrows(filterUID);
 			
 		}
 	},[SalePayment]);
@@ -39,7 +41,7 @@ function SaleReturn() {
 				button: "Done!",
 			});
 
-			const filter = rows?.filter((item) => item.partyName === row[1].PartyName);
+			const filter = rows?.filter((item) => item.partyName === row[1].PartyName && item.UID === row[2].UID && item.PhoneNo === row[1].PhoneNo );
 
 			if (filter) {
 			/* eslint-disable no-unused-vars */
@@ -68,12 +70,12 @@ function SaleReturn() {
 
 
 				row[0]?.map(async (record)=>{
-					const filterID = ItemResponse?.data?.filter((item)=> item.ItemName === record.Item );
+					const filterID = ItemResponse?.data?.filter((item)=> item.ItemName === record.Item && item.ItemCode === record.ItemCode && item.UID === user.uid  );
 					const ID = filterID[0].id ;
-					const UpdateQTY = {
+					const Stock = {
 						Quantity : filterID[0].Quantity + record.QTY 
 					};
-					await UpdateItem({ ID , UpdateQTY});
+					await UpdateItem({ ID , Stock});
 				});
 			
 			}
@@ -89,15 +91,16 @@ function SaleReturn() {
 		
 	};
 	const filteredData = data?.filter((item) =>
-		item[1].PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].ID.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item.timestamp.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].DueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) 
-		
+		item[2].UID === user.uid ?
+			item[1].PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1].ID.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.timestamp.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1].DueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1].Total.toString().toLowerCase().includes(searchTerm.toLowerCase())
+			: ""
 
 	);
-	
+
 	const handleSearch =(e)=>{
 		setSearchTerm(e.target.value);
 	};
@@ -235,7 +238,7 @@ function SaleReturn() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<Form file="Sale-Return"  onsubmit={handlesubmit}  ID={data?.length}/>
+									<Form file="Sale-Return"  onsubmit={handlesubmit}  ID={filteredData?.length}/>
 									{" "}
 								</div>
 							</div>

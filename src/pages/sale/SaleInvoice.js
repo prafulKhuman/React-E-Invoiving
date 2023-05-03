@@ -9,8 +9,11 @@ import { useState , useEffect } from "react";
 import Report from "../../components/report/Report";
 import swal from "sweetalert";
 import { useFetchItemQuery } from "../../redux";
+import {useUserAuth} from "../../context/Auth/UserAuthContext";
 
 function SaleInvoice() {
+	const { user } = useUserAuth();
+	
 	const [AddSaleInvoice] = useAddSaleInvoiceMutation();
 	const [AddSalePayment] = useAddSalePaymentMutation();
 	const [UpdateSalePayment] = useUpdateSalePaymentMutation();
@@ -25,8 +28,8 @@ function SaleInvoice() {
 
 	useEffect(()=>{
 		if(SalePayment.data){
-			const data=SalePayment.data;
-			setrows(data);
+			const filterUID = SalePayment.data?.filter((item)=> item.UID === user.uid);
+			setrows(filterUID);
 		}
 	},[SalePayment]);
 	
@@ -54,7 +57,11 @@ function SaleInvoice() {
 				icon: "success",
 				button: "Done!",
 			});
-			const filter = rows?.filter((item) => item.partyName === row[1].PartyName);
+			const filter = rows?.filter((item) =>{
+				item.partyName === row[1].PartyName &&
+				item.UID === row[2].UID && 
+				item.PhoneNo === row[1].PhoneNo ;
+			});
 		
 			if (filter[0]?.partyName === row[1].PartyName) {
 				const id = filter[0].id;
@@ -72,19 +79,22 @@ function SaleInvoice() {
 					partyName: row[1].PartyName,
 					total: row[1].Total,
 					Received: parseInt(row[1].Advance),
-					Pending: row[1].Total - parseInt(row[1].Advance)
+					Pending: row[1].Total - parseInt(row[1].Advance),
+					UID : row[2].UID ,
+					PhoneNo : row[1].PhoneNo
+
 				};
 
 				await AddSalePayment(newPayment);
 			
 			}
 			row[0]?.map(async (record)=>{
-				const filterID = ItemResponse?.data?.filter((item)=> item.ItemName === record.Item );
+				const filterID = ItemResponse?.data?.filter((item)=> item.ItemName === record.Item && item.ItemCode === record.ItemCode && item.UID === user.uid );
 				const ID = filterID[0].id ;
-				const UpdateQTY = {
+				const Stock = {
 					Quantity : filterID[0].Quantity - record.QTY 
 				};
-				await UpdateItem({ ID , UpdateQTY});
+				await UpdateItem({ ID , Stock});
 			});
 
 		}else{
@@ -133,15 +143,16 @@ function SaleInvoice() {
 	};
 
 	const filteredData = data?.filter((item) =>
-		item[1].PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].ID.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item.timestamp.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].DueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].Advance.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		(item[1].Total - item[1].Advance).toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		(item[1].Total - item[1].Advance === 0 ? "Paid" : "Unpaid").toLowerCase().includes(searchTerm.toLowerCase())
-
+		item[2].UID === user.uid ?
+			item[1].PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1].ID.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.timestamp.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1].DueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1].Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1].Advance.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			(item[1].Total - item[1].Advance).toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			(item[1].Total - item[1].Advance === 0 ? "Paid" : "Unpaid").toLowerCase().includes(searchTerm.toLowerCase())
+			: ""
 	);
 
 	//console.log(filteredData , "sale") ;
@@ -312,7 +323,7 @@ function SaleInvoice() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<Form file="Sale-Invoice" onsubmit={handlesubmit} ID={data?.length}/>
+									<Form file="Sale-Invoice" onsubmit={handlesubmit} ID={filteredData?.length}/>
 									{" "}
 								</div>
 							</div>

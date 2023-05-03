@@ -8,8 +8,9 @@ import PaymentInOut from "../../components/PaymentInOut/PaymentInOut";
 import { useUpdateSalePaymentMutation ,  useFatchSalePaymentQuery  } from "../../redux";
 import {useAddPaymentInOutMutation , useFetchPaymentInOutQuery , useDeletePaymentInOutMutation} from "../../redux";
 import swal from "sweetalert";
-
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
 function PaymentIn() {
+	const {user} = useUserAuth();
 	const [AddPaymentInOut] = useAddPaymentInOutMutation();
 	const { data, error, isFetching } = useFetchPaymentInOutQuery();
 	const [DeletePaymentInOut] = useDeletePaymentInOutMutation();
@@ -41,7 +42,7 @@ function PaymentIn() {
 		}else{
 			swal("Oops...!", "Something went wrong!", "error");
 		}
-		const filter = rows?.filter((item) => item.partyName === key.PartyName);
+		const filter = rows?.filter((item) => item.partyName === key.PartyName && item.PhoneNo === key.MobailNo && item.UID === user.uid);
 
 		if (filter) {
 			/* eslint-disable no-unused-vars */
@@ -54,10 +55,15 @@ function PaymentIn() {
 				Pending: filter[0].Pending - parseInt(key.Amount)
 			};
 
-			await UpdateSalePayment({id , updatedPayment});
+			const res = await UpdateSalePayment({id , updatedPayment});
+
+			if(res.error){
+				swal("Oops...!", "Payment Data Not Found!", "error");
+			}
 			
-			
-		} 
+		} else{
+			swal("Oops...!", " Party Data Not Found!", "error");
+		}
 	};
 
 	const handleSearch = (e) => {
@@ -89,7 +95,7 @@ function PaymentIn() {
 
 	const filteredData = data?.filter((item) =>
 
-		item.TransectionType === "Payment-In" ?
+		item.TransectionType === "Payment-In" && item.UID === user.uid ?
 			item.Amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			item.Date.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			item.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||

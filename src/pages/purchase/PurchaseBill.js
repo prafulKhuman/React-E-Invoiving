@@ -8,8 +8,10 @@ import Form from "../../components/forms/Form";
 import Report from "../../components/report/Report";
 import swal  from "sweetalert";
 import { useState , useEffect } from "react";
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
 function PurchaseBill() {
+	const {user} = useUserAuth();
 	const [ AddPurchaseBill ] = useAddPurchaseBillMutation();
 	const {data , error, isFetching } = useFetchPurchaseBillQuery();
 	const [DeletePurchaseBill] = useDeletePurchaseBillMutation();
@@ -24,8 +26,9 @@ function PurchaseBill() {
 
 	useEffect(()=>{
 		if(PurchasePayment.data){
-			const data=PurchasePayment.data;
-			setrows(data);
+			const filterUID = PurchasePayment.data?.filter((item)=> item.UID === user.uid);
+
+			setrows(filterUID);
 			
 		}
 		
@@ -45,7 +48,7 @@ function PurchaseBill() {
 			swal("Oops...!", "Something went wrong!", "error");
 		}
 		
-		const filter = rows?.filter((item) => item.partyName === row[1].PartyName);
+		const filter = rows?.filter((item) =>item.partyName === row[1].PartyName && item.UID === row[2].UID && item.PhoneNo === row[1].PhoneNo );
 		
 		if (filter[0]?.partyName === row[1].PartyName) {
 			const id = filter[0].id;
@@ -63,7 +66,9 @@ function PurchaseBill() {
 				partyName: row[1].PartyName,
 				total: row[1].Total,
 				Paid: parseInt(row[1].Advance),
-				Unpaid: row[1].Total - parseInt(row[1].Advance)
+				Unpaid: row[1].Total - parseInt(row[1].Advance),
+				UID : user?.uid ,
+				PhoneNo : row[1].PhoneNo
 			};
 
 			await AddPurchasePayment(newPayment);
@@ -73,17 +78,18 @@ function PurchaseBill() {
 	};
 	
 	const filteredData = data?.filter((item) =>
-		item[1]?.PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1]?.ID.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item?.timestamp.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1]?.DueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1]?.Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1]?.Advance.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		(item[1]?.Total - item[1]?.Advance).toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		(item[1]?.Total - item[1]?.Advance === 0 ? "Paid" : "Unpaid").toLowerCase().includes(searchTerm.toLowerCase())
-
+		item[2].UID === user.uid ?
+			item[1]?.PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1]?.ID.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item?.timestamp.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1]?.DueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1]?.Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1]?.Advance.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			(item[1]?.Total - item[1]?.Advance).toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			(item[1]?.Total - item[1]?.Advance === 0 ? "Paid" : "Unpaid").toLowerCase().includes(searchTerm.toLowerCase())
+			: ""
 	);
-	
+
 	const handleSearch =(e)=>{
 		setSearchTerm(e.target.value);
 	};
@@ -269,7 +275,7 @@ function PurchaseBill() {
 								</div>
 								<div className="col-5 ">
 									{" "}
-									<Form file="Purchase-Bill" onsubmit={handlesubmit}  ID={data?.length}/>
+									<Form file="Purchase-Bill" onsubmit={handlesubmit}  ID={filteredData?.length}/>
 									{" "}
 								</div>
 							</div>

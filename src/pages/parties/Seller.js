@@ -7,13 +7,14 @@ import PartiesFrom from "../../containers/Parties/PartiesFrom";
 import swal from "sweetalert";
 import { useState } from "react";
 import Report from "../../components/report/Report";
-
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
 import { useAddPartiesMutation , useFetchPartiesQuery , useDeletePartiesMutation} from "../../redux";
 import {useFetchPurchaseBillQuery , useFetchPaymentInOutQuery , useFetchPurchaseReturnQuery , useFatchPurchasePaymentQuery} from "../../redux";
 import { useDeletePaymentInOutMutation , useDeletePurchaseBillMutation ,useDeletePurchaseReturnMutation } from "../../redux";
 let Combine ;
 function Seller() {
+	const {user} = useUserAuth();
 	const [AddParties] = useAddPartiesMutation();
 	const [DeleteParties] = useDeletePartiesMutation();
 	const PurchaseBill = useFetchPurchaseBillQuery();
@@ -83,7 +84,7 @@ function Seller() {
 		setSearchParties(e.target.value);
 	};
 
-	const filterType = data?.filter((item)=> item.PartyType === "Saller");
+	const filterType = data?.filter((item)=> item.PartyType === "Saller" && item.UID === user.uid);
 	
 	const filteredData = filterType?.filter((item) =>
 		item.PartyName.toLowerCase().includes(searchParties.toLowerCase())
@@ -162,15 +163,16 @@ function Seller() {
 		const filteredParty = Data?.filter((item) => item.PartiesName === key);
 		setOpenParty(filteredParty);	
 		
-		const Purchasebill = PurchaseBill.data?.filter((item) => item[1].PartyName === key);
-		const Purchasereturn = PurchaseReturn.data?.filter((item) => item[1].PartyName === key);
-		const Purchasepayment = PurchasePayment.data?.filter((item) => item.partyName === key);
-		const Paymentout = PaymentOut.data?.filter((item) => item.PartyName === key && item.TransectionType === "Payment-Out");
+		const Purchasebill = PurchaseBill.data?.filter((item) => item[1].PartyName === key && item[1].PhoneNo == filteredParty[0].PhoneNo && item[2]?.UID === user.uid);
+		const Purchasereturn = PurchaseReturn.data?.filter((item) => item[1].PartyName === key && item[1]?.PhoneNo == filteredParty[0]?.PhoneNo && item[2]?.UID === user.uid);
+		const Purchasepayment = PurchasePayment.data?.filter((item) => item.partyName === key && item?.PhoneNo == filteredParty[0]?.PhoneNo && item?.UID === user.uid);
+		const Paymentout = PaymentOut.data?.filter((item) => item.PartyName === key && item.TransectionType === "Payment-Out" && item?.MobailNo == filteredParty[0]?.PhoneNo && item?.UID === user.uid);
 
 		if(Purchasepayment){
 			setPurchasePayment(Purchasepayment[0]);
 		}
 
+		
 		const Obj1 = Purchasebill.map((item)=>({
 			
 			Order_No: item[1].ID,

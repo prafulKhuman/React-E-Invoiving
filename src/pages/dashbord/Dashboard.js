@@ -1,38 +1,47 @@
 import Charts from "../../utility/charts/Charts";
 import Linecharts from "../../utility/charts/Linecharts";
 import {useFatchSalePaymentQuery , useFetchExpenseQuery , useFatchPurchasePaymentQuery , useFatchSaleInvoiceQuery , useFetchPurchaseBillQuery} from "../../redux";
-
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
 function Dashboard() {
+	const {user} = useUserAuth();
 	const SalePayment = useFatchSalePaymentQuery();
 	const PurchasePayment = useFatchPurchasePaymentQuery();
 	const SaleOrder = useFatchSaleInvoiceQuery();
 	const Expenses = useFetchExpenseQuery();
 	const PurchaseOrder = useFetchPurchaseBillQuery();
-
-
+	
 
 	
-	const TotalPayIn = SalePayment.data?.reduce(getTotalSale, 0);
+	
+	
+
+	const filterPayIn = SalePayment.data?.filter((item)=>item.UID === user.uid);
+	
+	const TotalPayIn = filterPayIn?.reduce(getTotalSale, 0);
 	function getTotalSale(total, num) {
 		return total + num.total;
 	}
 
-
-	const TotalPayOut = PurchasePayment.data?.reduce(getTotalPayOut, 0);
+	const filterPayOut =  PurchasePayment.data?.filter((item)=>item.UID === user.uid);
+	const TotalPayOut =filterPayOut?.reduce(getTotalPayOut, 0);
 	function getTotalPayOut(total, num) {
 		return total + num.total;
 	}
 
-	const TotalExp = Expenses.data?.reduce(getTotalExp, 0);
+	const filterExp =  Expenses.data?.filter((item)=>item.UID === user.uid);
+	const TotalExp = filterExp?.reduce(getTotalExp, 0);
 	function getTotalExp(total, num) {
 		return total + parseInt(num.ExpAmount);
 	}
 
 	const Sub = (TotalPayIn - TotalPayOut - TotalExp) ;
 
-	const SaleLength = SaleOrder.data?.length ;
-	const PurchaseLength = PurchaseOrder.data?.length ;
+	const filterOrder =  SaleOrder.data?.filter((item)=>item[2].UID === user.uid);
+	const SaleLength = filterOrder?.length ;
+
+	const filterPurchaseOrder =  PurchaseOrder.data?.filter((item)=>item[2].UID === user.uid);
+	const PurchaseLength = filterPurchaseOrder?.length ;
 	return (
 		<section>
 
@@ -108,12 +117,14 @@ function Dashboard() {
 							<div className="col-lg-6 pr-lg-2 chart-grid">
 								<div className="card text-center card_border">
 									<div className="card-header chart-grid__header">
-										Bar Chart
+										Sale Chart
 									</div>
 									<div className="card-body">
 
-										<div id="container">
-											<Charts/>
+										<div id="container mr-8" >
+											{SaleOrder.isFetching ? <><div className="spinner-border m-5" role="status">
+												<span className="sr-only">Loading...</span>
+											</div></> : <Charts />}
 										</div>
 
 									</div>
@@ -125,12 +136,15 @@ function Dashboard() {
 							<div className="col-lg-6 pl-lg-2 chart-grid">
 								<div className="card text-center card_border">
 									<div className="card-header chart-grid__header">
-									Area Chart
+									Purchase Chart
 									</div>
 									<div className="card-body">
 
 										<div id="container">
-											<Linecharts/>
+											
+											{PurchaseOrder.isFetching ? <><div className="spinner-border m-5" role="status">
+												<span className="sr-only">Loading...</span>
+											</div></> : <Linecharts/>}
 										</div>
 
 									</div>
@@ -175,7 +189,11 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-success number">₹ 166.89 M</h3>
+											<h3 className="text-success number">₹{PurchaseLength ? (Sub > 0 ? Sub : 0 ) :
+												<div className="spinner-border" role="status">
+													<span className="sr-only">Loading...</span>
+												</div>
+											}</h3>
 											<p className="stat-text">Cash In Hand</p>
 										</div>
 									</div>
@@ -184,12 +202,13 @@ function Dashboard() {
 
 											<h3 className="text-danger number">₹{TotalExp ? TotalExp :
 												<div className="spinner-border" role="status">
-													<span className="sr-only">Loading...</span>
-												</div>
+												<span className="sr-only">Loading...</span>
+											</div>
 											}</h3>
 											<p className="stat-text">Expanses</p>
 										</div>
 									</div>
+									
 								</div>
 							</div>
 						</div>

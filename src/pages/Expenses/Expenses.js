@@ -1,6 +1,6 @@
 import ExpensesFrom from "../../containers/Expense/ExpensesFrom";
 import SortableTable from "../../components/Table/SortableTable";
-
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
 import CategoryForm from "../../containers/Expense/CategoryForm";
 import {useAddCategoryMutation , useFetchCategoryQuery , useDeleteCategoryMutation} from "../../redux";
 import {useFetchExpenseQuery , useDeleteExpensesMutation} from "../../redux";
@@ -11,7 +11,9 @@ import "react-loading-skeleton/dist/skeleton.css";
 //import MainTable from "./../../components/Table/MainTable";
 import MainTable from "./../../components/Table/MainTable";
 
+
 function Expenses() {
+	const {user} = useUserAuth();
 	const [AddCategory] = useAddCategoryMutation ();
 	const { data, error, isFetching } = useFetchCategoryQuery();
 	const [DeleteCategory] =useDeleteCategoryMutation();
@@ -62,9 +64,9 @@ function Expenses() {
 	};
 
 	const filteredData = data?.filter((item) =>
-
-		item.Category.toLowerCase().includes(search.toLowerCase()) 
-	
+		item.UID === user.uid ?
+			item.Category.toLowerCase().includes(search.toLowerCase())
+			: ""
 	);
 
 	let Data = [];
@@ -103,7 +105,7 @@ function Expenses() {
 
 	const handleOpen =(key)=>{
 		setExp(key);
-		const filterExp =  Expanses.data?.filter((item)=>item.Category === key);
+		const filterExp =  Expanses.data?.filter((item)=>item.Category === key && item.UID === user.uid);
 		setExpData(filterExp);
 	};
 	const Total = ExpData?.reduce(getTotal , 0);

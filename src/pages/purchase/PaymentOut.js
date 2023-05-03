@@ -8,8 +8,11 @@ import { useState  , useEffect} from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Report from "../../components/report/Report";
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
+
 function PaymentOut()
 {
+	const {user} = useUserAuth();
 	const [AddPaymentInOut] = useAddPaymentInOutMutation();
 	const { data, error, isFetching } = useFetchPaymentInOutQuery();
 	const [DeletePaymentInOut] = useDeletePaymentInOutMutation();
@@ -41,24 +44,26 @@ function PaymentOut()
 		}else{
 			swal("Oops...!", "Something went wrong!", "error");
 		}
-		const filter = rows?.filter((item) => item.partyName === key.PartyName);
-
+		const filter = rows?.filter((item) => item.partyName === key.PartyName && item.PhoneNo === key.MobailNo && item.UID === user.uid);
+		console.log(filter , "hello");
 		if (filter) {
 			/* eslint-disable no-unused-vars */
-			const id = filter[0].id;
+			const id = filter[0]?.id;
 			
 			const updatedPayment = {
-				partyName: filter[0].partyName,
-				total: filter[0].total ,
-				Paid:  filter[0].Paid  + parseInt(key.Amount),
-				Unpaid: filter[0].Unpaid - parseInt(key.Amount)
+				partyName: filter[0]?.partyName,
+				total: filter[0]?.total ,
+				Paid:  filter[0]?.Paid  + parseInt(key.Amount),
+				Unpaid: filter[0]?.Unpaid - parseInt(key.Amount)
 			};
 
 			const ans = await UpdatePurchasePayment({id , updatedPayment});
+			if(ans.error){
+				swal("Oops...!", "Payment Data Not Found!", "error");
+			}
 			
-			
-		} else {
-			swal("Oops...!", "Something went wrong!", "error");
+		} else if(filter === []){
+			swal("Oops...!", " Party Data Not Found!", "error");
 		}
 	};
 
@@ -91,7 +96,7 @@ function PaymentOut()
 
 	const filteredData = data?.filter((item) =>
 
-		item.TransectionType === "Payment-Out" ?
+		item.TransectionType === "Payment-Out" && item.UID === user.uid ?
 			item.Amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			item.Date.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			item.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||

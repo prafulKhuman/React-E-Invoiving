@@ -9,8 +9,10 @@ import swal from "sweetalert";
 import MainTable from "../../components/Table/MainTable";
 import { useState  } from "react";
 import Stock from "../../containers/Items/Stock";
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
 function Items(){
+	const {user} = useUserAuth();
 	const [AddItem] = useAddItemMutation();
 	const [DeleteItem] = useDeleteItemMutation();
 	const [DeleteStock] =  useDeleteStockMutation();
@@ -65,8 +67,12 @@ function Items(){
 		setSearchItem(e.target.value);
 	};
 
-	const filteredData = data?.filter((item) =>
-		item.ItemName.toLowerCase().includes(searchItem.toLowerCase())
+
+	const filteredUID = data?.filter((item) =>
+		item.UID?.toLowerCase().includes(user.uid.toLowerCase())
+	);
+	const filteredData = filteredUID?.filter((item) =>
+		item.ItemName?.toLowerCase().includes(searchItem?.toLowerCase())
 	);
 	
 	let Data = [];

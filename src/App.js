@@ -1,16 +1,20 @@
 import { BrowserRouter } from "react-router-dom";
 import RouteConfig from "./utility/routeConfig/RouteConfig";
 
+import { UserAuthContextProvider } from "./context/Auth/UserAuthContext";
+
 
 
 
 function App() {
 	return (<>
-
-		<BrowserRouter>
-			<RouteConfig />
-		</BrowserRouter>
-
+		<UserAuthContextProvider>
+			
+			<BrowserRouter>
+				
+				<RouteConfig/>
+			</BrowserRouter>
+		</UserAuthContextProvider>
 		
 		
 		

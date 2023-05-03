@@ -7,11 +7,13 @@ import PartiesFrom from "../../containers/Parties/PartiesFrom";
 import  swal from "sweetalert";
 import { useState } from "react";
 import Report from "../../components/report/Report";
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
 import { useAddPartiesMutation , useFetchPartiesQuery , useDeletePartiesMutation} from "../../redux";
 import {useFatchSaleInvoiceQuery , useFetchSaleReturnQuery , useFetchPaymentInOutQuery , useFatchSalePaymentQuery} from "../../redux";
 import { useDeleteSaleInvoiceMutation , useDeletePaymentInOutMutation , useDeleteSaleReturnMutation } from "../../redux";
 let Combine ;
 function Custommer() {
+	const {user} = useUserAuth();
 	const [AddParties] = useAddPartiesMutation();
 	const [DeleteParties] = useDeletePartiesMutation();
 	const SaleInvoice = useFatchSaleInvoiceQuery();
@@ -79,7 +81,7 @@ function Custommer() {
 		setSearchParties(e.target.value);
 	};
 
-	const filterType = data?.filter((item)=> item.PartyType === "Custommer");
+	const filterType = data?.filter((item)=> item.PartyType === "Custommer" && item.UID === user.uid);
 	
 	const filteredData = filterType?.filter((item) =>
 		item.PartyName.toLowerCase().includes(searchParties.toLowerCase())
@@ -100,7 +102,8 @@ function Custommer() {
 			PhoneNo : item.PhoneNo ,
 			Email : item.Email , 
 			Address : item.BillingAddress ,
-			Action : item.id
+			Action : item.id ,
+			UID : item.UID
 
 			
 		}));
@@ -156,17 +159,17 @@ function Custommer() {
 	
 	const handleOpenParty = (key) => {
 		
-		const filteredParty = Data?.filter((item) => item.PartiesName === key);
+		const filteredParty = Data?.filter((item) => item.PartiesName === key && item.UID === user.uid);
 		setOpenParty(filteredParty);	
 		
-		const Saleinvoice = SaleInvoice.data?.filter((item) => item[1].PartyName === key);
-		const Salereturn = SaleReturn.data?.filter((item) => item[1].PartyName === key);
-		const Salepayment = SalePayment.data?.filter((item) => item.partyName === key);
-		const Paymentin = PaymentIn.data?.filter((item) => item.PartyName === key && item.TransectionType === "Payment-In");
+		const Saleinvoice = SaleInvoice.data?.filter((item) => item[1]?.PartyName === key && item[1].PhoneNo == filteredParty[0].PhoneNo && item[2]?.UID === user.uid);
+
+		const Salereturn = SaleReturn.data?.filter((item) => item[1]?.PartyName === key && item[1]?.PhoneNo == filteredParty[0]?.PhoneNo && item[2]?.UID === user.uid);
+		const Salepayment = SalePayment.data?.filter((item) => item?.partyName === key && item?.PhoneNo == filteredParty[0]?.PhoneNo && item?.UID === user.uid);
+		const Paymentin = PaymentIn.data?.filter((item) => item?.PartyName === key && item?.TransectionType === "Payment-In" && item?.MobailNo == filteredParty[0]?.PhoneNo && item?.UID === user.uid);
 		if(Salepayment){
 			setSalePayment(Salepayment[0]);
 		}
-		
 
 		const Obj1 = Saleinvoice.map((item)=>({
 			

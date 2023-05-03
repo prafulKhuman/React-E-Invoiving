@@ -8,8 +8,11 @@ import { useState , useEffect } from "react";
 import Report from "./../../components/report/Report";
 import Form from "../../components/forms/Form";
 import swal from "sweetalert";
+import {useUserAuth} from "../../context/Auth/UserAuthContext";
+
 	
 function SaleOrder() {
+	const {user} = useUserAuth();
 	const [ addSaleOrder ] = useAddSaleOrderMutation(); 
 	const [AddSaleInvoice] = useAddSaleInvoiceMutation();
 	const {data , error, isFetching } = useFetchSaleOrderQuery();
@@ -23,8 +26,8 @@ function SaleOrder() {
 
 	useEffect(()=>{
 		if(SalePayment.data){
-			const data=SalePayment.data;
-			setrows(data);
+			const filterUID = SalePayment.data?.filter((item)=> item.UID === user.uid);
+			setrows(filterUID);
 		}
 	},[SalePayment]);
 
@@ -41,15 +44,16 @@ function SaleOrder() {
 		
 	};
 	const filteredData = data?.filter((item) =>
-		item[1].PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].ID.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item.timestamp.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].DueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		item[1].Advance.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		(item[1].Total - item[1].Advance).toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
-		(item[1].Total - item[1].Advance === 0 ? "Paid" : "Unpaid").toLowerCase().includes(searchTerm.toLowerCase())
-
+		item[2].UID === user.uid ?
+			item[1].PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1].ID.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.timestamp.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1].DueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1].Total.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item[1].Advance.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			(item[1].Total - item[1].Advance).toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+			(item[1].Total - item[1].Advance === 0 ? "Paid" : "Unpaid").toLowerCase().includes(searchTerm.toLowerCase())
+			: ""
 	);
 	
 	const handleSearch =(e)=>{
@@ -101,6 +105,7 @@ function SaleOrder() {
 				);
 				const object = ConvertOrder[0];
 				const Payment = ConvertOrder[0][1];
+ 
 				
 				const response = await AddSaleInvoice(object);
 				if (response.data === "ok") {
@@ -114,7 +119,7 @@ function SaleOrder() {
 					swal("Oops...!", "Something went wrong!", "error");
 				}
 
-				const filter = rows?.filter((item) => item.partyName === Payment?.PartyName);
+				const filter = rows?.filter((item) => item.partyName === Payment?.PartyName && item.UID === user.uid && item.PhoneNo === Payment?.PhoneNo );
 				
 				if (filter[0]?.partyName === Payment?.PartyName) {
 					const id = filter[0].id;
@@ -132,7 +137,9 @@ function SaleOrder() {
 						partyName: Payment?.PartyName,
 						total: Payment?.Total,
 						Received: parseInt(Payment?.Advance),
-						Pending: Payment?.Total - parseInt(Payment?.Advance)
+						Pending: Payment?.Total - parseInt(Payment?.Advance),
+						UID: user?.uid,
+						PhoneNo: Payment?.PhoneNo
 					};
 
 					await AddSalePayment(newPayment);

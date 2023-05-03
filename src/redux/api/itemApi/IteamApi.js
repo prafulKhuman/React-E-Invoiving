@@ -31,11 +31,11 @@ const IteamApi = createApi({
 				providesTags:["Item"],
 			}),
 			UpdateItem : builder.mutation({
-				async queryFn({ID , UpdateQTY}){
+				async queryFn({ID , Stock}){
 					
 					try{
 						await updateDoc(doc(db , "Item" , ID) ,{
-							...UpdateQTY
+							...Stock
 						});
 						return {data: "ok"} ;
 					} catch (err) {

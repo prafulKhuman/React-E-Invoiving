@@ -1,6 +1,10 @@
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
+
 function ItemsFrom({onsubmit}) {
+
+	const {user} = useUserAuth();
 
 	const ItemSchema = Yup.object().shape({
 	
@@ -32,8 +36,12 @@ function ItemsFrom({onsubmit}) {
 		},
 		validationSchema: ItemSchema ,
 		onSubmit: (values , action)=>{
-			onsubmit(values);
-			console.log(values);
+			const Items ={
+				...values ,
+				UID : user.uid 
+			};
+			onsubmit(Items);
+		
 			action.resetForm();			
 		},
 	});

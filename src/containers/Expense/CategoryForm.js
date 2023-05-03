@@ -1,6 +1,9 @@
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
+
 function CategoryForm({ onCategory }) {
+	const {user} = useUserAuth();
 	const CategorySchema = Yup.object().shape({
 		Category: Yup.string().min(5).required("Can't Empty Category"),
 	
@@ -13,7 +16,11 @@ function CategoryForm({ onCategory }) {
 		},
 		validationSchema: CategorySchema ,
 		onSubmit: (values , action)=>{
-			onCategory(values);
+			const Cat = {
+				...values ,
+				UID : user.uid
+			};
+			onCategory(Cat);
 			action.resetForm();			
 		},
 	});

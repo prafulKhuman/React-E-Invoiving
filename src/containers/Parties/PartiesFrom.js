@@ -1,7 +1,9 @@
 import * as Yup from "yup";
 import { useFormik } from "formik";
-function PartiesFrom({onsubmit}) {
+import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
+function PartiesFrom({onsubmit}) {
+	const {user} = useUserAuth();
 	const PartiesSchema = Yup.object().shape({
 		PartyName: Yup.string().min(2).required("Can't Empty Party Name"),
 		Email: Yup.string().min(5).required("Can't Empty Email"),
@@ -22,7 +24,11 @@ function PartiesFrom({onsubmit}) {
 		},
 		validationSchema: PartiesSchema ,
 		onSubmit: (values , action)=>{
-			onsubmit(values);
+			const parties = {
+				...values ,
+				UID : user.uid
+			};
+			onsubmit(parties);
 			action.resetForm();			
 		},
 	});
