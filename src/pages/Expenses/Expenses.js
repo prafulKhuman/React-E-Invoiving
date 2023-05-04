@@ -5,7 +5,7 @@ import CategoryForm from "../../containers/Expense/CategoryForm";
 import {useAddCategoryMutation , useFetchCategoryQuery , useDeleteCategoryMutation} from "../../redux";
 import {useFetchExpenseQuery , useDeleteExpensesMutation} from "../../redux";
 import swal from "sweetalert";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 //import MainTable from "./../../components/Table/MainTable";
@@ -23,6 +23,11 @@ function Expenses() {
 	const [Exp , setExp] = useState();
 	const [ExpData , setExpData] = useState([]);
 
+
+	useEffect(()=>{
+		const filterExp =  Expanses.data?.filter((item)=>item.Category === Exp && item.UID === user.uid);
+		setExpData(filterExp);
+	},[]);
 
 	const handleSubmit = async (key)=>{
 		const response = await AddCategory(key);
@@ -47,11 +52,14 @@ function Expenses() {
 		}).then(async (willDelete) => {
 			if (willDelete) {
 				const response = await DeleteExpenses(key);
+				
 				if (response.data === "ok") {
 					swal("Data Deleted Success", {
 						icon: "success",
 					});
+					
 				}
+				
 			} else {
 				swal("Your Data is safe!");
 			}
@@ -234,7 +242,7 @@ function Expenses() {
 							<div className="card">
 								<div className="card-header">
 									<div className="item_right">
-										<ExpensesFrom Cat={data}/>
+										<ExpensesFrom Cat={data} ID={Expanses.data?.length}/>
 									</div>
 								</div>
 								<div className="card-body">

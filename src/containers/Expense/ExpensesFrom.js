@@ -4,7 +4,7 @@ import {useAddExpensesMutation} from "../../redux";
 import swal from "sweetalert";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
-function ExpensesFrom({Cat}) {
+function ExpensesFrom({Cat , ID}) {
 	const {user} = useUserAuth();
 	const [AddExpenses] = useAddExpensesMutation();
 	const CategorySchema = Yup.object().shape({
@@ -68,7 +68,7 @@ function ExpensesFrom({Cat}) {
 										type="text" 
 										className="form-control" 
 										id="ExpNo"  
-										placeholder="Exp No"
+										placeholder={ID + 1}
 										name="ExpNo"
 										value={values.ExpNo}
 										onChange={handleChange}

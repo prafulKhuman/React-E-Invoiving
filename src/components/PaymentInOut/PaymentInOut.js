@@ -5,13 +5,12 @@ import { useUserAuth } from "../../context/Auth/UserAuthContext";
 import { useState } from "react";
 import Select from "react-select";
 import { useFetchPartiesQuery } from "../../redux";
+import { Hint } from "react-autocomplete-hint";
 
-// import { ToastContainer, toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
 
 function PaymentInOut({ file, AddData, ID }) {
 	const { user } = useUserAuth();
-	
+
 	const [selectedOption, setSelectedOption] = useState(null);
 	const response = useFetchPartiesQuery();
 	// const initialValues = {
@@ -48,7 +47,7 @@ function PaymentInOut({ file, AddData, ID }) {
 				const Payment = {
 					...values,
 					UID: user.uid,
-					PartyName : selectedOption.label
+					PartyName: selectedOption.label
 				};
 				AddData(Payment);
 				action.resetForm();
@@ -66,35 +65,53 @@ function PaymentInOut({ file, AddData, ID }) {
 	// };
 
 
-	
-	
 
-	let Custommer = [] ;
-	let Saller = [] ;
-	if(response.data){
-		const filterParties = response.data?.filter((item)=>item.UID === user.uid && item.PartyType === "Custommer");
 
-		Custommer = filterParties?.map((item) => ({
-			label: item.PartyName
-		}));
-		
-		const filter = response.data?.filter((item)=>item.UID === user.uid && item.PartyType === "Saller");
 
-		Saller = filter?.map((item) => ({
-			label: item.PartyName
-		}));
-		
-		
-	}
+
+
+	const filterCustommer = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Custommer");
+
+	const Custommer = filterCustommer?.map((item) => ({
+		label: item.PartyName
+	}));
+
+	const filterSaller = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Saller");
+
+	const Saller = filterSaller?.map((item) => ({
+		label: item.PartyName
+	}));
+
+
+
+	console.log(selectedOption?.label, "sel");
+
 
 	let options;
+	let Phone;
 
-	if(file === "Payment-In"){
+	if (file === "Payment-In") {
 		options = Custommer;
-	}else{
+		const Hint = filterCustommer?.map((item) => {
+			if (item.PartyName === selectedOption?.label) {
+				return item.PhoneNo;
+			}
+		});
+		Phone = Hint;
+
+	} else {
 		options = Saller;
+		const Hint = filterSaller?.map((item) => {
+			if (item.PartyName === selectedOption?.label) {
+				return item.PhoneNo;
+			}
+		});
+		Phone = Hint;
 	}
-	
+
+	const PhoneHint = Phone ? Phone : [""];
+
+	console.log(PhoneHint, "hint");
 	return (
 		<>
 			<button type="button" className="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -164,18 +181,21 @@ function PaymentInOut({ file, AddData, ID }) {
 									</div>
 									<div className="row">
 										<div className="input-group  col-md-3">
-											<input type="text"
-												className="form-control"
-												name="MobailNo"
-												required
-												value={values.MobailNo}
-												onChange={handleChange}
-												onBlur={handleBlur}
-												placeholder="MobailNo"
-												aria-describedby="inputGroup-sizing-default"
-												aria-label="Default"
+											<Hint options={PhoneHint} allowTabFill={true} allowEnterFill={true}>
 
-											/>
+												<input type="text"
+													className="form-control"
+													name="MobailNo"
+													required
+													value={values.MobailNo}
+													onChange={handleChange}
+													onBlur={handleBlur}
+													placeholder={PhoneHint ? PhoneHint : "Mobile No"}
+													aria-describedby="inputGroup-sizing-default"
+													aria-label="Default"
+
+												/>
+											</Hint>
 											{errors.MobailNo && touched.MobailNo ? (
 												<p className="form-error text-danger">{errors.MobailNo}</p>
 											) : null}

@@ -24,12 +24,15 @@ function Case() {
 	const filterPayOut = PurchasePayment.data?.filter((item) => item.UID === user.uid);
 	const filterExp = Expenses.data?.filter((item) => item.UID === user.uid);
 
-	const TotalPayIn = filterPayIn?.reduce(getTotal, 0);
-	const TotalPayOut = filterPayOut?.reduce(getTotal, 0);
+	const TotalPayIn = filterPayIn?.reduce(getTotalSale, 0);
+	const TotalPayOut = filterPayOut?.reduce(getTotalPurchase, 0);
 	const TotalExp = filterExp?.reduce(getTotalExp, 0);
 
-	function getTotal(total, num) {
-		return total + num.total;
+	function getTotalSale(total, num) {
+		return total + num.Received;
+	}
+	function getTotalPurchase(total, num) {
+		return total + num.Paid;
 	}
 	function getTotalExp(total, num) {
 		return total + parseInt(num.ExpAmount);
@@ -37,7 +40,7 @@ function Case() {
 
 	const Case =(TotalPayIn - TotalPayOut - TotalExp );
 
-
+	
 	let Entry = [];
 	let content;
 	if (SalePayment.isFetching || PurchasePayment.isFetching || Expenses.isFetching) {

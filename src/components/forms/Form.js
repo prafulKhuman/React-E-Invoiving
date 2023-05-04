@@ -5,7 +5,7 @@ import swal from "sweetalert";
 import { useFetchItemQuery } from "../../redux";
 import { useFetchPartiesQuery } from "../../redux";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
-
+import { Hint } from "react-autocomplete-hint";
 
 let initialValues = {
 	No: "",
@@ -17,9 +17,8 @@ let initialValues = {
 	Amount: "",
 };
 
-let options;
-let Row;
 
+let Row;
 function Form({ file, onsubmit, ID }) {
 	const No = ID + 1;
 	const intial = {
@@ -39,28 +38,25 @@ function Form({ file, onsubmit, ID }) {
 	const [data, setData] = useState([]);
 	const [filds, setFilds] = useState(intial);
 	const [Select, setSelect] = useState("");
-	
+
+
 
 	if (ItemResponse.data) {
-		const filterUID = ItemResponse.data?.filter((item)=> item.UID === user.uid);
+		const filterUID = ItemResponse.data?.filter((item) => item.UID === user.uid);
 		const Item = filterUID?.map((key) => ({
 			ItemName: key.ItemName,
 			ItemCode: key.ItemCode,
-			MRP: key.SalePrice ,
-			id : key.id
+			MRP: key.SalePrice,
+			id: key.id
 
 		}));
 		Row = Item;
 	}
 
-	if (response.data) {
-		const filterUID = response.data?.filter((item)=> item.UID === user.uid);
-		const parties = filterUID?.map((user) => {
-			return user.PartyName;
-		});
-		// console.log(parties,"party");
-		options = parties;
-	}
+
+	// console.log(parties,"party");
+
+
 
 
 	//console.log(parties ,"party");
@@ -69,15 +65,13 @@ function Form({ file, onsubmit, ID }) {
 	const handleChange2 = (e) => {
 		const { name, value } = e.target;
 		setFilds({ ...filds, [name]: value });
-
-
 	};
 
 
 
 	const handleSubmit2 = (e) => {
 		e.preventDefault();
-		const main = [data , filds ,{ ["UID"] : user.uid }];
+		const main = [data, filds, { ["UID"]: user.uid }];
 
 		onsubmit(main);
 		setData([]);
@@ -149,20 +143,51 @@ function Form({ file, onsubmit, ID }) {
 
 
 	};
-	let SelectItem ;
+
 	const handleClick = (e) => {
 		setSelect(e.target.value);
 	};
-	const filterItem = Row?.filter((item)=> item.ItemName === Select);
-
-	
-	if(filterItem){
+	const filterItem = Row?.filter((item) => item.ItemCode === Select);
+	let SelectItem;
+	if (filterItem) {
 		SelectItem = filterItem[0];
-		ID = SelectItem?.id ;
+		ID = SelectItem?.id;
 	}
 
+	const handleParty = (e) => {
+		const PartyName = e.target.name;
+		const PartyValue = e.target.value;
+		const Values = PartyValue ? PartyValue.toString().toLowerCase() : PartyValue;
+		setFilds({ ...filds, [PartyName]: Values });
+	};
+	let filterUIDC ;
+	if(file==="Sale-Invoice" || file === "Sale-Order" || file==="Sale-Return"){
+		filterUIDC = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Custommer");
+	}else{
+		filterUIDC = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Saller");
+	}
+	const parties = filterUIDC?.map((user) => {
+		return user.PartyName;
+	});
 
-	
+	const PartyHint = parties ? parties : [""];
+
+	const Code = Row?.map((item) => {
+		return item.ItemCode;
+	});
+
+
+	const ItemCodeHint = Code ? Code : [""];
+	const ItemNameHint = SelectItem ? [SelectItem.ItemName] : [""];
+
+
+	const filterMobile = filterUIDC?.filter((item) => item.PartyName === filds.PartyName);
+	const PartyMobile = filterMobile?.map((user) => {
+		return user.PhoneNo;
+	});
+
+	const Mobile = PartyMobile != "" ? PartyMobile : "Enter Mobile No";
+
 	return (
 
 		<>
@@ -184,11 +209,23 @@ function Form({ file, onsubmit, ID }) {
 								<div className="container-fluid">
 
 									<div className="row">
-										<div className="col-sm-3">
+										<div className="col-sm-2">
 
 											<div className="input-group mb-3">
+												<Hint options={PartyHint} allowTabFill={true} allowEnterFill={true}>
+													<input
+														type="text"
+														className="form-control"
+														name="PartyName"
+														value={filds.PartyName}
+														//onChange={handleChange2}
+														placeholder="Party Name"
+														aria-describedby="inputGroup-sizing-default"
+														onChange={handleParty}
+														required />
+												</Hint>
 
-												<input type="text"
+												{/* <input type="text"
 													className="form-control"
 													name="PartyName"
 													required
@@ -198,11 +235,11 @@ function Form({ file, onsubmit, ID }) {
 													aria-describedby="inputGroup-sizing-default"
 													list="browsers"
 													placeholder="Party Name" />
-												
-												
+												 */}
+
 											</div>
 										</div>
-										<div className="col-sm-3">
+										<div className="col-sm-2">
 											<div className="input-group">
 
 												<input type="text"
@@ -212,12 +249,12 @@ function Form({ file, onsubmit, ID }) {
 													onChange={handleChange2}
 													required
 													aria-label="Default"
-													placeholder="Phone No."
+													placeholder={Mobile}
 													aria-describedby="inputGroup-sizing-default" />
 
 											</div>
 										</div>
-										<div className="col-sm-6  text-right">
+										<div className="col-sm-8  text-right">
 
 											<label htmlFor="ID">
 												{fileName === "Sale-Invoice" ? "Invoice No " : ""}
@@ -241,9 +278,9 @@ function Form({ file, onsubmit, ID }) {
 
 									<div className="row ">
 
-										<div className="col-3 input-group">
+										<div className="col-2 input-group">
 
-											<input type="text"
+											<input type="email"
 												className="form-control"
 												name="Email"
 												value={filds.Email}
@@ -256,7 +293,7 @@ function Form({ file, onsubmit, ID }) {
 
 										</div>
 
-										<div className="col-3 input-group">
+										<div className="col-2 input-group">
 
 											<textarea
 												className="form-control"
@@ -428,7 +465,7 @@ function Form({ file, onsubmit, ID }) {
 												onChange={handleChange}
 												onBlur={handleBlur}
 												className="form-control"
-												placeholder="ID"
+												placeholder={data?.length}
 											/>
 											{errors.No && touched.No ? (
 												<p className="form-error text-danger">{errors.No}</p>
@@ -437,37 +474,44 @@ function Form({ file, onsubmit, ID }) {
 									</div>
 									<div className="row mt-3">
 										<div className="col-4 mt-2">
-											<label className="ml-4" htmlFor="Item"> <span style={{ color: "#e81717" }}> * </span> Item</label>
-										</div>
-										<div className="col">
-											<div className="form-group">
-												<select className="form-control" id="Item" name="Item" value={values.Item} onChange={(event) => {
-													handleChange(event);
-													handleClick(event);
-												}} onBlur={handleBlur}>
-													<option>--- Select ---</option>
-													{Row?.map((item, index) => {
-														return <option key={index + 1} >{item.ItemName}</option>;
-													})}
-												</select>
-												
-											</div>
-										</div>
-									</div>
-									<div className="row mt-1">
-										<div className="col-4 mt-2">
 											<label className="ml-4" htmlFor="ItemCode"><span style={{ color: "#e81717" }}> * </span> Item Code</label>
 										</div>
 										<div className="col">
-											<input type="text"
-												name="ItemCode"
-												value={values.ItemCode}
-												onChange={handleChange}
-												onBlur={handleBlur}
-												className="form-control"
-												placeholder={SelectItem?.ItemCode} />
+											<Hint options={ItemCodeHint} allowTabFill={true} allowEnterFill={true}>
+												<input type="text"
+													name="ItemCode"
+													value={values.ItemCode}
+													onChange={(event) => {
+														handleChange(event);
+														handleClick(event);
+													}}
+													onBlur={handleBlur}
+													className="form-control"
+													placeholder="Item Code" />
+											</Hint>
 											{errors.ItemCode && touched.ItemCode ? (
 												<p className="form-error text-danger">{errors.ItemCode}</p>
+											) : null}
+										</div>
+
+
+									</div>
+									<div className="row mt-3">
+										<div className="col-4 mt-2">
+											<label className="ml-4" htmlFor="Item"><span style={{ color: "#e81717" }}> * </span> Item </label>
+										</div>
+										<div className="col">
+											<Hint options={ItemNameHint} allowTabFill={true} allowEnterFill={true}>
+												<input type="text"
+													name="Item"
+													value={values.Item}
+													onChange={handleChange}
+													onBlur={handleBlur}
+													className="form-control"
+													placeholder={SelectItem ? SelectItem.ItemName : "Item Name"} />
+											</Hint>
+											{errors.Item && touched.Item ? (
+												<p className="form-error text-danger">{errors.Item}</p>
 											) : null}
 										</div>
 									</div>
@@ -476,13 +520,15 @@ function Form({ file, onsubmit, ID }) {
 											<label className="ml-4" htmlFor="MRP"><span style={{ color: "#e81717" }}> * </span> MRP</label>
 										</div>
 										<div className="col">
+
 											<input type="number"
 												name="MRP"
 												value={values.MRP}
 												onChange={handleChange}
 												onBlur={handleBlur}
 												className="form-control"
-												placeholder={SelectItem?.MRP} />
+												placeholder={SelectItem ? SelectItem.MRP : "MRP"} />
+
 											{errors.MRP && touched.MRP ? (
 												<p className="form-error text-danger">{errors.MRP}</p>
 											) : null}

@@ -85,7 +85,7 @@ function PartiesFrom({onsubmit}) {
 										</div>
 										<div className="input-group  col-md-4">
 											<input 
-												type="number" 
+												type="text" 
 												className="form-control" 
 												aria-label="Default" 
 												name="PhoneNo"

@@ -23,10 +23,20 @@ function Dashboard() {
 		return total + num.total;
 	}
 
+	const TotalReceived = filterPayIn?.reduce(getTotalR, 0);
+	function getTotalR(total, num) {
+		return total + num.Received;
+	}
+
 	const filterPayOut =  PurchasePayment.data?.filter((item)=>item.UID === user.uid);
 	const TotalPayOut =filterPayOut?.reduce(getTotalPayOut, 0);
 	function getTotalPayOut(total, num) {
 		return total + num.total;
+	}
+
+	const TotalPaid =filterPayOut?.reduce(getTotalP, 0);
+	function getTotalP(total, num) {
+		return total + num.Paid;
 	}
 
 	const filterExp =  Expenses.data?.filter((item)=>item.UID === user.uid);
@@ -35,7 +45,7 @@ function Dashboard() {
 		return total + parseInt(num.ExpAmount);
 	}
 
-	const Sub = (TotalPayIn - TotalPayOut - TotalExp) ;
+	const Sub = (TotalReceived - TotalPaid - TotalExp) ;
 
 	const filterOrder =  SaleOrder.data?.filter((item)=>item[2].UID === user.uid);
 	const SaleLength = filterOrder?.length ;
