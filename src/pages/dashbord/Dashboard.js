@@ -3,6 +3,7 @@ import Linecharts from "../../utility/charts/Linecharts";
 import {useFatchSalePaymentQuery , useFetchExpenseQuery , useFatchPurchasePaymentQuery , useFatchSaleInvoiceQuery , useFetchPurchaseBillQuery} from "../../redux";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
+
 function Dashboard() {
 	const {user} = useUserAuth();
 	const SalePayment = useFatchSalePaymentQuery();
@@ -23,15 +24,16 @@ function Dashboard() {
 		return total + num.total;
 	}
 
-	const TotalReceived = filterPayIn?.reduce(getTotalR, 0);
-	function getTotalR(total, num) {
-		return total + num.Received;
-	}
-
 	const filterPayOut =  PurchasePayment.data?.filter((item)=>item.UID === user.uid);
 	const TotalPayOut =filterPayOut?.reduce(getTotalPayOut, 0);
 	function getTotalPayOut(total, num) {
 		return total + num.total;
+	}
+
+
+	const TotalReceived = filterPayIn?.reduce(getTotalR, 0);
+	function getTotalR(total, num) {
+		return total + num.Received;
 	}
 
 	const TotalPaid =filterPayOut?.reduce(getTotalP, 0);
@@ -45,7 +47,8 @@ function Dashboard() {
 		return total + parseInt(num.ExpAmount);
 	}
 
-	const Sub = (TotalReceived - TotalPaid - TotalExp) ;
+	const Sub = (TotalPayIn - TotalPayOut - TotalExp) ;
+	const Case = (TotalReceived - TotalPaid - TotalExp) ;
 
 	const filterOrder =  SaleOrder.data?.filter((item)=>item[2].UID === user.uid);
 	const SaleLength = filterOrder?.length ;
@@ -199,7 +202,7 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-success number">₹{PurchaseLength ? (Sub > 0 ? Sub : 0 ) :
+											<h3 className="text-success number">₹{PurchaseLength ? (Case > 0 ? Case : 0 ) :
 												<div className="spinner-border" role="status">
 													<span className="sr-only">Loading...</span>
 												</div>

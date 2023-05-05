@@ -17,7 +17,7 @@ function Expenses() {
 	const [AddCategory] = useAddCategoryMutation ();
 	const { data, error, isFetching } = useFetchCategoryQuery();
 	const [DeleteCategory] =useDeleteCategoryMutation();
-	const Expanses = useFetchExpenseQuery();
+	let Expanses = useFetchExpenseQuery();
 	const [DeleteExpenses] = useDeleteExpensesMutation();
 	const [search , setSearch] = useState("");
 	const [Exp , setExp] = useState();
@@ -57,6 +57,10 @@ function Expenses() {
 					swal("Data Deleted Success", {
 						icon: "success",
 					});
+					Expanses = useFetchExpenseQuery();
+					
+					const filterExp =  Expanses.data?.filter((item)=>item.Category === Exp);
+					setExpData(filterExp);
 					
 				}
 				
@@ -64,8 +68,7 @@ function Expenses() {
 				swal("Your Data is safe!");
 			}
 		});
-		const filterExp =  Expanses.data?.filter((item)=>item.Category === Exp);
-		setExpData(filterExp);
+		
 	};
 	const handleSearch =(e)=>{
 		setSearch(e.target.value);

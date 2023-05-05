@@ -9,11 +9,14 @@ import swal from "sweetalert";
 function Login() {
 	const navigate = useNavigate();
 	const { logIn } = useUserAuth();
+
+
 	const LoginSchema = Yup.object().shape({
 		Email : Yup.string().email("Invalid email").required("Required"),
 		Password: Yup.string().min(8, "Password must be 8 characters long").required("Required") ,
 	
 	});
+
 
 	const { values  , errors , touched ,  handleBlur, handleChange, handleSubmit } = 
 	useFormik({
@@ -37,6 +40,8 @@ function Login() {
 			action.resetForm();			
 		},
 	});
+
+	
 	return (<>
 		<section className="vh-100">
 			<div className="container-fluid h-custom">

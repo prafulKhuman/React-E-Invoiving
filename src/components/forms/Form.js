@@ -7,6 +7,8 @@ import { useFetchPartiesQuery } from "../../redux";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 import { Hint } from "react-autocomplete-hint";
 
+
+// initialValues for useFormik
 let initialValues = {
 	No: "",
 	Item: "",
@@ -20,7 +22,10 @@ let initialValues = {
 
 let Row;
 function Form({ file, onsubmit, ID }) {
+	// No Is Show Hint Of Invoice No , Return No , Order No 
 	const No = ID + 1;
+
+	// this is intialvalue for fild state 
 	const intial = {
 		PartyName: "",
 		PhoneNo: "",
@@ -31,6 +36,8 @@ function Form({ file, onsubmit, ID }) {
 		Total: "",
 		Advance: "",
 	};
+
+
 	const { user } = useUserAuth();
 	const response = useFetchPartiesQuery();
 	const ItemResponse = useFetchItemQuery();
@@ -40,7 +47,7 @@ function Form({ file, onsubmit, ID }) {
 	const [Select, setSelect] = useState("");
 
 
-
+	// this function is fatch item and filter by current user id  
 	if (ItemResponse.data) {
 		const filterUID = ItemResponse.data?.filter((item) => item.UID === user.uid);
 		const Item = filterUID?.map((key) => ({
@@ -53,30 +60,22 @@ function Form({ file, onsubmit, ID }) {
 		Row = Item;
 	}
 
-
-	// console.log(parties,"party");
-
-
-
-
-	//console.log(parties ,"party");
-
-	//const options = [ " khuman ", "praful"];
+	// this handler is store party name , mobile no , email , address , id , due date , and total , advance into filds state
 	const handleChange2 = (e) => {
 		const { name, value } = e.target;
 		setFilds({ ...filds, [name]: value });
 	};
 
 
-
+	// this handler is combine data state , fild state , user id , and send to perent component   
 	const handleSubmit2 = (e) => {
 		e.preventDefault();
 		const main = [data, filds, { ["UID"]: user.uid }];
-
 		onsubmit(main);
 		setData([]);
 		setFilds(intial);
 	};
+
 
 	const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
 		useFormik({
@@ -95,18 +94,16 @@ function Form({ file, onsubmit, ID }) {
 			},
 		});
 
-	// data.map((demo)=>{
-	// 	//totalAmount += parseInt(demo.Amount);
-
-	// 	totalAmount= totalAmount + demo.Amount ;
-	// 	// filds.Total=totalAmount;
-	// 	console.log(totalAmount);
-	// });
+	// calculate total bill amount
 	const TotalAmount = data.reduce(getTotal, 0);
 	function getTotal(total, num) {
 		return total + num.Amount;
 	}
+
+	//store total amount into fild state 
 	filds.Total = TotalAmount;
+
+	// delete product 
 	const handleRemoveItem = (rows) => {
 
 		swal({
@@ -144,9 +141,13 @@ function Form({ file, onsubmit, ID }) {
 
 	};
 
+	// user type anything in item code fild , get value and store select state 
 	const handleClick = (e) => {
 		setSelect(e.target.value);
 	};
+
+
+	// filter item data using item code and store into selectitem 
 	const filterItem = Row?.filter((item) => item.ItemCode === Select);
 	let SelectItem;
 	if (filterItem) {
@@ -154,18 +155,23 @@ function Form({ file, onsubmit, ID }) {
 		ID = SelectItem?.id;
 	}
 
+	// this handler is store only party name fild value into fild state
 	const handleParty = (e) => {
 		const PartyName = e.target.name;
 		const PartyValue = e.target.value;
 		const Values = PartyValue ? PartyValue.toString().toLowerCase() : PartyValue;
 		setFilds({ ...filds, [PartyName]: Values });
 	};
+
+	// filter party data 
 	let filterUIDC ;
 	if(file==="Sale-Invoice" || file === "Sale-Order" || file==="Sale-Return"){
 		filterUIDC = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Custommer");
 	}else{
 		filterUIDC = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Saller");
 	}
+
+
 	const parties = filterUIDC?.map((user) => {
 		return user.PartyName;
 	});
@@ -465,7 +471,7 @@ function Form({ file, onsubmit, ID }) {
 												onChange={handleChange}
 												onBlur={handleBlur}
 												className="form-control"
-												placeholder={data?.length}
+												placeholder={data?.length + 1}
 											/>
 											{errors.No && touched.No ? (
 												<p className="form-error text-danger">{errors.No}</p>

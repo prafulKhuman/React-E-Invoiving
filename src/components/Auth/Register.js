@@ -4,11 +4,13 @@ import Logo from "./logo.png";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
-
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
+
 function Register() {
+
 	const { signUp } = useUserAuth();
 	let navigate = useNavigate();
+	
 	const RegisterSchema = Yup.object().shape({
 		email: Yup.string().email("Invalid email").required("Required"),
 		Password: Yup.string()
