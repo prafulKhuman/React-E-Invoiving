@@ -1,7 +1,6 @@
 import sign from "./Sign/signature.png";
-function Invoice({billInfo , file}) {
-	
-	const Info = billInfo?.map((info) => ({
+function Invoice({ billInfo, file }) {
+	const info = billInfo?.map((info) => ({
 		invoiceNo: info[1].ID,
 		Date: info.timestamp,
 		PartyName: info[1].PartyName,
@@ -14,8 +13,7 @@ function Invoice({billInfo , file}) {
 	}));
 
 	const allProperties = billInfo?.map((obj) => {
-		if (Array.isArray(obj[0])) { 
-
+		if (Array.isArray(obj[0])) {
 			return obj[0].map((nestedObj) => {
 				return {
 					Amount: nestedObj.Amount,
@@ -28,7 +26,6 @@ function Invoice({billInfo , file}) {
 				};
 			});
 		} else {
-			
 			return {
 				Amount: obj.Amount,
 				Item: obj.Item,
@@ -40,60 +37,52 @@ function Invoice({billInfo , file}) {
 			};
 		}
 	}).flat();
-	let  Details ;
-	if(Info){
+	let details;
+	if (info) {
 		// eslint-disable-next-line no-unused-vars
-		Details = Info[0] ;
+		details = info[0];
 	}
-	const advance = parseInt(Details?.Advance );
+	const advance = parseInt(details?.Advance);
 
-	return ( <>
+	return (<>
 		<div className="card-body" >
 
-			<div className="invoice-ribbon"><div className="ribbon-inner">{ file === "Sale-Return" || file === "Purchase-Return" ? "" : ((Details?.TotalAmount) - (advance)) === 0 ? "PAID" : "UNPAID"}</div></div><div>
-
-
+			<div className="invoice-ribbon"><div className="ribbon-inner">{file === "Sale-Return" || file === "Purchase-Return" ? "" : ((details?.TotalAmount) - (advance)) === 0 ? "PAID" : "UNPAID"}</div></div><div>
 
 				<div className="row">
 					<div id="boot-icon" className="col" style={{ fontSize: "30px" }}> {file === "Sale-Return" || file === "Purchase-Return" ? "Return Invoice" : "Invoice"} </div>
 
 					<div className="col mr-5 text-right">
-						<h4 className="">Ref No - {Details?.invoiceNo} </h4>
-						<span className="">{Details?.Date}</span>
+						<h4 className="">Ref No - {details?.invoiceNo} </h4>
+						<span className="">{details?.Date}</span>
 					</div>
 				</div>
 				<hr />
 				<div className="row ">
 
-
-
 					<div className="col from ">
-						<p className="lead marginbottom font-weight-bold">TO : {Details?.PartyName}</p><br />
-						<p>{Details?.Address}</p>
+						<p className="lead marginbottom font-weight-bold">TO : {details?.PartyName}</p><br />
+						<p>{details?.Address}</p>
 
-						<p><label className="font-weight-bold">Phone : </label> <span>{Details?.Phone}</span></p>
-						<p> <label className="font-weight-bold">Email : </label> <span>{Details?.Email}</span></p>
+						<p><label className="font-weight-bold">Phone : </label> <span>{details?.Phone}</span></p>
+						<p> <label className="font-weight-bold">Email : </label> <span>{details?.Email}</span></p>
 					</div>
-
-
 
 					<div className="col text-right payment-details">
 						<p className="lead marginbottom payment-info font-weight-bold">Payment details</p><br />
 						<p>
 							<label className="font-weight-bold">Due Date : </label>
-							<span> {Details?.DueDate}</span>
+							<span> {details?.DueDate}</span>
 						</p>
 						<p>
 							<label className="font-weight-bold">Total Amount : </label>
-							<span> {Details?.TotalAmount} </span>
+							<span> {details?.TotalAmount} </span>
 						</p>
 
 					</div>
 
 				</div>
 			</div>
-
-
 
 			<br />   <div className="row table-row">
 				<table className="table table-striped table-bordered">
@@ -109,7 +98,7 @@ function Invoice({billInfo , file}) {
 						</tr>
 					</thead>
 					<tbody>
-            
+
 						{allProperties?.map((Row, index) => {
 							return (
 
@@ -134,20 +123,21 @@ function Invoice({billInfo , file}) {
 			</div><div className="row">
 				<div className="col-xs-6 ml-5 mt-3">
 					<p className="lead font-weight-bold marginbottom">THANK YOU! <i className="bi bi-emoji-smile" /></p>
-					<img src={sign} alt="Signature" style={{ width : "250px" , height : "100px"}}/>
+					<img src={sign} alt="Signature" style={{ width: "250px", height: "100px" }} />
 
 				</div>
 				<div className="col text-right pull-right invoice-total mt-4">
 					<p>
 						<label className="font-weight-bold">Total Amount : </label>
-						<span> {Details?.TotalAmount} </span>
+						<span> {details?.TotalAmount} </span>
 					</p>
-					{file === "Sale-Return" || file === "Purchase-Return" ? "" :
-						<><p>
-							<label className="font-weight-bold"> {file === "Purchase-Bill" ? "UnPaid" : "Balance" } : </label>
-							<span>{Details?.TotalAmount - advance}</span>
+					{file === "Sale-Return" || file === "Purchase-Return"
+						? ""
+						: <><p>
+							<label className="font-weight-bold"> {file === "Purchase-Bill" ? "UnPaid" : "Balance"} : </label>
+							<span>{details?.TotalAmount - advance}</span>
 						</p><p>
-							<label className="font-weight-bold"> {file === "Purchase-Bill" ? "Paid" : "Received" }: </label>
+							<label className="font-weight-bold"> {file === "Purchase-Bill" ? "Paid" : "Received"}: </label>
 							<span> {advance} </span>
 						</p></>
 					}
@@ -156,7 +146,7 @@ function Invoice({billInfo , file}) {
 
 			</div>
 		</div>
-	</> );
+	</>);
 }
 
 export default Invoice;

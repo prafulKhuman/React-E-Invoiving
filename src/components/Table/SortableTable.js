@@ -2,14 +2,14 @@ import Table from "./Table";
 
 import useSortableTable from "../../context/sortTable/useSortableTable";
 
-function SortableTable(props) {
+function SortableTable (props) {
 	const { config, data } = props;
 	const {
 		sortBy,
 		sortOrder,
 		sortedData,
 		handleClick,
-		getIcon,
+		getIcon
 	} = useSortableTable(config, data);
 
 	const updatedConfig = config.map((column) => {
@@ -26,7 +26,7 @@ function SortableTable(props) {
 						{column.label}
 					</div>
 				</th>
-			),
+			)
 		};
 	});
 

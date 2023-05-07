@@ -1,72 +1,65 @@
 
 import SortableTable from "../../components/Table/SortableTable";
 import ItemsFrom from "../../containers/Items/ItemsFrom";
-import {useAddItemMutation , useFetchItemQuery , useDeleteItemMutation } from "../../redux";
-import {useFetchStockQuery , useDeleteStockMutation} from "../../redux";
+import { useAddItemMutation, useFetchItemQuery, useDeleteItemMutation, useFetchStockQuery, useDeleteStockMutation } from "../../redux";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import swal from "sweetalert";
 import MainTable from "../../components/Table/MainTable";
-import { useState  } from "react";
+import { useState } from "react";
 import Stock from "../../containers/Items/Stock";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
-function Items(){
-	const {user} = useUserAuth();
+function Items () {
+	const { user } = useUserAuth();
 	const [AddItem] = useAddItemMutation();
 	const [DeleteItem] = useDeleteItemMutation();
-	const [DeleteStock] =  useDeleteStockMutation();
-	const Response = useFetchStockQuery();
-	const {data , error, isFetching } = useFetchItemQuery();
-	const [searchItem , setSearchItem] = useState("");
-	const [openItem , setOpenItem] = useState();
-	const [show , setShow] = useState(false);
-	
-	
-	
-	const handleSubmit =async(key)=>{
+	const [DeleteStock] = useDeleteStockMutation();
+	const response = useFetchStockQuery();
+	const { data, error, isFetching } = useFetchItemQuery();
+	const [searchItem, setSearchItem] = useState("");
+	const [openItem, setOpenItem] = useState();
+	const [show, setShow] = useState(false);
+
+	const handleSubmit = async (key) => {
 		const response = await AddItem(key);
-		if(response.data === "ok"){
+		if (response.data === "ok") {
 			swal({
 				title: "Item Added !! ",
 				icon: "success",
-				button: "Done!",
+				button: "Done!"
 			});
-		}else{
+		} else {
 			swal("Oops...!", "Something went wrong!", "error");
 		}
 	};
 
-	const handleDeleteItem =(key)=>{
+	const handleDeleteItem = (key) => {
 		swal({
 			title: "Are you sure?",
 			text: "Once Converted, you will not be able to recover this Data!",
 			icon: "warning",
 			buttons: true,
-			dangerMode: true,
+			dangerMode: true
 		}).then(async (willDelete) => {
-
 			if (willDelete) {
 				const response = await DeleteItem(key);
 				if (response.data === "ok") {
 					swal({
 						title: "Item Removed!",
 						icon: "success",
-						button: "Done!",
+						button: "Done!"
 					});
-					
 				}
 			} else {
 				swal("Your Data  is safe!");
 			}
 		});
-	
 	};
 
-	const handleSearchIteam =(e)=>{
+	const handleSearchIteam = (e) => {
 		setSearchItem(e.target.value);
 	};
-
 
 	const filteredUID = data?.filter((item) =>
 		item.UID?.toLowerCase().includes(user.uid.toLowerCase())
@@ -74,114 +67,87 @@ function Items(){
 	const filteredData = filteredUID?.filter((item) =>
 		item.ItemName?.toLowerCase().includes(searchItem?.toLowerCase())
 	);
-	
-	let Data = [];
-	let content ;
-	if(isFetching){
-		// eslint-disable-next-line no-unused-vars
-		content = <Skeleton count={5} height={40}/>;
-	}else if(error){
-		swal("Oops...!", "Something went wrong!", "error");
-	}else{ 
-		// eslint-disable-next-line no-unused-vars
-		Data= filteredData?.map((item , index) => ({
-			id : index + 1 ,
-			itemCode : item.ItemCode ,
-			itemName : item.ItemName ,
-			MRP : item.MRP ,
-			PurchasePrice : item.PurchasePrice ,
-			quantity : item.Quantity ,
-			salePrice : item.SalePrice ,
-			Action : item.id
-		}));
 
-		
+	let Data = [];
+	let content;
+	if (isFetching) {
+		content = <Skeleton count={5} height={40}/>;
+	} else if (error) {
+		swal("Oops...!", "Something went wrong!", "error");
+	} else {
+		Data = filteredData?.map((item, index) => ({
+			id: index + 1,
+			itemCode: item.ItemCode,
+			itemName: item.ItemName,
+			MRP: item.MRP,
+			PurchasePrice: item.PurchasePrice,
+			quantity: item.Quantity,
+			salePrice: item.SalePrice,
+			Action: item.id
+		}));
 	}
 
 	const configTable = [
 		{
 			label: "#",
-			render: (Data) => Data.id,
-			
+			render: (Data) => Data.id
+
 		},
 		{
 			label: "Item",
-			render: (Data) => Data.itemName,
-			
+			render: (Data) => Data.itemName
+
 		},
 		{
 			label: "",
-			render: (Data) => Data.Action,
-			
-		},
-		
+			render: (Data) => Data.Action
+
+		}
 
 	];
-	
+
 	const handleOpenItem = (key) => {
-		
 		const filteredItem = Data?.filter((item) => item.itemName === key);
 		setOpenItem(filteredItem);
 		setShow(true);
-		
-		
-		// if(SaleResponse.data){
-		// 	const PartiesObj = SaleResponse.data?.filter((item) => item[1].PartyName === key);
-		// 	setSaleInfo(PartiesObj);
-		// }
-		// if(PaymentInResponse.data){
-		// 	const PaymentIn = PaymentInResponse.data?.filter((item) => item.PartyName === key);
-		// 	setPaymentInfo(PaymentIn);
-			
-		// }
-					
 	};
-	
 
-	const handleDeleteRow =(key)=>{
-		
+	const handleDeleteRow = (key) => {
 		swal({
 			title: "Are you sure?",
 			text: "Once Converted, you will not be able to recover this Data!",
 			icon: "warning",
 			buttons: true,
-			dangerMode: true,
+			dangerMode: true
 		}).then(async (willDelete) => {
-
 			if (willDelete) {
 				const response = await DeleteStock(key);
 				if (response.data === "ok") {
 					swal({
 						title: "Stock Record Removed!",
 						icon: "success",
-						button: "Done!",
+						button: "Done!"
 					});
-					
 				}
 			} else {
 				swal("Your Data  is safe!");
 			}
 		});
 	};
-	
 
-
-	
-	let Item;
-	if(openItem){
-		// eslint-disable-next-line no-unused-vars
-		Item = openItem[0];
+	let item;
+	if (openItem) {
+		item = openItem[0];
 	}
-	
-	let Records = [];
-	let Content = <Skeleton count={5} height={40} />;
+
+	let records = [];
+	const Content = <Skeleton count={5} height={40} />;
 	if (Response?.error) {
 		swal("Oops...!", "Something went wrong!", "error");
 	} else {
-		//eslint-disable-next-line no-unused-vars
-		const filterRecord = Response?.data?.filter((item) => item.ItemID === Item?.Action);
-		
-		Records = filterRecord?.map((item, index) => ({
+		const filterRecord = Response?.data?.filter((items) => items.ItemID === item?.Action);
+
+		records = filterRecord?.map((item, index) => ({
 			id: index + 1,
 			timestamp: item.timestamp,
 			ItemCode: item.ItemCode,
@@ -189,66 +155,62 @@ function Items(){
 			PurchasePrice: item.PurchasePrice,
 			SalePrice: item.SalePrice,
 			Quantity: item.Quantity,
-			Type : item.TYPE ,
+			Type: item.TYPE,
 			Action: item.id
 		}));
-
-
 	}
-	const StockConfig = [
+	const stockConfig = [
 		{
 			label: "#",
-			render: (Records) => Records.id,
-			
+			render: (Records) => Records.id
+
 		},
 		{
 			label: "Date",
-			render: (Records) => Records.timestamp,
-			
+			render: (Records) => Records.timestamp
+
 		},
 		{
 			label: "Item Code",
-			render: (Records) => Records.ItemCode,
-			
+			render: (Records) => Records.ItemCode
+
 		},
 		{
 			label: "MRP",
-			render: (Records) => Records.MRP,
-			
+			render: (Records) => Records.MRP
+
 		},
 		{
 			label: "Purchase Price",
-			render: (Records) => Records.PurchasePrice,
-			
+			render: (Records) => Records.PurchasePrice
+
 		},
 		{
 			label: "Sale Price",
-			render: (Records) => Records.SalePrice,
-			
+			render: (Records) => Records.SalePrice
+
 		},
 		{
 			label: "Type",
-			render: (Records) => Records.Type,
-			
+			render: (Records) => Records.Type
+
 		},
 		{
 			label: "Quantity",
-			render: (Records) => Records.Quantity,
-			
+			render: (Records) => Records.Quantity
+
 		},
 		{
 			label: "",
-			render: (Records) => Records.Action,
-			
-		},
-		
+			render: (Records) => Records.Action
+
+		}
 
 	];
 	const keyfn = (item) => item.id;
 	return (
 		<>
 
-			
 			<div className="main-content">
 
 				<div className="content-top-gap">
@@ -266,17 +228,17 @@ function Items(){
 									<div className="input-group-prepend">
 										<span className="input-group-text ml-5"><i className=" bi bi-search" /></span>
 									</div>
-									<input type="search" className="form-control"  onChange={handleSearchIteam} placeholder="Search Items" aria-label="Username" aria-describedby="basic-addon1" />
+									<input type="search" className="form-control" onChange={handleSearchIteam} placeholder="Search Items" aria-label="Username" aria-describedby="basic-addon1" />
 								</div>
 								<div className="card-body Par_height">
-									
-									<div className="card-text"> 
 
-										{/* <SortableTable data={data} config={config} keyfn={keyfn} /> */}
-										{content || <MainTable data={Data} config={configTable}  isopen={handleOpenItem}  isDelete={handleDeleteItem}/> }
+									<div className="card-text">
+
+					
+										{content || <MainTable data={Data} config={configTable} isopen={handleOpenItem} isDelete={handleDeleteItem}/> }
 
 									</div>
-									
+
 								</div>
 							</div>
 						</div>
@@ -285,47 +247,39 @@ function Items(){
 								<div className="card-header">
 									<div className="row">
 										<div className="col">
-											<h5 className="card-title">Item Name : {Item?.itemCode}</h5>
+											<h5 className="card-title">Item Name : {item?.itemCode}</h5>
 										</div>
 										<div className="col text-right">
-											<Stock ID={Item?.Action} data={Item}/>
+											<Stock ID={item?.Action} data={item}/>
 										</div>
 									</div>
-									
-
-									
 
 								</div>
 								<div className="card-body">
-									
-									
-									
 
-									<div className="card-text">		
+									<div className="card-text">
 										<div className="row">
 											<div className="col">
 												<div className="mt-1">
-													<label>Item Code: {Item?.itemCode}</label>
+													<label>Item Code: {item?.itemCode}</label>
 												</div>
-                                        
-												<div className="mt-2">
-													<label>Sale Price : {Item?.salePrice}</label>
-												</div>
-											</div>
-                                    
-											<div className="mr-3">
-												<div className="mt-2">
-													<label> Stock Quantity  : {Item?.quantity} </label>
-												</div>
-												
 
 												<div className="mt-2">
-													<label>Purchase Price : {Item?.PurchasePrice}</label>
+													<label>Sale Price : {item?.salePrice}</label>
+												</div>
+											</div>
+
+											<div className="mr-3">
+												<div className="mt-2">
+													<label> Stock Quantity  : {item?.quantity} </label>
+												</div>
+
+												<div className="mt-2">
+													<label>Purchase Price : {item?.PurchasePrice}</label>
 												</div>
 											</div>
 										</div>
 
-															
 									</div>
 								</div>
 							</div>
@@ -335,21 +289,19 @@ function Items(){
 									<span className="col"> TRANSACTIONS   </span>
 
 								</div>
-								<div className="card-body height">						
+								<div className="card-body height">
 									<div>
-										{show? <SortableTable data={Records} config={StockConfig} keyfn={keyfn} ID={handleDeleteRow} file="Item"/> : Content }
+										{show ? <SortableTable data={records} config={stockConfig} keyfn={keyfn} ID={handleDeleteRow} file="Item"/> : Content }
 									</div>
-									
+
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-	
-     
+
 		</>
 	);
-
 }
 export default Items;

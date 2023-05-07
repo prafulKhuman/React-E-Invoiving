@@ -1,4 +1,3 @@
-// import { useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
@@ -7,25 +6,13 @@ import Select from "react-select";
 import { useFetchPartiesQuery } from "../../redux";
 import { Hint } from "react-autocomplete-hint";
 
-
 function PaymentInOut({ file, AddData, ID }) {
 	const { user } = useUserAuth();
 
 	const [selectedOption, setSelectedOption] = useState(null);
 	const response = useFetchPartiesQuery();
-	// const initialValues = {
-	// 	PartyName: "",
-	// 	receiptno: "",
-	// 	Date: "",
-	// 	Description: "",
-	// 	Amount: "",
-	// 	TransectionType: file
-	// };
-	// const [paymentInfo , setPaymentInfo] = useState(initialValues);
-
-
-	const PaymentInOutSchema = Yup.object().shape({
-		//PartyName: Yup.string().min(5).required("Can't Empty This Field"),
+	
+	const paymentInOutSchema = Yup.object().shape({
 		receiptno: Yup.number().min(1).required("Can't Empty This Field "),
 		Description: Yup.string().min(5).required("Can't Empty This Field"),
 		Amount: Yup.number().min(1).required("Can't Empty This Field"),
@@ -35,83 +22,61 @@ function PaymentInOut({ file, AddData, ID }) {
 	const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
 		useFormik({
 			initialValues: {
-				//PartyName: "",
 				receiptno: "",
 				Description: "",
 				Amount: "",
 				MobailNo: "",
 				TransectionType: file
 			},
-			validationSchema: PaymentInOutSchema,
+			validationSchema: paymentInOutSchema,
 			onSubmit: (values, action) => {
-				const Payment = {
+				const payment = {
 					...values,
 					UID: user.uid,
 					PartyName: selectedOption.label
 				};
-				AddData(Payment);
+				AddData(payment);
 				action.resetForm();
-			},
+			}
 		});
-
-	// const handleChange =(e)=>{
-	// 	setPaymentInfo({...paymentInfo , [e.target.name]: e.target.value });
-	// };
-
-	// const handleSubmit =(e)=>{
-	// 	e.preventDefault();
-	// 	AddData(paymentInfo);
-	// 	setPaymentInfo(initialValues);
-	// };
-
-
-
-
-
-
 
 	const filterCustommer = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Custommer");
 
-	const Custommer = filterCustommer?.map((item) => ({
+	const custommer = filterCustommer?.map((item) => ({
 		label: item.PartyName
 	}));
 
 	const filterSaller = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Saller");
 
-	const Saller = filterSaller?.map((item) => ({
+	const saller = filterSaller?.map((item) => ({
 		label: item.PartyName
 	}));
 
-
-
-	console.log(selectedOption?.label, "sel");
-
+	
 
 	let options;
-	let Phone;
+	let phone;
 
 	if (file === "Payment-In") {
-		options = Custommer;
-		const Hint = filterCustommer?.map((item) => {
+		options = custommer;
+		const hint = filterCustommer?.map((item) => {
 			if (item.PartyName === selectedOption?.label) {
 				return item.PhoneNo;
 			}
 		});
-		Phone = Hint;
-
+		phone = hint;
 	} else {
-		options = Saller;
-		const Hint = filterSaller?.map((item) => {
+		options = saller;
+		const hint = filterSaller?.map((item) => {
 			if (item.PartyName === selectedOption?.label) {
 				return item.PhoneNo;
 			}
 		});
-		Phone = Hint;
+		phone = hint;
 	}
 
-	const PhoneHint = Phone ? Phone : [""];
+	const phoneHint = phone || [""];
 
-	console.log(PhoneHint, "hint");
 	return (
 		<>
 			<button type="button" className="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -142,23 +107,7 @@ function PaymentInOut({ file, AddData, ID }) {
 												isClearable={true}
 												isSearchable={true}
 											/>
-											{/* <input type="text"
-												className="form-control"
-												name="PartyName"
-												required
-												value={values.PartyName}
-												onChange={handleChange}
-												onBlur={handleBlur}
-												placeholder="PartyName"
-												aria-describedby="inputGroup-sizing-default"
-												aria-label="Default"
-
-											/>
-
-
-											{errors.PartyName && touched.PartyName ? (
-												<p className="form-error text-danger">{errors.PartyName}</p>
-											) : null} */}
+											
 
 										</div>
 										<div className="invoice_No  col-md-4 ms-auto">
@@ -173,15 +122,17 @@ function PaymentInOut({ file, AddData, ID }) {
 												onChange={handleChange}
 												onBlur={handleBlur}
 											/>
-											{errors.receiptno && touched.receiptno ? (
-												<p className="form-error text-danger">{errors.receiptno}</p>
-											) : null}
+											{errors.receiptno && touched.receiptno
+												? (
+													<p className="form-error text-danger">{errors.receiptno}</p>
+												)
+												: null}
 
 										</div>
 									</div>
 									<div className="row">
 										<div className="input-group  col-md-3">
-											<Hint options={PhoneHint} allowTabFill={true} allowEnterFill={true}>
+											<Hint options={phoneHint} allowTabFill={true} allowEnterFill={true}>
 
 												<input type="text"
 													className="form-control"
@@ -190,15 +141,17 @@ function PaymentInOut({ file, AddData, ID }) {
 													value={values.MobailNo}
 													onChange={handleChange}
 													onBlur={handleBlur}
-													placeholder={PhoneHint ? PhoneHint : "Mobile No"}
+													placeholder={phoneHint || "Mobile No"}
 													aria-describedby="inputGroup-sizing-default"
 													aria-label="Default"
 
 												/>
 											</Hint>
-											{errors.MobailNo && touched.MobailNo ? (
-												<p className="form-error text-danger">{errors.MobailNo}</p>
-											) : null}
+											{errors.MobailNo && touched.MobailNo
+												? (
+													<p className="form-error text-danger">{errors.MobailNo}</p>
+												)
+												: null}
 
 										</div>
 									</div>
@@ -215,15 +168,13 @@ function PaymentInOut({ file, AddData, ID }) {
 												placeholder="Description"
 												name="Description"
 											/>
-											{errors.Description && touched.Description ? (
-												<p className="form-error text-danger">{errors.Description}</p>
-											) : null}
-
+											{errors.Description && touched.Description
+												? (
+													<p className="form-error text-danger">{errors.Description}</p>
+												)
+												: null}
 
 										</div>
-
-
-
 
 									</div>
 									<div className="row">
@@ -246,9 +197,11 @@ function PaymentInOut({ file, AddData, ID }) {
 														placeholder="Amount"
 														aria-describedby="inputGroup-sizing-default"
 													/>
-													{errors.Amount && touched.Amount ? (
-														<p className="form-error text-danger">{errors.Amount}</p>
-													) : null}
+													{errors.Amount && touched.Amount
+														? (
+															<p className="form-error text-danger">{errors.Amount}</p>
+														)
+														: null}
 
 												</div>
 											</div>

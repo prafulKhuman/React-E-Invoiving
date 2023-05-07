@@ -1,27 +1,25 @@
 import { useNavigate } from "react-router";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 import swal from "sweetalert";
-function Header() {
+function Header () {
 	const { logOut, user } = useUserAuth();
 	const navigate = useNavigate();
 
-	const handleLogout = ()=>{
+	const handleLogout = () => {
 		try {
-			
 			swal({
 				title: "Are you sure?",
 				text: "Logout The E-Invoicing Application",
 				icon: "info",
 				buttons: true,
-				dangerMode: true,
+				dangerMode: true
 			})
-			.then(async(willDelete) => {
-				if (willDelete) {
-					await logOut();
-					navigate("/");
-				} 
-			});
-			
+				.then(async (willDelete) => {
+					if (willDelete) {
+						await logOut();
+						navigate("/");
+					}
+				});
 		} catch (error) {
 			swal("Oops...!", "Something went wrong!", "error");
 		}
@@ -33,14 +31,12 @@ function Header() {
 			<div className="menu-right">
 				<div className="navbar user-panel-top">
 
-					
-						<div className="mr-5">
-							<p> <i className="bi bi-person-circle fa-lg" />  {user && user.email}</p>
-						</div>
-						<div >
+					<div className="mr-5">
+						<p> <i className="bi bi-person-circle fa-lg" />  {user && user.email}</p>
+					</div>
+					<div >
 						<i className="bi bi-box-arrow-right fa-2x" onClick={handleLogout}/>
-						</div>
-					
+					</div>
 
 				</div>
 			</div>

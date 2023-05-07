@@ -20,7 +20,7 @@ let initialValues = {
 };
 
 
-let Row;
+let row;
 function Form({ file, onsubmit, ID }) {
 	// No Is Show Hint Of Invoice No , Return No , Order No 
 	const No = ID + 1;
@@ -40,7 +40,7 @@ function Form({ file, onsubmit, ID }) {
 
 	const { user } = useUserAuth();
 	const response = useFetchPartiesQuery();
-	const ItemResponse = useFetchItemQuery();
+	const itemResponse = useFetchItemQuery();
 	const fileName = file;
 	const [data, setData] = useState([]);
 	const [filds, setFilds] = useState(intial);
@@ -48,16 +48,16 @@ function Form({ file, onsubmit, ID }) {
 
 
 	// this function is fatch item and filter by current user id  
-	if (ItemResponse.data) {
-		const filterUID = ItemResponse.data?.filter((item) => item.UID === user.uid);
-		const Item = filterUID?.map((key) => ({
+	if (itemResponse.data) {
+		const filterUID = itemResponse.data?.filter((item) => item.UID === user.uid);
+		const item = filterUID?.map((key) => ({
 			ItemName: key.ItemName,
 			ItemCode: key.ItemCode,
 			MRP: key.SalePrice,
 			id: key.id
 
 		}));
-		Row = Item;
+		row = item;
 	}
 
 	// this handler is store party name , mobile no , email , address , id , due date , and total , advance into filds state
@@ -95,13 +95,13 @@ function Form({ file, onsubmit, ID }) {
 		});
 
 	// calculate total bill amount
-	const TotalAmount = data.reduce(getTotal, 0);
+	const totalAmount = data.reduce(getTotal, 0);
 	function getTotal(total, num) {
 		return total + num.Amount;
 	}
 
 	//store total amount into fild state 
-	filds.Total = TotalAmount;
+	filds.Total = totalAmount;
 
 	// delete product 
 	const handleRemoveItem = (rows) => {
@@ -148,19 +148,19 @@ function Form({ file, onsubmit, ID }) {
 
 
 	// filter item data using item code and store into selectitem 
-	const filterItem = Row?.filter((item) => item.ItemCode === Select);
-	let SelectItem;
+	const filterItem = row?.filter((item) => item.ItemCode === Select);
+	let selectItem;
 	if (filterItem) {
-		SelectItem = filterItem[0];
-		ID = SelectItem?.id;
+		selectItem = filterItem[0];
+		ID = selectItem?.id;
 	}
 
 	// this handler is store only party name fild value into fild state
 	const handleParty = (e) => {
-		const PartyName = e.target.name;
-		const PartyValue = e.target.value;
-		const Values = PartyValue ? PartyValue.toString().toLowerCase() : PartyValue;
-		setFilds({ ...filds, [PartyName]: Values });
+		const partyName = e.target.name;
+		const partyValue = e.target.value;
+		const Values = partyValue ? partyValue.toString().toLowerCase() : partyValue;
+		setFilds({ ...filds, [partyName]: Values });
 	};
 
 	// filter party data 
@@ -176,23 +176,23 @@ function Form({ file, onsubmit, ID }) {
 		return (user.PartyName).toLowerCase();
 	});
 
-	const PartyHint = parties ? parties : [""];
+	const partyHint = parties ? parties : [""];
 
-	const Code = Row?.map((item) => {
+	const code = row?.map((item) => {
 		return item.ItemCode;
 	});
 
 
-	const ItemCodeHint = Code ? Code : [""];
-	const ItemNameHint = SelectItem ? [SelectItem.ItemName] : [""];
+	const itemCodeHint = code ? code : [""];
+	const itemNameHint = selectItem ? [selectItem.ItemName] : [""];
 
 
 	const filterMobile = filterUIDC?.filter((item) => item.PartyName === filds.PartyName);
-	const PartyMobile = filterMobile?.map((user) => {
+	const partyMobile = filterMobile?.map((user) => {
 		return user.PhoneNo;
 	});
 
-	const Mobile = PartyMobile != "" ? PartyMobile : "Enter Mobile No";
+	const mobile = partyMobile != "" ? partyMobile : "Enter Mobile No";
 
 	return (
 
@@ -218,31 +218,17 @@ function Form({ file, onsubmit, ID }) {
 										<div className="col-sm-2">
 
 											<div className="input-group mb-3">
-												<Hint options={PartyHint} allowTabFill={true} allowEnterFill={true}>
+												<Hint options={partyHint} allowTabFill={true} allowEnterFill={true}>
 													<input
 														type="text"
 														className="form-control"
 														name="PartyName"
 														value={filds.PartyName}
-														//onChange={handleChange2}
 														placeholder="Party Name"
 														aria-describedby="inputGroup-sizing-default"
 														onChange={handleParty}
 														required />
 												</Hint>
-
-												{/* <input type="text"
-													className="form-control"
-													name="PartyName"
-													required
-													value={filds.PartyName}
-													onChange={handleChange2}
-													aria-label="Default"
-													aria-describedby="inputGroup-sizing-default"
-													list="browsers"
-													placeholder="Party Name" />
-												 */}
-
 											</div>
 										</div>
 										<div className="col-sm-2">
@@ -255,9 +241,8 @@ function Form({ file, onsubmit, ID }) {
 													onChange={handleChange2}
 													required
 													aria-label="Default"
-													placeholder={Mobile}
+													placeholder={mobile}
 													aria-describedby="inputGroup-sizing-default" />
-
 											</div>
 										</div>
 										<div className="col-sm-8  text-right">
@@ -483,7 +468,7 @@ function Form({ file, onsubmit, ID }) {
 											<label className="ml-4" htmlFor="ItemCode"><span style={{ color: "#e81717" }}> * </span> Item Code</label>
 										</div>
 										<div className="col">
-											<Hint options={ItemCodeHint} allowTabFill={true} allowEnterFill={true}>
+											<Hint options={itemCodeHint} allowTabFill={true} allowEnterFill={true}>
 												<input type="text"
 													name="ItemCode"
 													value={values.ItemCode}
@@ -507,14 +492,14 @@ function Form({ file, onsubmit, ID }) {
 											<label className="ml-4" htmlFor="Item"><span style={{ color: "#e81717" }}> * </span> Item </label>
 										</div>
 										<div className="col">
-											<Hint options={ItemNameHint} allowTabFill={true} allowEnterFill={true}>
+											<Hint options={itemNameHint} allowTabFill={true} allowEnterFill={true}>
 												<input type="text"
 													name="Item"
 													value={values.Item}
 													onChange={handleChange}
 													onBlur={handleBlur}
 													className="form-control"
-													placeholder={SelectItem ? SelectItem.ItemName : "Item Name"} />
+													placeholder={selectItem ? selectItem.ItemName : "Item Name"} />
 											</Hint>
 											{errors.Item && touched.Item ? (
 												<p className="form-error text-danger">{errors.Item}</p>
@@ -533,7 +518,7 @@ function Form({ file, onsubmit, ID }) {
 												onChange={handleChange}
 												onBlur={handleBlur}
 												className="form-control"
-												placeholder={SelectItem ? SelectItem.MRP : "MRP"} />
+												placeholder={selectItem ? selectItem.MRP : "MRP"} />
 
 											{errors.MRP && touched.MRP ? (
 												<p className="form-error text-danger">{errors.MRP}</p>

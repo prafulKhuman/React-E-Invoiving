@@ -2,94 +2,84 @@ import ExpensesFrom from "../../containers/Expense/ExpensesFrom";
 import SortableTable from "../../components/Table/SortableTable";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 import CategoryForm from "../../containers/Expense/CategoryForm";
-import {useAddCategoryMutation , useFetchCategoryQuery , useDeleteCategoryMutation} from "../../redux";
-import {useFetchExpenseQuery , useDeleteExpensesMutation} from "../../redux";
+import { useAddCategoryMutation, useFetchCategoryQuery, useDeleteCategoryMutation, useFetchExpenseQuery, useDeleteExpensesMutation } from "../../redux";
 import swal from "sweetalert";
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-//import MainTable from "./../../components/Table/MainTable";
 import MainTable from "./../../components/Table/MainTable";
 
-
-function Expenses() {
-	const {user} = useUserAuth();
-	const [AddCategory] = useAddCategoryMutation ();
+function Expenses () {
+	const { user } = useUserAuth();
+	const [AddCategory] = useAddCategoryMutation();
 	const { data, error, isFetching } = useFetchCategoryQuery();
-	const [DeleteCategory] =useDeleteCategoryMutation();
-	let Expanses = useFetchExpenseQuery();
+	const [DeleteCategory] = useDeleteCategoryMutation();
+	const expanses = useFetchExpenseQuery();
 	const [DeleteExpenses] = useDeleteExpensesMutation();
-	const [search , setSearch] = useState("");
-	const [Exp , setExp] = useState();
-	const [ExpData , setExpData] = useState([]);
+	const [search, setSearch] = useState("");
+	const [exp, setExp] = useState();
+	const [expData, setExpData] = useState([]);
 
-
-	useEffect(()=>{
-		const filterExp =  Expanses.data?.filter((item)=>item.Category === Exp && item.UID === user.uid);
+	useEffect(() => {
+		const filterExp = expanses.data?.filter((item) => item.Category === exp && item.UID === user.uid);
 		setExpData(filterExp);
-	},[]);
+	}, []);
 
-	const handleSubmit = async (key)=>{
+	const handleSubmit = async (key) => {
 		const response = await AddCategory(key);
-		if(response.data === "ok"){
+		if (response.data === "ok") {
 			swal({
 				title: "Data Saved Success!",
 				icon: "success",
-				button: "Done!",
+				button: "Done!"
 			});
-		}else{
+		} else {
 			swal("Oops...!", "Something went wrong!", "error");
 		}
 	};
 
-	const handleDeleteRow =(key)=>{
+	const handleDeleteRow = (key) => {
 		swal({
 			title: "Are you sure?",
 			text: "Once deleted, you will not be able to recover this Data!",
 			icon: "warning",
 			buttons: true,
-			dangerMode: true,
+			dangerMode: true
 		}).then(async (willDelete) => {
 			if (willDelete) {
 				const response = await DeleteExpenses(key);
-				
-				if (response.data === "ok") {
 
+				if (response.data === "ok") {
 					swal("Data Deleted Success", {
-						icon: "success",
+						icon: "success"
 					});
-					
-					
 				}
-				
 			} else {
 				swal("Your Data is safe!");
 			}
 		});
-		
 	};
-	const handleSearch =(e)=>{
+	const handleSearch = (e) => {
 		setSearch(e.target.value);
 	};
 
 	const filteredData = data?.filter((item) =>
-		item.UID === user.uid ?
-			item.Category.toLowerCase().includes(search.toLowerCase())
+		item.UID === user.uid
+			? item.Category.toLowerCase().includes(search.toLowerCase())
 			: ""
 	);
 
 	let Data = [];
 	let content;
 	if (isFetching) {
-		content = <Skeleton count={5} height={40} /> ;
-	}
-	else if (error) {
+		content = <Skeleton count={5} height={40} />;
+	} else if (error) {
 		swal("Oops...!", "Something went wrong!", "error");
 	} else {
 		Data = filteredData?.map((item, index) => ({
-			id : index + 1 ,
-			Category : item.Category ,
-			Action : item.id 
+			id: index + 1,
+			Category: item.Category,
+			Action: item.id
 		}));
 	}
 
@@ -97,98 +87,95 @@ function Expenses() {
 		{
 			label: "#",
 			render: (Data) => Data.id,
-			sortValue: (Data) => Data.id,
+			sortValue: (Data) => Data.id
 		},
 		{
 			label: "Category",
 			render: (Data) => Data.Category,
-			sortValue: (Data) => Data.Category,
+			sortValue: (Data) => Data.Category
 		},
 		{
 			label: "",
-			render: (Data) => Data.Action,
-			
-		},
-	
+			render: (Data) => Data.Action
+
+		}
+
 	];
 
-	const handleOpen =(key)=>{
+	const handleOpen = (key) => {
 		setExp(key);
-		const filterExp =  Expanses.data?.filter((item)=>item.Category === key && item.UID === user.uid);
+		const filterExp = expanses.data?.filter((item) => item.Category === key && item.UID === user.uid);
 		setExpData(filterExp);
 	};
-	const Total = ExpData?.reduce(getTotal , 0);
-	function getTotal(total , num){
-		return total + parseInt(num.ExpAmount) ;
+	const total = expData?.reduce(getTotal, 0);
+	function getTotal (total, num) {
+		return total + parseInt(num.ExpAmount);
 	}
-	
-	const Record = ExpData?.map((item , index)=>({
-		id : index + 1 ,
-		ExpDate : item.timestamp ,
-		ExpNo : item.ExpNo ,
-		ExpDesc : item.ExpDesc ,
-		ExpAmount : item.ExpAmount ,
-		Action : item.id
+
+	const record = expData?.map((item, index) => ({
+		id: index + 1,
+		ExpDate: item.timestamp,
+		ExpNo: item.ExpNo,
+		ExpDesc: item.ExpDesc,
+		ExpAmount: item.ExpAmount,
+		Action: item.id
 
 	}));
-	const Expconfig = [
+	const expconfig = [
 		{
 			label: "#",
 			render: (Record) => Record.id,
-			sortValue: (Record) => Record.id,
+			sortValue: (Record) => Record.id
 		},
 		{
 			label: "Exp No",
 			render: (Record) => Record.ExpNo,
-			sortValue: (Record) => Record.ExpNo,
+			sortValue: (Record) => Record.ExpNo
 		},
 		{
 			label: "Exp Date",
 			render: (Record) => Record.ExpDate,
-			sortValue: (Record) => Record.ExpDate,
+			sortValue: (Record) => Record.ExpDate
 
 		},
 		{
 			label: "Description",
 			render: (Record) => Record.ExpDesc,
-			sortValue: (Record) => Record.ExpDesc,
+			sortValue: (Record) => Record.ExpDesc
 
 		},
 		{
 			label: "Amount",
 			render: (Record) => Record.ExpAmount,
-			sortValue: (Record) => Record.ExpAmount,
+			sortValue: (Record) => Record.ExpAmount
 
 		},
 		{
 			label: "",
 			render: (Record) => Record.Action,
-			sortValue: (Record) => Record.Action,
+			sortValue: (Record) => Record.Action
 
-		},
-		
-
+		}
 
 	];
 
 	const keyfn = (item) => item.Id;
 
-	const handleDelete =(key)=>{
+	const handleDelete = (key) => {
 		swal({
 			title: "Are you sure?",
 			text: "Once deleted, you will not be able to recover this Data!",
 			icon: "warning",
 			buttons: true,
-			dangerMode: true,
+			dangerMode: true
 		}).then(async (willDelete) => {
 			if (willDelete) {
-				
-				const Response = await DeleteCategory(key);
-				if (Response.data === "ok") {
+				const response = await DeleteCategory(key);
+				if (response.data === "ok") {
 					swal("Data Deleted Success", {
-						icon: "success",
+						icon: "success"
 					});
-				}else{
+				} else {
 					swal("Oops...!", "Something went wrong!", "error");
 				}
 			} else {
@@ -196,10 +183,10 @@ function Expenses() {
 			}
 		});
 	};
-	
+
 	return (
 		<>
-			
+
 			<div className="main-content">
 				<div className="content-top-gap">
 					<div className="row">
@@ -214,12 +201,8 @@ function Expenses() {
 										<div className="col">
 											<CategoryForm onCategory={handleSubmit}/>
 										</div>
-										
-										
+
 									</div>
-									
-
-
 
 								</div>
 								<div className="input-group invoice_No mt-3   ">
@@ -230,11 +213,9 @@ function Expenses() {
 								</div>
 								<div className="card-body Expheight">
 									<div className="card-text ">
-										
-										
-										{/* <SortableTable data={data} config={config} keyfn={keyfn} /> */}
-										{content || <MainTable data={Data} config={config}  isopen={handleOpen}  isDelete={handleDelete}/> }
-										
+
+										{content || <MainTable data={Data} config={config} isopen={handleOpen} isDelete={handleDelete}/> }
+
 									</div>
 								</div>
 							</div>
@@ -243,16 +224,16 @@ function Expenses() {
 							<div className="card">
 								<div className="card-header">
 									<div className="item_right">
-										<ExpensesFrom Cat={data} ID={Expanses.data?.length}/>
+										<ExpensesFrom Cat={data} ID={expanses.data?.length}/>
 									</div>
 								</div>
 								<div className="card-body">
 									<div className="row">
 										<div className="col">
-											<h5 className="card-title">Category Name : {Exp}</h5>
+											<h5 className="card-title">Category Name : {exp}</h5>
 										</div>
 										<div className="card-text mr-5">
-											<div className="col">Total : {Total? Total : 0}</div>
+											<div className="col">Total : {total || 0}</div>
 										</div>
 									</div>
 								</div>
@@ -274,8 +255,8 @@ function Expenses() {
 
 								<div className="card-body  Exp_height">
 									<div>
-										{/* <SortableTable data={Edata} config={Econfig} keyfn={keyfn} /> */}
-										{Exp?  <SortableTable data={Record} config={Expconfig} keyfn={keyfn}  file={"Expense"}   ID={handleDeleteRow}/> : <Skeleton count={5} height={40} />}
+									
+										{exp ? <SortableTable data={record} config={expconfig} keyfn={keyfn} file={"Expense"} ID={handleDeleteRow}/> : <Skeleton count={5} height={40} />}
 
 									</div>
 

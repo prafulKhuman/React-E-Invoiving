@@ -1,19 +1,17 @@
 import sign from "./../Table/Sign/signature.png";
-let party;  
-function PartiesTable({filteredData , config , parties}) {
-	
-	const totalAmount = filteredData?.reduce(getTotal , 0);
-	function getTotal(total , num){
-		return total + parseInt(num.Total_Amount) ;
+let party;
+function PartiesTable ({ filteredData, config, parties }) {
+	const totalAmount = filteredData?.reduce(getTotal, 0);
+	function getTotal (total, num) {
+		return total + parseInt(num.Total_Amount);
 	}
-	
-	if(parties)
-	{
+
+	if (parties) {
 		// setParties(parties[0]);
 		party = parties[0];
 	}
-	
-	return ( <>
+
+	return (<>
 		<div className="row mt-2">
 			<div className="col">
 				<p className="h6"><span className="font-weight-bold "> Parties Name : </span>  {party?.PartiesName}</p>
@@ -21,26 +19,23 @@ function PartiesTable({filteredData , config , parties}) {
 			</div>
 		</div>
 		<div className="mt-3 table-responsive" >
-																	
+
 			<table className="table table-striped table-bordered w-full" >
 				<thead className="table-dark">
 					<tr>
 
-						{config?.map((collumn , index)=>{
-							if(collumn.label != "")
-							{
-								return(
+						{config?.map((collumn, index) => {
+							if (collumn.label != "") {
+								return (
 									<th key={index}>{collumn.label}</th>
 								);
 							}
-							
 						})}
-					
 
 					</tr>
 				</thead>
 				<tbody>
-					{filteredData?.map((row ,index)=>{ 
+					{filteredData?.map((row, index) => {
 						return (
 							<tr key={index}>
 								<td>{index}</td>
@@ -50,8 +45,7 @@ function PartiesTable({filteredData , config , parties}) {
 								<td>{row.Due_Date}</td>
 								<td>{row.Total_Amount}</td>
 								<td>{row.Advance}</td>
-								
-		
+
 							</tr>);
 					})}
 				</tbody>
@@ -63,7 +57,7 @@ function PartiesTable({filteredData , config , parties}) {
 		<div className="row">
 			<div className="col-xs-6 text-left ml-3 mt-3">
 				<p className="lead font-weight-bold marginbottom">THANK YOU! <i className="bi bi-emoji-smile" /></p>
-				<img src={sign} alt="Signature" style={{ width : "250px" , height : "100px"}}/>
+				<img src={sign} alt="Signature" style={{ width: "250px", height: "100px" }}/>
 
 			</div>
 			<div className="col text-right pull-right invoice-total">
@@ -71,10 +65,10 @@ function PartiesTable({filteredData , config , parties}) {
 					<label className="font-weight-bold">Total Amount : </label>
 					<span> ₹ {totalAmount} </span>
 				</p>
-				
+
 			</div>
 		</div>
-	</> );
+	</>);
 }
 
 export default PartiesTable;

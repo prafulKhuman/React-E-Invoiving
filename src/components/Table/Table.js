@@ -1,5 +1,4 @@
-import { Fragment } from "react";
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import Receipt from "./Receipt";
 import Invoice from "./Invoice";
@@ -9,18 +8,12 @@ function Table({ data, config, keyfn, ...props }) {
 	const printID = props.printID;
 	const billInfo = props.billInfo;
 	const file = props.file;
-	const convert = props.convert ;
-	
+	const convert = props.convert;
+
 	const myRef = useRef(null);
 	const handlePrintInvoice = useReactToPrint({
 		content: () => myRef.current
 	});
-
-	
-	
-
-
-
 
 	const handledeleteItem = (key) => {
 		ID(key);
@@ -28,10 +21,9 @@ function Table({ data, config, keyfn, ...props }) {
 	const handlePrint = (key) => {
 		printID(key);
 	};
-	const handleConvert =(key)=>{
+	const handleConvert = (key) => {
 		convert(key);
 	};
-
 
 	const rendrecell = config.map((config) => {
 		if (config.header) {
@@ -42,15 +34,16 @@ function Table({ data, config, keyfn, ...props }) {
 	const rendreddata = data.map((item) => {
 		const rendredconfig = config.map((configitem) => (
 			<td key={configitem.label}>
-				{configitem.label === "Action" ?
-					<>
+				{configitem.label === "Action"
+					? <>
 						<i className="ml-2 bi bi-trash fa-lg mr-1" onClick={() => handledeleteItem(configitem.render(item))} />
 						<a data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
 							<i className="bi bi-printer-fill fa-lg" onClick={() => handlePrint(configitem.render(item))} />
 						</a>
 						{file === "Sale-Order" ? <i className="bi bi-check2-circle fa-lg ml-1" onClick={() => handleConvert(configitem.render(item))}></i> : ""}
-					</> : configitem.label ===""  ?  <i className="ml-2 bi bi-trash fa-lg mr-1" onClick={() => handledeleteItem(configitem.render(item))} /> : configitem.render(item)}
-				
+					</>
+					: configitem.label === "" ? <i className="ml-2 bi bi-trash fa-lg mr-1" onClick={() => handledeleteItem(configitem.render(item))} /> : configitem.render(item)}
+
 			</td>
 		));
 
@@ -63,8 +56,6 @@ function Table({ data, config, keyfn, ...props }) {
 		);
 	});
 
-
-	
 	return (
 		<><table className="table table-bordered table-hover ">
 			<thead>
@@ -77,7 +68,6 @@ function Table({ data, config, keyfn, ...props }) {
 			</tbody>
 		</table>
 
-		
 		<div className="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 			<div className="modal-dialog  modal-fullscreen">
 				<div className="modal-content">
@@ -88,19 +78,16 @@ function Table({ data, config, keyfn, ...props }) {
 					<div className="modal-body " id="Invoice">
 						<div className="card mt-5 mr-5 ml-5 " ref={myRef}>
 
-							{file === "PAYMENT-IN"  || file === "PAYMENT-OUT"? 
-								<Receipt billInfo={billInfo} file={file}/>
-								:
-								<Invoice billInfo={billInfo } file={file}/>
+							{file === "PAYMENT-IN" || file === "PAYMENT-OUT"
+								? <Receipt billInfo={billInfo} file={file} />
+								: <Invoice billInfo={billInfo} file={file} />
 							}
-							
-							
 
 						</div>
 
 					</div>
 					<div className="modal-footer">
-						
+
 						<button type="button" className="btn btn-primary" id="invoice-print" onClick={handlePrintInvoice}><i className="fa fa-print"></i> Print Invoice</button>
 						<button type="button" className="btn btn-secondary" data-bs-dismiss="modal"><i className="bi bi-x-circle"></i> Close</button>
 					</div>

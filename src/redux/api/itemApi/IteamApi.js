@@ -1,89 +1,84 @@
-import { createApi , fakeBaseQuery} from "@reduxjs/toolkit/query/react";
-import { addDoc , collection , deleteDoc, doc, getDocs , updateDoc} from "firebase/firestore";
+import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
+import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase";
 
-
 const IteamApi = createApi({
-	reducerPath: "Item" ,
+	reducerPath: "Item",
 	baseQuery: fakeBaseQuery(),
-	tagTypes:["Item"],
-	endpoints(builder){
-		return{
+	tagTypes: ["Item"],
+	endpoints (builder) {
+		return {
 			FetchItem: builder.query({
-				async queryFn(){
-					try{
-						const ItemRef = collection(db,"Item");
+				async queryFn () {
+					try {
+						const ItemRef = collection(db, "Item");
 						const querySnapshot = await getDocs(ItemRef);
-						let Items = [];
-						querySnapshot?.forEach((doc)=>{
+						const Items = [];
+						querySnapshot?.forEach((doc) => {
 							Items.push({
 								id: doc.id,
-								...doc.data(),
+								...doc.data()
 
 							});
 						});
-						return { data: Items};
-					} catch (err){
+						return { data: Items };
+					} catch (err) {
 						const errorMessage = err.message;
-						return{ error: errorMessage};
+						return { error: errorMessage };
 					}
 				},
-				providesTags:["Item"],
+				providesTags: ["Item"]
 			}),
-			UpdateItem : builder.mutation({
-				async queryFn({ID , Stock}){
-					
-					try{
-						await updateDoc(doc(db , "Item" , ID) ,{
+			UpdateItem: builder.mutation({
+				async queryFn ({ ID, Stock }) {
+					try {
+						await updateDoc(doc(db, "Item", ID), {
 							...Stock
 						});
-						return {data: "ok"} ;
+						return { data: "ok" };
 					} catch (err) {
-						return {error : err};
+						return { error: err };
 					}
 				},
-				invalidatesTags:["Item"],
+				invalidatesTags: ["Item"]
 			}),
 			DeleteItem: builder.mutation({
-				async queryFn(id){
-					try{
-						await deleteDoc(doc(db, "Item" , id));
-						return { data : "ok"};
-					}catch(err){
+				async queryFn (id) {
+					try {
+						await deleteDoc(doc(db, "Item", id));
+						return { data: "ok" };
+					} catch (err) {
 						const errorMessage = err.message;
-						return{ error : errorMessage};
+						return { error: errorMessage };
 					}
 				},
-				invalidatesTags: ["Item"],
+				invalidatesTags: ["Item"]
 			}),
 			AddItem: builder.mutation({
-				async queryFn(Item){
-					try{
-						await addDoc(collection(db,"Item"),{
-							...Item,
-							
+				async queryFn (Item) {
+					try {
+						await addDoc(collection(db, "Item"), {
+							...Item
+
 						});
-						return{ data: "ok"};
+						return { data: "ok" };
+					} catch (err) {
+						return { error: err };
 					}
-					catch (err){
-						return { error : err};
-					}
-				
 				},
-				invalidatesTags: ["Item"],
-                
-			}),
-			
-            
+				invalidatesTags: ["Item"]
+
+			})
+
 		};
 	}
 });
 
 export const {
-	useAddItemMutation ,
-	useDeleteItemMutation ,
-	useFetchItemQuery ,
+	useAddItemMutation,
+	useDeleteItemMutation,
+	useFetchItemQuery,
 	useUpdateItemMutation
-} = IteamApi ;
+} = IteamApi;
 
-export {IteamApi};
+export { IteamApi };

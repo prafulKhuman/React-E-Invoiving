@@ -1,9 +1,8 @@
-function MainTable({data, config , isopen ,isDelete }) {
-
-	const handleClick =(key)=>{
+function MainTable ({ data, config, isopen, isDelete }) {
+	const handleClick = (key) => {
 		isopen(key);
 	};
-	const handleDelete =(key)=>{
+	const handleDelete = (key) => {
 		isDelete(key);
 	};
 
@@ -11,11 +10,11 @@ function MainTable({data, config , isopen ,isDelete }) {
 		return <th scope="col" key={config.label}>{config.label}</th>;
 	});
 
-	const rendreddata = data.map((item , index) => {
+	const rendreddata = data.map((item, index) => {
 		const rendredconfig = config.map((configitem) => (
-			<td key={configitem.label} onClick={()=>handleClick(configitem.render(item))}>
-				{configitem.label === "" ? <i className="bi bi-trash" onClick={()=>handleDelete(configitem.render(item))}></i> : configitem.render(item)}
-                
+			<td key={configitem.label} onClick={() => handleClick(configitem.render(item))}>
+				{configitem.label === "" ? <i className="bi bi-trash" onClick={() => handleDelete(configitem.render(item))}></i> : configitem.render(item)}
+
 			</td>
 		));
 
@@ -29,21 +28,21 @@ function MainTable({data, config , isopen ,isDelete }) {
 		);
 	});
 
-	return ( <>
+	return (<>
 		<table className="table table-hover table-bordered">
 			<thead>
 				<tr>
 					{rendrecell}
-					
+
 				</tr>
 			</thead>
 			<tbody>
-				
+
 				{rendreddata}
-				
+
 			</tbody>
 		</table>
-	</> );
+	</>);
 }
 
 export default MainTable;

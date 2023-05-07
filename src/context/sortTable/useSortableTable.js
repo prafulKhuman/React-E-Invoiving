@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GoArrowSmallUp, GoArrowSmallDown } from "react-icons/go";
 
-function useSortableTable(config, data) {
+function useSortableTable (config, data) {
 	const [sortOrder, setSortOrder] = useState(null);
 	const [sortBy, setSortBy] = useState(null);
 
@@ -38,7 +38,7 @@ function useSortableTable(config, data) {
 			return (A - B) * reverseOrder;
 		});
 	}
-	function getIcon(lable, sortBy, sortOrder) {
+	function getIcon (lable, sortBy, sortOrder) {
 		if (lable !== sortBy) {
 			return (
 				<div>
@@ -75,7 +75,7 @@ function useSortableTable(config, data) {
 		sortOrder,
 		sortedData,
 		handleClick,
-		getIcon,
+		getIcon
 	};
 }
 

@@ -1,89 +1,83 @@
-import { createApi , fakeBaseQuery} from "@reduxjs/toolkit/query/react";
+import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { db } from "../../../firebase";
-import { addDoc , collection, getDocs , doc , deleteDoc , updateDoc } from "firebase/firestore";
-
-
+import { addDoc, collection, getDocs, doc, deleteDoc, updateDoc } from "firebase/firestore";
 
 const SalePaymentApi = createApi({
-	reducerPath: "SalePayment" ,
-	baseQuery : fakeBaseQuery(),
-	tagTypes : ["SalePayment"],
-	endpoints(builder){
-		return{
-			DeleteSalePayment : builder.mutation({
-				async queryFn(id){
-					try{
-						await deleteDoc(doc(db, "SalePayment" , id));
-						return { data : "ok"};
-					}catch(err){
+	reducerPath: "SalePayment",
+	baseQuery: fakeBaseQuery(),
+	tagTypes: ["SalePayment"],
+	endpoints (builder) {
+		return {
+			DeleteSalePayment: builder.mutation({
+				async queryFn (id) {
+					try {
+						await deleteDoc(doc(db, "SalePayment", id));
+						return { data: "ok" };
+					} catch (err) {
 						const errorMessage = err.message;
-						return{ error : errorMessage};
+						return { error: errorMessage };
 					}
 				},
-				invalidatesTags :["SalePayment"],
+				invalidatesTags: ["SalePayment"]
 			}),
-			FatchSalePayment : builder.query({
-				async queryFn(){
-					try{
-
-						const paymentRef = collection(db , "SalePayment");
+			FatchSalePayment: builder.query({
+				async queryFn () {
+					try {
+						const paymentRef = collection(db, "SalePayment");
 						const querySnapshot = await getDocs(paymentRef);
-						let payment = [] ;
-						querySnapshot?.forEach((doc)=>{
+						const payment = [];
+						querySnapshot?.forEach((doc) => {
 							payment.push({
-								id : doc.id,
+								id: doc.id,
 								...doc.data()
 							});
 						});
 
-						return {data : payment};
-					}catch(err){
+						return { data: payment };
+					} catch (err) {
 						const errorMessage = err.message;
-						return{ error : errorMessage};
+						return { error: errorMessage };
 					}
 				},
-				providesTags:["SalePayment"]
+				providesTags: ["SalePayment"]
 			}),
-			UpdateSalePayment : builder.mutation({
-				async queryFn({id , updatedPayment}){
-					
-					try{
-						await updateDoc(doc(db , "SalePayment" , id) ,{
+			UpdateSalePayment: builder.mutation({
+				async queryFn ({ id, updatedPayment }) {
+					try {
+						await updateDoc(doc(db, "SalePayment", id), {
 							...updatedPayment
 						});
-						return {data: "ok"} ;
+						return { data: "ok" };
 					} catch (err) {
-						return {error : err};
+						return { error: err };
 					}
 				},
-				invalidatesTags:["SalePayment"],
+				invalidatesTags: ["SalePayment"]
 			}),
-			AddSalePayment : builder.mutation({
-				async queryFn(payment){
-					try{
-						await addDoc(collection(db , "SalePayment"),{
-							...payment,
-							
-						});
-						return{ data: "ok"};
+			AddSalePayment: builder.mutation({
+				async queryFn (payment) {
+					try {
+						await addDoc(collection(db, "SalePayment"), {
+							...payment
 
-					}catch(err){
-						return{error :err};
+						});
+						return { data: "ok" };
+					} catch (err) {
+						return { error: err };
 					}
 				},
-				invalidatesTags:["SalePayment"]
-			}),
+				invalidatesTags: ["SalePayment"]
+			})
 		};
 	}
-
 
 });
 
 export const {
-	useAddSalePaymentMutation ,
-	useDeleteSalePaymentMutation ,
-	useFatchSalePaymentQuery ,
+	useAddSalePaymentMutation,
+	useDeleteSalePaymentMutation,
+	useFatchSalePaymentQuery,
 	useUpdateSalePaymentMutation
-} = SalePaymentApi ;
+} = SalePaymentApi;
 
-export {SalePaymentApi};
+export { SalePaymentApi };

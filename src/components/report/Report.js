@@ -7,18 +7,14 @@ import ReturnTable from "./ReturnTable";
 import PartiesTable from "./PartiesTable";
 import CaseTable from "./CaseTable";
 
-
 function Report({ file, data, config, parties }) {
 	const [month, setMonth] = useState("");
-
-	// console.log(data[0]?.Date , "month");
 	const handleFilter = (e) => {
 		if (e.target.value === "--- Select ---") {
 			setMonth("");
 		} else {
 			setMonth(e.target.value);
 		}
-
 	};
 	let filteredData;
 	if (file === "Case") {
@@ -34,14 +30,11 @@ function Report({ file, data, config, parties }) {
 		content: () => myRef.current
 	});
 
-
-
 	return (
 		<>
 			<a data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
 				<i className="bi bi-printer-fill fa-2x" />
 			</a>
-
 
 			<div className="modal fade" id="staticBackdrop2" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 				<div className="modal-dialog modal-dialog-centered modal-xl">
@@ -49,7 +42,6 @@ function Report({ file, data, config, parties }) {
 						<div className="modal-header">
 							<a className="btn-close" data-bs-dismiss="modal" aria-label="Close"><i className="bi bi-x-lg" /></a>
 						</div>
-
 
 						<div className="modal-body" ref={myRef}>
 							<div className="container-fluid">
@@ -59,8 +51,9 @@ function Report({ file, data, config, parties }) {
 									</div>
 								</div>
 								<br />
-								{file === "Case" ? "" :
-									<div className="row mt-4">
+								{file === "Case"
+									? ""
+									: <div className="row mt-4">
 										<div className="col-2">
 											<label htmlFor="Select" className="lead font-weight-bold ">Select Month : </label>
 										</div>
@@ -85,13 +78,16 @@ function Report({ file, data, config, parties }) {
 										</div>
 									</div>
 								}
-								{file === "PAYMENT-IN" || file === "PAYMENT-OUT" ? <PaymentTable filteredData={filteredData} config={config} /> :
-									file === "PURCHASE-RETURN" || file === "SALE-RETURN" ? <ReturnTable filteredData={filteredData} config={config} />
-										: file === "SALLER" || file === "CUSTOMMER" ? <PartiesTable filteredData={filteredData} config={config} parties={parties} /> :
-											file === "Case" ? <CaseTable filteredData={filteredData} config={config} />
+								{file === "PAYMENT-IN" || file === "PAYMENT-OUT"
+									? <PaymentTable filteredData={filteredData} config={config} />
+									: file === "PURCHASE-RETURN" || file === "SALE-RETURN"
+										? <ReturnTable filteredData={filteredData} config={config} />
+										: file === "SALLER" || file === "CUSTOMMER"
+											? <PartiesTable filteredData={filteredData} config={config} parties={parties} />
+											: file === "Case"
+												? <CaseTable filteredData={filteredData} config={config} />
 												: <SaleTable filteredData={filteredData} config={config} />
 								}
-
 
 							</div>
 						</div>
@@ -106,7 +102,6 @@ function Report({ file, data, config, parties }) {
 			</div>
 		</>
 	);
-
 }
 
 export default Report;

@@ -1,64 +1,56 @@
 import Charts from "../../utility/charts/Charts";
 import Linecharts from "../../utility/charts/Linecharts";
-import {useFatchSalePaymentQuery , useFetchExpenseQuery , useFatchPurchasePaymentQuery , useFatchSaleInvoiceQuery , useFetchPurchaseBillQuery} from "../../redux";
+import { useFatchSalePaymentQuery, useFetchExpenseQuery, useFatchPurchasePaymentQuery, useFatchSaleInvoiceQuery, useFetchPurchaseBillQuery } from "../../redux";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
-
 function Dashboard() {
-	const {user} = useUserAuth();
-	const SalePayment = useFatchSalePaymentQuery();
-	const PurchasePayment = useFatchPurchasePaymentQuery();
-	const SaleOrder = useFatchSaleInvoiceQuery();
-	const Expenses = useFetchExpenseQuery();
-	const PurchaseOrder = useFetchPurchaseBillQuery();
-	
+	const { user } = useUserAuth();
+	const salePayment = useFatchSalePaymentQuery();
+	const purchasePayment = useFatchPurchasePaymentQuery();
+	const saleOrder = useFatchSaleInvoiceQuery();
+	const expenses = useFetchExpenseQuery();
+	const purchaseOrder = useFetchPurchaseBillQuery();
 
-	
-	
-	
+	const filterPayIn = salePayment.data?.filter((item) => item.UID === user.uid);
 
-	const filterPayIn = SalePayment.data?.filter((item)=>item.UID === user.uid);
-	
-	const TotalPayIn = filterPayIn?.reduce(getTotalSale, 0);
+	const totalPayIn = filterPayIn?.reduce(getTotalSale, 0);
 	function getTotalSale(total, num) {
 		return total + num.total;
 	}
 
-	const filterPayOut =  PurchasePayment.data?.filter((item)=>item.UID === user.uid);
-	const TotalPayOut =filterPayOut?.reduce(getTotalPayOut, 0);
+	const filterPayOut = purchasePayment.data?.filter((item) => item.UID === user.uid);
+	const totalPayOut = filterPayOut?.reduce(getTotalPayOut, 0);
 	function getTotalPayOut(total, num) {
 		return total + num.total;
 	}
 
-
-	const TotalReceived = filterPayIn?.reduce(getTotalR, 0);
+	const totalReceived = filterPayIn?.reduce(getTotalR, 0);
 	function getTotalR(total, num) {
 		return total + num.Received;
 	}
 
-	const TotalPaid =filterPayOut?.reduce(getTotalP, 0);
+	const totalPaid = filterPayOut?.reduce(getTotalP, 0);
 	function getTotalP(total, num) {
 		return total + num.Paid;
 	}
 
-	const filterExp =  Expenses.data?.filter((item)=>item.UID === user.uid);
-	const TotalExp = filterExp?.reduce(getTotalExp, 0);
+	const filterExp = expenses.data?.filter((item) => item.UID === user.uid);
+	const totalExp = filterExp?.reduce(getTotalExp, 0);
 	function getTotalExp(total, num) {
 		return total + parseInt(num.ExpAmount);
 	}
 
-	const Sub = (TotalPayIn - TotalPayOut - TotalExp) ;
-	const Case = (TotalReceived - TotalPaid - TotalExp) ;
+	const Sub = (totalPayIn - totalPayOut - totalExp);
+	const Case = (totalReceived - totalPaid - totalExp);
 
-	const filterOrder =  SaleOrder.data?.filter((item)=>item[2].UID === user.uid);
-	const SaleLength = filterOrder?.length ;
+	const filterOrder = saleOrder.data?.filter((item) => item[2].UID === user.uid);
+	const saleLength = filterOrder?.length;
 
-	const filterPurchaseOrder =  PurchaseOrder.data?.filter((item)=>item[2].UID === user.uid);
-	const PurchaseLength = filterPurchaseOrder?.length ;
+	const filterPurchaseOrder = purchaseOrder.data?.filter((item) => item[2].UID === user.uid);
+	const purchaseLength = filterPurchaseOrder?.length;
 	return (
 		<section>
 
-			
 			<div className="main-content">
 
 				<div className="container-fluid content-top-gap">
@@ -75,10 +67,9 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-primary number">₹{TotalPayIn ? TotalPayIn :
-												<div className="spinner-border" role="status">
-													<span className="sr-only">Loading...</span>
-												</div>
+											<h3 className="text-primary number">₹{totalPayIn || <div className="spinner-border" role="status">
+												<span className="sr-only">Loading...</span>
+											</div>
 											}</h3>
 											<p className="stat-text ">Total Receive</p>
 										</div>
@@ -86,10 +77,9 @@ function Dashboard() {
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-secondary number">₹{TotalPayOut ? TotalPayOut :
-												<div className="spinner-border" role="status">
-													<span className="sr-only">Loading...</span>
-												</div>
+											<h3 className="text-secondary number">₹{totalPayOut || <div className="spinner-border" role="status">
+												<span className="sr-only">Loading...</span>
+											</div>
 											}</h3>
 											<p className="stat-text">Total Pay</p>
 										</div>
@@ -101,10 +91,9 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-success number">{SaleLength ? SaleLength :
-												<div className="spinner-border" role="status">
-													<span className="sr-only">Loading...</span>
-												</div>
+											<h3 className="text-success number">{saleLength || <div className="spinner-border" role="status">
+												<span className="sr-only">Loading...</span>
+											</div>
 											}</h3>
 											<p className="stat-text">Sale Order</p>
 										</div>
@@ -112,10 +101,9 @@ function Dashboard() {
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-danger number">{PurchaseLength ? PurchaseLength :
-												<div className="spinner-border" role="status">
-													<span className="sr-only">Loading...</span>
-												</div>
+											<h3 className="text-danger number">{purchaseLength || <div className="spinner-border" role="status">
+												<span className="sr-only">Loading...</span>
+											</div>
 											}</h3>
 											<p className="stat-text">Purchased Order</p>
 										</div>
@@ -135,9 +123,11 @@ function Dashboard() {
 									<div className="card-body">
 
 										<div id="container mr-8" >
-											{SaleOrder.isFetching ? <><div className="spinner-border m-5" role="status">
-												<span className="sr-only">Loading...</span>
-											</div></> : <Charts />}
+											{saleOrder.isFetching
+												? <><div className="spinner-border m-5" role="status">
+													<span className="sr-only">Loading...</span>
+												</div></>
+												: <Charts />}
 										</div>
 
 									</div>
@@ -149,15 +139,17 @@ function Dashboard() {
 							<div className="col-lg-6 pl-lg-2 chart-grid">
 								<div className="card text-center card_border">
 									<div className="card-header chart-grid__header">
-									Purchase Chart
+										Purchase Chart
 									</div>
 									<div className="card-body">
 
 										<div id="container">
-											
-											{PurchaseOrder.isFetching ? <><div className="spinner-border m-5" role="status">
-												<span className="sr-only">Loading...</span>
-											</div></> : <Linecharts/>}
+
+											{purchaseOrder.isFetching
+												? <><div className="spinner-border m-5" role="status">
+													<span className="sr-only">Loading...</span>
+												</div></>
+												: <Linecharts />}
 										</div>
 
 									</div>
@@ -176,8 +168,9 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-primary number">₹{PurchaseLength ? (Sub > 0 ? Sub : 0 ) :
-												<div className="spinner-border" role="status">
+											<h3 className="text-primary number">₹{purchaseLength
+												? (Sub > 0 ? Sub : 0)
+												: <div className="spinner-border" role="status">
 													<span className="sr-only">Loading...</span>
 												</div>
 											}</h3>
@@ -187,8 +180,9 @@ function Dashboard() {
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-secondary number">₹{PurchaseLength ? (Sub < 0 ? Sub : 0 )  :
-												<div className="spinner-border" role="status">
+											<h3 className="text-secondary number">₹{purchaseLength
+												? (Sub < 0 ? Sub : 0)
+												: <div className="spinner-border" role="status">
 													<span className="sr-only">Loading...</span>
 												</div>
 											}</h3>
@@ -202,8 +196,9 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-success number">₹{PurchaseLength ? (Case > 0 ? Case : 0 ) :
-												<div className="spinner-border" role="status">
+											<h3 className="text-success number">₹{purchaseLength
+												? (Case > 0 ? Case : 0)
+												: <div className="spinner-border" role="status">
 													<span className="sr-only">Loading...</span>
 												</div>
 											}</h3>
@@ -213,15 +208,14 @@ function Dashboard() {
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-danger number">₹{TotalExp ? TotalExp :
-												<div className="spinner-border" role="status">
+											<h3 className="text-danger number">₹{totalExp || <div className="spinner-border" role="status">
 												<span className="sr-only">Loading...</span>
 											</div>
 											}</h3>
 											<p className="stat-text">Expanses</p>
 										</div>
 									</div>
-									
+
 								</div>
 							</div>
 						</div>

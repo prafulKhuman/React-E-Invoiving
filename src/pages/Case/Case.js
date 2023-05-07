@@ -10,23 +10,22 @@ import { useState } from "react";
 
 function Case() {
 	const { user } = useUserAuth();
-	const SalePayment = useFatchSalePaymentQuery();
-	const PurchasePayment = useFatchPurchasePaymentQuery();
-	const Expenses = useFetchExpenseQuery();
-	const [search , setSearch] = useState("");
+	const salePayment = useFatchSalePaymentQuery();
+	const purchasePayment = useFatchPurchasePaymentQuery();
+	const expenses = useFetchExpenseQuery();
+	const [search, setSearch] = useState("");
 
 	const handleSearch = (e) => {
 		setSearch(e.target.value);
 	};
 
+	const filterPayIn = salePayment.data?.filter((item) => item.UID === user.uid);
+	const filterPayOut = purchasePayment.data?.filter((item) => item.UID === user.uid);
+	const filterExp = expenses.data?.filter((item) => item.UID === user.uid);
 
-	const filterPayIn = SalePayment.data?.filter((item) => item.UID === user.uid);
-	const filterPayOut = PurchasePayment.data?.filter((item) => item.UID === user.uid);
-	const filterExp = Expenses.data?.filter((item) => item.UID === user.uid);
-
-	const TotalPayIn = filterPayIn?.reduce(getTotalSale, 0);
-	const TotalPayOut = filterPayOut?.reduce(getTotalPurchase, 0);
-	const TotalExp = filterExp?.reduce(getTotalExp, 0);
+	const totalPayIn = filterPayIn?.reduce(getTotalSale, 0);
+	const totalPayOut = filterPayOut?.reduce(getTotalPurchase, 0);
+	const totalExp = filterExp?.reduce(getTotalExp, 0);
 
 	function getTotalSale(total, num) {
 		return total + num.Received;
@@ -38,32 +37,29 @@ function Case() {
 		return total + parseInt(num.ExpAmount);
 	}
 
-	const Case =(TotalPayIn - TotalPayOut - TotalExp );
+	const Case = (totalPayIn - totalPayOut - totalExp);
 
-	
 	let Entry = [];
 	let content;
-	if (SalePayment.isFetching || PurchasePayment.isFetching || Expenses.isFetching) {
-		content = <Skeleton count={6} height={40} /> ;
-	}
-	else if (SalePayment.error || PurchasePayment.error || Expenses.error) {
+	if (salePayment.isFetching || purchasePayment.isFetching || expenses.isFetching) {
+		content = <Skeleton count={6} height={40} />;
+	} else if (salePayment.error || purchasePayment.error || expenses.error) {
 		swal("Oops...!", "Something went wrong!", "error");
 	} else {
-		const PayIn = filterPayIn
-			? filterPayIn.map((item ) => ({
-				
+		const payIn = filterPayIn
+			? filterPayIn.map((item) => ({
+
 				partyName: item.partyName,
 				type: "Payment-In",
 				total: item.total,
 				Done: item.Received,
-				Pending: item.Pending,
+				Pending: item.Pending
 			}))
 			: [];
 
+		const payOut = filterPayOut
+			? filterPayOut.map((item) => ({
 
-		const PayOut = filterPayOut ?
-			filterPayOut.map((item ) => ({
-				
 				partyName: item.partyName,
 				type: "Payment-Out",
 				total: item.total,
@@ -72,9 +68,9 @@ function Case() {
 			}))
 			: [];
 
-		const EXP = filterExp ?
-			filterExp?.map((item ) => ({
-			
+		const exp = filterExp
+			? filterExp?.map((item) => ({
+
 				partyName: item.Category,
 				type: "Expense",
 				total: item.ExpAmount,
@@ -83,12 +79,7 @@ function Case() {
 			}))
 			: [];
 
-		Entry = [...PayIn, ...PayOut, ...EXP];
-		
-		
-		
-		
-		
+		Entry = [...payIn, ...payOut, ...exp];
 	}
 
 	const filteredCase = Entry?.filter((item) =>
@@ -98,13 +89,12 @@ function Case() {
 		item.total.toString().toLowerCase().includes(search.toLowerCase()) ||
 		item.Done.toString().toLowerCase().includes(search.toLowerCase()) ||
 		item.Pending.toString().toLowerCase().includes(search.toLowerCase())
-		
 
 	);
 
-	const CaseInfo = filteredCase?.map((item , index)=>({
-		No : index + 1 ,
-		
+	const caseInfo = filteredCase?.map((item, index) => ({
+		No: index + 1,
+
 		partyName: item.partyName,
 		type: item.type,
 		total: item.total,
@@ -114,48 +104,45 @@ function Case() {
 	const config = [
 		{
 			label: "#",
-			render: (CaseInfo) => CaseInfo.No,
-			sortValue: (CaseInfo) => CaseInfo.No,
+			render: (caseInfo) => caseInfo.No,
+			sortValue: (caseInfo) => caseInfo.No
 		},
 		{
 			label: "Party Name",
-			render: (CaseInfo) => CaseInfo.partyName,
-			sortValue: (CaseInfo) => CaseInfo.partyName,
+			render: (caseInfo) => caseInfo.partyName,
+			sortValue: (caseInfo) => caseInfo.partyName
 		},
 		{
 			label: "Type",
-			render: (CaseInfo) => CaseInfo.type,
-			sortValue: (CaseInfo) => CaseInfo.type,
+			render: (caseInfo) => caseInfo.type,
+			sortValue: (caseInfo) => caseInfo.type
 
 		},
 		{
 			label: "Total",
-			render: (CaseInfo) => CaseInfo.total,
-			sortValue: (CaseInfo) => CaseInfo.total,
+			render: (caseInfo) => caseInfo.total,
+			sortValue: (caseInfo) => caseInfo.total
 
 		},
 		{
 			label: "Complate",
-			render: (CaseInfo) => CaseInfo.Done,
-			sortValue: (CaseInfo) => CaseInfo.Done,
+			render: (caseInfo) => caseInfo.Done,
+			sortValue: (caseInfo) => caseInfo.Done
 
 		},
 		{
 			label: "Pending",
-			render: (CaseInfo) => CaseInfo.Pending,
-			sortValue: (CaseInfo) => CaseInfo.Pending,
+			render: (caseInfo) => caseInfo.Pending,
+			sortValue: (caseInfo) => caseInfo.Pending
 
-		},
-		
-		
+		}
 
 	];
 
 	const keyfn = (item) => item.id;
-	
+
 	return (
 		<>
-
 
 			<div className="main-content">
 
@@ -168,7 +155,7 @@ function Case() {
 								</div>
 
 								<div className="invoice_No mr-3 col-1" >
-									<Report file="Case" data={CaseInfo} config={config}/>
+									<Report file="Case" data={caseInfo} config={config} />
 								</div>
 							</div>
 						</div>
@@ -192,12 +179,11 @@ function Case() {
 
 							</div>
 
-
 						</div>
 						<div className="card-body panel_height">
-							
-							{ content || <SortableTable data={CaseInfo} config={config} keyfn={keyfn} />}
-							
+
+							{content || <SortableTable data={caseInfo} config={config} keyfn={keyfn} />}
+
 						</div>
 					</div>
 

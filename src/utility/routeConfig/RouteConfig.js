@@ -1,5 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
+
+import ProtectedRoute from "./ProtectedRout";
 const Dashboard = lazy(() => import("../../pages/dashbord/Dashboard"));
 const SaleInvoice = lazy(() => import("../../pages/sale/SaleInvoice"));
 const PaymentIn = lazy(() => import("../../pages/sale/PaymentIn"));
@@ -12,26 +14,21 @@ const Expanses = lazy(() => import("../../pages/Expenses/Expenses"));
 const Case = lazy(() => import("./../../pages/Case/Case"));
 const Header = lazy(() => import("../../components/header/Header"));
 const Sidebar = lazy(() => import("../../components/sidebar/Sidebar"));
-const Custommer = lazy(()=>import("../../pages/parties/Custommer"));
-const Seller = lazy(()=> import("../../pages/parties/Seller") );
-const SaleOrder = lazy(()=>import("../../pages/sale/SaleOrder"));
+const Custommer = lazy(() => import("../../pages/parties/Custommer"));
+const Seller = lazy(() => import("../../pages/parties/Seller"));
+const SaleOrder = lazy(() => import("../../pages/sale/SaleOrder"));
 const Login = lazy(() => import("../../components/Auth/Login"));
 const Register = lazy(() => import("../../components/Auth/Register"));
 
-
-import ProtectedRoute from "./ProtectedRout";
-
 const RouteConfig = () => {
-
 	return (
 
 		<>
-			
+
 			<Suspense fallback={<div className="se-pre-con"></div>}>
 
 				<Routes>
 
-					
 					<Route key={"/"} path="/" element={<Login />} />
 					<Route key={"/SignUp"} path="/SignUp" element={<Register />} />
 					<Route key={"/Home"} path="/Home" element={<ProtectedRoute><Header/><Sidebar/><Dashboard /></ProtectedRoute>} />
@@ -52,7 +49,6 @@ const RouteConfig = () => {
 		</>
 
 	);
-
 };
 
 export default RouteConfig;

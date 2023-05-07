@@ -7,22 +7,18 @@ import swal from "sweetalert";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 import { useState } from "react";
 function Register() {
-
 	const { signUp } = useUserAuth();
-	let navigate = useNavigate();
+	const navigate = useNavigate();
 	const [passwordType, setPasswordType] = useState("password");
-	
-  
-    const togglePassword =()=>{
-      if(passwordType==="password")
-      {
-       setPasswordType("text");
-       return;
-      }
-      setPasswordType("password");
-    };
 
-	
+	const togglePassword = () => {
+		if (passwordType === "password") {
+			setPasswordType("text");
+			return;
+		}
+		setPasswordType("password");
+	};
+
 	const registerSchema = Yup.object().shape({
 		email: Yup.string().email("Invalid email").required("Required"),
 		Password: Yup.string()
@@ -30,16 +26,16 @@ function Register() {
 			.matches(/[0-9]/, "Password requires a number")
 			.matches(/[a-z]/, "Password requires a lowercase letter")
 			.matches(/[A-Z]/, "Password requires an uppercase letter")
-			.matches(/[^\w]/, "Password requires a symbol"),
-		
+			.matches(/[^\w]/, "Password requires a symbol")
+
 	});
 
 	const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
 		useFormik({
 			initialValues: {
 				email: "",
-				password: "",
-				
+				password: ""
+
 			},
 			validationSchema: registerSchema,
 			onSubmit: async (values, action) => {
@@ -48,17 +44,16 @@ function Register() {
 					swal({
 						title: "Register Success!",
 						icon: "success",
-						button: "Done!",
+						button: "Done!"
 					});
 					navigate("/");
 				} catch (err) {
-					const message = (err.message).toString() ;
+					const message = (err.message).toString();
 					const ans = message.includes("auth/email-already-in-use");
-					swal("Oops...!" , ans ?  "User Already Exists .!" : "Something Want Wrong .!" ,  "error");
+					swal("Oops...!", ans ? "User Already Exists .!" : "Something Want Wrong .!", "error");
 				}
 				action.resetForm();
-				
-			},
+			}
 		});
 
 	return (<>
@@ -75,11 +70,9 @@ function Register() {
 					<div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
 						<form onSubmit={handleSubmit}>
 
-
 							<div className="divider d-flex align-items-center my-4">
 								<p className="text-center fw-bold mx-3 mb-0"><b> REGISTER </b></p>
 							</div>
-
 
 							<div className="form-group">
 								<label htmlFor="Email">Email address</label>
@@ -93,9 +86,11 @@ function Register() {
 									id="Email"
 									placeholder="Enter email"
 								/>
-								{errors.email && touched.email ? (
-									<p className="form-error text-danger">{errors.email}</p>
-								) : null}
+								{errors.email && touched.email
+									? (
+										<p className="form-error text-danger">{errors.email}</p>
+									)
+									: null}
 								<small id="emailHelp" className="form-text text-muted">Well never share your email with anyone else.</small>
 							</div>
 							<div>
@@ -108,7 +103,7 @@ function Register() {
 										placeholder="Enter Password"
 										name="Password"
 										minLength="8"
-										
+
 										value={values.password}
 										onChange={handleChange}
 										onBlur={handleBlur}
@@ -116,8 +111,8 @@ function Register() {
 									<div className="input-group-append">
 										<span className="input-group-text" onClick={togglePassword}>
 
-											{passwordType === "password" ?
-												<i className="bi bi-eye-slash-fill"></i>
+											{passwordType === "password"
+												? <i className="bi bi-eye-slash-fill"></i>
 												: <i className="bi bi-eye-fill" />}
 										</span>
 
@@ -125,12 +120,13 @@ function Register() {
 									<small id="passwordHelpBlock" className="form-text text-muted">
 										Your password must be 8 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
 									</small>
-									{errors.password && touched.password ? (
-										<p className="form-error text-danger">{errors.password}</p>
-									) : null}
+									{errors.password && touched.password
+										? (
+											<p className="form-error text-danger">{errors.password}</p>
+										)
+										: null}
 								</div>
 							</div>
-							
 
 							<div className="text-center text-lg-start mt-4 pt-2">
 								<button type="submit" className="btn btn-primary btn-lg"

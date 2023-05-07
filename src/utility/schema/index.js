@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 
-
 export const SaleOrderSchema = Yup.object({
 	No: Yup.number().min(1).required("Enter Product Number"),
 	Item: Yup.string().required("Please Enter Item Name"),
@@ -8,7 +7,6 @@ export const SaleOrderSchema = Yup.object({
 	MRP: Yup.number().min(1).required("Please Enter Amount "),
 	QTY: Yup.number().min(1).required("Please Enter QTY"),
 	Unit: Yup.string().required("Please Select Unit"),
-	Amount: Yup.number().min(1).required("Eneter Vaild Amount"),
-	
-});
+	Amount: Yup.number().min(1).required("Eneter Vaild Amount")
 
+});

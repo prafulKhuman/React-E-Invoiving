@@ -11,15 +11,9 @@
        
        
     ],
-    "settings": {
-        "react": {
-          "version": "detect"
-        }
-      },
-      
-      "parserOptions": {
+    "parserOptions": {
         "parser" : "@babel/eslint-parser",
-          "ecmaVersion": 2020,
+          "ecmaVersion": 2022,
           "sourceType": "module",
           "ecmaFeatures": {
               "jsx": true,
@@ -27,6 +21,14 @@
               "experimentalObjectRestSpread": true
           }
       },
+  
+    "settings": {
+        "react": {
+          "version": "detect"
+        }
+      },
+      
+     
     "plugins": [
         "react"
     ],
@@ -35,9 +37,9 @@
         "no-unused-vars": "off" ,
         "react/prop-types": ["off"],
         "indent": [
-            // "error",
-            // "tab"
-            "off"
+            "error",
+            "tab"
+            
         ],
         "linebreak-style": 0,
         "quotes": [

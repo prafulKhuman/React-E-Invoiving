@@ -1,41 +1,37 @@
 import sign from "./../Table/Sign/signature.png";
-function SaleTable({filteredData , config}) {
-	
-	const totalAmount = filteredData?.reduce(getTotal , 0);
-	function getTotal(total , num){
-		return total + num.Total_Amount ;
+function SaleTable ({ filteredData, config }) {
+	const totalAmount = filteredData?.reduce(getTotal, 0);
+	function getTotal (total, num) {
+		return total + num.Total_Amount;
 	}
-	const totalBalance = filteredData?.reduce(getBalance , 0);
-	function getBalance(total , num){
-		return total + num.Balance ;
+	const totalBalance = filteredData?.reduce(getBalance, 0);
+	function getBalance (total, num) {
+		return total + num.Balance;
 	}
-	const totalReceived = filteredData?.reduce(getReceived , 0);
-	function getReceived(total , num){
-		return total + parseInt(num.Advance) ;
+	const totalReceived = filteredData?.reduce(getReceived, 0);
+	function getReceived (total, num) {
+		return total + parseInt(num.Advance);
 	}
-	
-	return ( <>
+
+	return (<>
 		<div className="mt-5 table-responsive" >
-																	
+
 			<table className="table table-striped table-bordered w-full" >
 				<thead className="table-dark">
 					<tr>
 
-						{config?.map((collumn , index)=>{
-							if(collumn.label != "Action")
-							{
-								return(
+						{config?.map((collumn, index) => {
+							if (collumn.label != "Action") {
+								return (
 									<th key={index}>{collumn.label}</th>
 								);
 							}
-							
 						})}
-					
 
 					</tr>
 				</thead>
 				<tbody>
-					{filteredData?.map((row ,index)=>{ 
+					{filteredData?.map((row, index) => {
 						return (
 							<tr key={index}>
 								<td>{row.Id}</td>
@@ -59,7 +55,7 @@ function SaleTable({filteredData , config}) {
 		<div className="row">
 			<div className="col-xs-6 text-left ml-3 mt-3">
 				<p className="lead font-weight-bold marginbottom">THANK YOU! <i className="bi bi-emoji-smile" /></p>
-				<img src={sign} alt="Signature" style={{ width : "250px" , height : "100px"}}/>
+				<img src={sign} alt="Signature" style={{ width: "250px", height: "100px" }}/>
 
 			</div>
 			<div className="col text-right pull-right invoice-total">
@@ -77,7 +73,7 @@ function SaleTable({filteredData , config}) {
 				</p>
 			</div>
 		</div>
-	</> );
+	</>);
 }
 
 export default SaleTable;
