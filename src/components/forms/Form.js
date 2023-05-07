@@ -234,7 +234,7 @@ function Form({ file, onsubmit, ID }) {
 										<div className="col-sm-2">
 											<div className="input-group">
 
-												<input type="text"
+												<input type="number"
 													className="form-control"
 													name="PhoneNo"
 													value={filds.PhoneNo}
@@ -255,7 +255,7 @@ function Form({ file, onsubmit, ID }) {
 
 
 											</label>
-											<input type="text"
+											<input type="number"
 												name="ID"
 												placeholder={`ID - ${No}`}
 												value={filds.ID}
@@ -380,7 +380,7 @@ function Form({ file, onsubmit, ID }) {
 											<div className="row">
 												<label className="col-sm-3 mt-2">Total </label>
 
-												<input type="text"
+												<input type="number"
 													name="Total"
 													required
 													readOnly
@@ -400,7 +400,7 @@ function Form({ file, onsubmit, ID }) {
 
 													</label>
 
-													<input type="text"
+													<input type="number"
 														name="Advance"
 														required
 														value={filds.Advance}
@@ -469,7 +469,7 @@ function Form({ file, onsubmit, ID }) {
 										</div>
 										<div className="col">
 											<Hint options={itemCodeHint} allowTabFill={true} allowEnterFill={true}>
-												<input type="text"
+												<input type="number"
 													name="ItemCode"
 													value={values.ItemCode}
 													onChange={(event) => {

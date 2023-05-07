@@ -21,7 +21,7 @@ function Register() {
 
 	const registerSchema = Yup.object().shape({
 		email: Yup.string().email("Invalid email").required("Required"),
-		Password: Yup.string()
+		password: Yup.string()
 			.min(8, "Password must be 8 characters long")
 			.matches(/[0-9]/, "Password requires a number")
 			.matches(/[a-z]/, "Password requires a lowercase letter")
@@ -94,16 +94,15 @@ function Register() {
 								<small id="emailHelp" className="form-text text-muted">Well never share your email with anyone else.</small>
 							</div>
 							<div>
-								<label htmlFor="Password">Password</label>
+								<label htmlFor="password">Password</label>
 								<div className="input-group">
 									<input
 										type={passwordType}
 										className="form-control"
 										id="password"
 										placeholder="Enter Password"
-										name="Password"
+										name="password"
 										minLength="8"
-
 										value={values.password}
 										onChange={handleChange}
 										onBlur={handleBlur}

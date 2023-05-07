@@ -113,7 +113,7 @@ function PaymentInOut({ file, AddData, ID }) {
 										<div className="invoice_No  col-md-4 ms-auto">
 
 											<label>Receipt No . </label>
-											<input type="text"
+											<input type="number"
 												name="receiptno"
 												placeholder={`ID - ${ID + 1}`}
 												required
@@ -134,7 +134,7 @@ function PaymentInOut({ file, AddData, ID }) {
 										<div className="input-group  col-md-3">
 											<Hint options={phoneHint} allowTabFill={true} allowEnterFill={true}>
 
-												<input type="text"
+												<input type="number"
 													className="form-control"
 													name="MobailNo"
 													required
