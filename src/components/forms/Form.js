@@ -173,7 +173,7 @@ function Form({ file, onsubmit, ID }) {
 
 
 	const parties = filterUIDC?.map((user) => {
-		return user.PartyName;
+		return (user.PartyName).toLowerCase();
 	});
 
 	const PartyHint = parties ? parties : [""];

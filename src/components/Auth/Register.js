@@ -5,13 +5,25 @@ import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
-
+import { useState } from "react";
 function Register() {
 
 	const { signUp } = useUserAuth();
 	let navigate = useNavigate();
+	const [passwordType, setPasswordType] = useState("password");
 	
-	const RegisterSchema = Yup.object().shape({
+  
+    const togglePassword =()=>{
+      if(passwordType==="password")
+      {
+       setPasswordType("text");
+       return;
+      }
+      setPasswordType("password");
+    };
+
+	
+	const registerSchema = Yup.object().shape({
 		email: Yup.string().email("Invalid email").required("Required"),
 		Password: Yup.string()
 			.min(8, "Password must be 8 characters long")
@@ -19,20 +31,20 @@ function Register() {
 			.matches(/[a-z]/, "Password requires a lowercase letter")
 			.matches(/[A-Z]/, "Password requires an uppercase letter")
 			.matches(/[^\w]/, "Password requires a symbol"),
-		Cpassword: Yup.string().oneOf([Yup.ref("Password"), null], "Must match \"password\" field value"),
+		
 	});
 
 	const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
 		useFormik({
 			initialValues: {
 				email: "",
-				Password: "",
-				Cpassword: ""
+				password: "",
+				
 			},
-			validationSchema: RegisterSchema,
+			validationSchema: registerSchema,
 			onSubmit: async (values, action) => {
 				try {
-					await signUp(values.email, values.Cpassword);
+					await signUp(values.email, values.password);
 					swal({
 						title: "Register Success!",
 						icon: "success",
@@ -40,9 +52,12 @@ function Register() {
 					});
 					navigate("/");
 				} catch (err) {
-					swal("Oops...!", "Something went wrong!", "error");
+					const message = (err.message).toString() ;
+					const ans = message.includes("auth/email-already-in-use");
+					swal("Oops...!" , ans ?  "User Already Exists .!" : "Something Want Wrong .!" ,  "error");
 				}
 				action.resetForm();
+				
 			},
 		});
 
@@ -62,7 +77,7 @@ function Register() {
 
 
 							<div className="divider d-flex align-items-center my-4">
-								<p className="text-center fw-bold mx-3 mb-0">Register</p>
+								<p className="text-center fw-bold mx-3 mb-0"><b> REGISTER </b></p>
 							</div>
 
 
@@ -83,46 +98,45 @@ function Register() {
 								) : null}
 								<small id="emailHelp" className="form-text text-muted">Well never share your email with anyone else.</small>
 							</div>
-							<div className="form-group">
-								<label htmlFor="Pass">Password</label>
-								<input
-									type="password"
-									className="form-control"
-									id="Pass"
-									name="Password"
-									value={values.Password}
-									onChange={handleChange}
-									onBlur={handleBlur}
-									placeholder="Password"
-								/>
-								{errors.Password && touched.Password ? (
-									<p className="form-error text-danger">{errors.Password}</p>
-								) : null}
-							</div>
-							<div className="form-group">
-								<label htmlFor="Cpass">Confirm Password</label>
-								<input
-									type="password"
-									className="form-control"
-									id="Cpass"
-									name="Cpassword"
-									value={values.Cpassword}
-									onChange={handleChange}
-									onBlur={handleBlur}
-									placeholder="Password"
-								/>
-								{errors.Cpassword && touched.Cpassword ? (
-									<p className="form-error text-danger">{errors.Cpassword}</p>
-								) : null}
-							</div>
+							<div>
+								<label htmlFor="Password">Password</label>
+								<div className="input-group">
+									<input
+										type={passwordType}
+										className="form-control"
+										id="password"
+										placeholder="Enter Password"
+										name="Password"
+										minLength="8"
+										
+										value={values.password}
+										onChange={handleChange}
+										onBlur={handleBlur}
+									/>
+									<div className="input-group-append">
+										<span className="input-group-text" onClick={togglePassword}>
 
+											{passwordType === "password" ?
+												<i className="bi bi-eye-slash-fill"></i>
+												: <i className="bi bi-eye-fill" />}
+										</span>
 
+									</div>
+									<small id="passwordHelpBlock" className="form-text text-muted">
+										Your password must be 8 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+									</small>
+									{errors.password && touched.password ? (
+										<p className="form-error text-danger">{errors.password}</p>
+									) : null}
+								</div>
+							</div>
+							
 
 							<div className="text-center text-lg-start mt-4 pt-2">
 								<button type="submit" className="btn btn-primary btn-lg"
 									style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}>Register</button>
 								<p className="small fw-bold mt-2 pt-1 mb-0">Dont have an account? <span
-									className="link-danger"><Link to="/">Login</Link></span></p>
+									className="link-danger"><Link to="/"> <b> Login </b></Link></span></p>
 							</div>
 
 						</form>

@@ -18,6 +18,7 @@ const SaleOrder = lazy(()=>import("../../pages/sale/SaleOrder"));
 const Login = lazy(() => import("../../components/Auth/Login"));
 const Register = lazy(() => import("../../components/Auth/Register"));
 
+
 import ProtectedRoute from "./ProtectedRout";
 
 const RouteConfig = () => {

@@ -54,13 +54,11 @@ function Expenses() {
 				const response = await DeleteExpenses(key);
 				
 				if (response.data === "ok") {
+
 					swal("Data Deleted Success", {
 						icon: "success",
 					});
-					Expanses = useFetchExpenseQuery();
 					
-					const filterExp =  Expanses.data?.filter((item)=>item.Category === Exp);
-					setExpData(filterExp);
 					
 				}
 				
