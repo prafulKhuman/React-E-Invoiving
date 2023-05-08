@@ -92,16 +92,16 @@ function PaymentOut () {
 		});
 	};
 
-	const filteredData = data?.filter((item) =>
+	const filterUID = data?.filter((item)=>item.TransectionType === "Payment-Out" && item.UID === user.uid);
 
-		item.TransectionType === "Payment-Out" && item.UID === user.uid
-			? item.Amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			item.Date.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			item.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			item.PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			item.receiptno.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			item.timestamp.toLowerCase().includes(searchTerm.toLowerCase())
-			: ""
+	const filteredData = filterUID?.filter((item) =>
+
+		item.Amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
+		item.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+		item.PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+		item.receiptno.toLowerCase().includes(searchTerm.toLowerCase()) ||
+		item.timestamp.toLowerCase().includes(searchTerm.toLowerCase())
+			
 	);
 
 	const handlePeintInvoice = (key) => {

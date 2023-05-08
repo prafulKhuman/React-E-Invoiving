@@ -96,7 +96,6 @@ function PaymentIn () {
 
 		item.TransectionType === "Payment-In" && item.UID === user.uid
 			? item.Amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			item.Date.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			item.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			item.PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			item.receiptno.toLowerCase().includes(searchTerm.toLowerCase()) ||

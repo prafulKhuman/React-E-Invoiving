@@ -19,6 +19,7 @@ function Expenses () {
 	const [search, setSearch] = useState("");
 	const [exp, setExp] = useState();
 	const [expData, setExpData] = useState([]);
+	const [serchRecords, setSearchrecord] = useState("");
 
 
 	// Error Handling
@@ -131,8 +132,23 @@ function Expenses () {
 		return total + parseInt(num.ExpAmount);
 	}
 
+	// Search Expense data
+
+	const handleSearchRecord =(e)=>{
+		setSearchrecord(e.target.value);
+	};
+
+	const filterRecords = expData?.filter((record) =>
+		record.ExpNo?.toString().toLowerCase().includes(serchRecords?.toLowerCase()) ||
+		record.timestamp?.toLowerCase().includes(serchRecords?.toLowerCase()) ||
+		record.ExpDesc?.toLowerCase().includes(serchRecords?.toLowerCase()) ||
+		record.ExpAmount?.toLowerCase().includes(serchRecords?.toLowerCase()) 
+		
+	);
+	
+	
 	// expense data object
-	const record = expData?.map((item, index) => ({
+	const record = filterRecords?.map((item, index) => ({
 		id: index + 1,
 		ExpDate: item.timestamp,
 		ExpNo: item.ExpNo,
@@ -141,6 +157,8 @@ function Expenses () {
 		Action: item.id
 
 	}));
+
+	
 
 	// expense data config 
 	const expconfig = [
@@ -271,7 +289,7 @@ function Expenses () {
 												<div className="input-group-prepend">
 													<span className="input-group-text"><i className=" bi bi-search" /></span>
 												</div>
-												<input type="text" className="form-control" placeholder="Search Transaction" aria-label="Username" aria-describedby="basic-addon1" />
+												<input type="text" onChange={handleSearchRecord} className="form-control" placeholder="Search Transaction" aria-label="Username" aria-describedby="basic-addon1" />
 											</div>
 										</div>
 									</div>
