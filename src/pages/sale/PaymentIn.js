@@ -34,6 +34,7 @@ function PaymentIn () {
 		}
 	}, [salePayment]);
 
+	
 	const handleSubmit = async (key) => {
 		const response = await AddPaymentInOut(key);
 		if (response.data === "ok") {
@@ -45,13 +46,13 @@ function PaymentIn () {
 		} else {
 			swal("Oops...!", "Something went wrong!", "error");
 		}
-		const filter = rows?.filter((item) => item.partyName === key.PartyName && item.PhoneNo === key.MobailNo && item.UID === user.uid);
+		const filter = rows?.filter((item) => item.partyName === key.PartyName && item.PhoneNo == key.MobailNo && item.UID === user.uid);
 
 		if (filter) {
-			const id = filter[0].id;
+			const id = filter[0]?.id;
 
 			const updatedPayment = {
-				partyName: filter[0].partyName,
+				
 				total: filter[0].total,
 				Received: filter[0].Received + parseInt(key.Amount),
 				Pending: filter[0].Pending - parseInt(key.Amount)

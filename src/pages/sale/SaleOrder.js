@@ -1,4 +1,12 @@
-import { useAddSaleOrderMutation, useFetchSaleOrderQuery, useDeleteSaleOrderMutation, useAddSalePaymentMutation, useFatchSalePaymentQuery, useUpdateSalePaymentMutation, useAddSaleInvoiceMutation } from "../../redux";
+import { useAddSaleOrderMutation, 
+	useFetchItemQuery , 
+	useUpdateItemMutation,
+	useFetchSaleOrderQuery, 
+	useDeleteSaleOrderMutation, 
+	useAddSalePaymentMutation, 
+	useFatchSalePaymentQuery, 
+	useUpdateSalePaymentMutation, 
+	useAddSaleInvoiceMutation } from "../../redux";
 import SortableTable from "../../components/Table/SortableTable";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -15,7 +23,9 @@ function SaleOrder () {
 	const { data, error, isFetching } = useFetchSaleOrderQuery();
 	const [DeleteSaleOrder] = useDeleteSaleOrderMutation();
 	const [AddSalePayment] = useAddSalePaymentMutation();
+	const [UpdateItem] = useUpdateItemMutation();
 	const [UpdateSalePayment] = useUpdateSalePaymentMutation();
+	const itemResponse = useFetchItemQuery();
 	const salePayment = useFatchSalePaymentQuery();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [printData, setPrintData] = useState([]);
@@ -102,7 +112,7 @@ function SaleOrder () {
 				);
 				const object = ConvertOrder[0];
 				const payment = ConvertOrder[0][1];
-
+				
 				const response = await AddSaleInvoice(object);
 				if (response.data === "ok") {
 					swal({
@@ -139,6 +149,17 @@ function SaleOrder () {
 
 					await AddSalePayment(newPayment);
 				}
+				object[0]?.map(async (record) => {
+					const filterID = itemResponse.data?.filter((item) => item.ItemName === record.Item && item.ItemCode == record.ItemCode && item.UID === user.uid);
+					const ID = filterID[0]?.id;
+					
+	
+					const Stock = {
+						Quantity: filterID[0].Quantity - record.QTY
+					};
+					const ans = await UpdateItem({ ID, Stock });
+					console.log(ans , "ans");
+				});
 			} else {
 				swal("Your Data  is safe!");
 			}
@@ -268,7 +289,8 @@ function SaleOrder () {
 								<div className="col-5 ">
 
 									{" "}
-									<Form file="Sale-Order" onsubmit={handlesubmit} ID={data?.length}/>
+									
+									<Form file="Sale-Order" onsubmit={handlesubmit} ID={filteredData?.length}/>
 									{" "}
 								</div>
 							</div>

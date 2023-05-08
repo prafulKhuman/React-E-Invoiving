@@ -9,11 +9,12 @@ import { useState } from "react";
 import Report from "../../components/report/Report";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
-import { useAddPartiesMutation, useFetchPartiesQuery, useDeletePartiesMutation, useFetchPurchaseBillQuery, useFetchPaymentInOutQuery, useFetchPurchaseReturnQuery, useFatchPurchasePaymentQuery, useDeletePaymentInOutMutation, useDeletePurchaseBillMutation, useDeletePurchaseReturnMutation } from "../../redux";
+import { useAddPartiesMutation, useDeletePurchasePaymentMutation , useFetchPartiesQuery, useDeletePartiesMutation, useFetchPurchaseBillQuery, useFetchPaymentInOutQuery, useFetchPurchaseReturnQuery, useFatchPurchasePaymentQuery, useDeletePaymentInOutMutation, useDeletePurchaseBillMutation, useDeletePurchaseReturnMutation } from "../../redux";
 let combine;
 function Seller () {
 	const { user } = useUserAuth();
 	const [AddParties] = useAddPartiesMutation();
+	const [DeletePurchasePayment] = useDeletePurchasePaymentMutation();
 	const [DeleteParties] = useDeletePartiesMutation();
 	const purchaseBill = useFetchPurchaseBillQuery();
 	const purchaseReturn = useFetchPurchaseReturnQuery();
@@ -71,8 +72,11 @@ function Seller () {
 		}
 	};
 
+	
+
 	// Delete Parties
 	const handleDeleteParty = (key) => {
+		
 		swal({
 			title: "Are you sure?",
 			text: "Once Converted, you will not be able to recover this Data!",
@@ -82,7 +86,11 @@ function Seller () {
 		}).then(async (willDelete) => {
 			if (willDelete) {
 				const response = await DeleteParties(key);
-				if (response.data === "ok") {
+				const filterparty = data?.filter((party)=> party.id === key);
+				const filterPayment = purchasePayments.data?.filter((payment)=> payment.partyName.toLowerCase() == filterparty[0]?.PartyName.toLowerCase() && payment.PhoneNo == filterparty[0]?.PhoneNo && payment.UID === user.uid);
+
+				const res = await DeletePurchasePayment(filterPayment[0]?.id);
+				if (response.data === "ok" && res.data === "ok") {
 					swal({
 						title: "Party Removed!",
 						icon: "success",

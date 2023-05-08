@@ -59,16 +59,16 @@ function SaleInvoice () {
 				icon: "success",
 				button: "Done!"
 			});
-			const filter = rows?.filter((item) => {
-				item.partyName === row[1].PartyName &&
+			const filter = rows?.filter((item) => 
+				item.partyName === row[1].PartyName.toLowerCase() &&
 				item.UID === row[2].UID &&
-				item.PhoneNo === row[1].PhoneNo;
-			});
+				item.PhoneNo == row[1].PhoneNo
+			);
 
-			if (filter[0]?.partyName === row[1].PartyName) {
-				const id = filter[0].id;
+			if (filter) {
+				const id = filter[0]?.id;
 				const updatedPayment = {
-					partyName: filter[0].partyName,
+					
 					total: filter[0].total + row[1].Total,
 					Received: filter[0].Received + parseInt(row[1].Advance),
 					Pending: filter[0].Pending + (row[1].Total - parseInt(row[1].Advance))
@@ -77,7 +77,7 @@ function SaleInvoice () {
 				await UpdateSalePayment({ id, updatedPayment });
 			} else {
 				const newPayment = {
-					partyName: row[1].PartyName,
+					partyName: row[1].PartyName.toLowerCase(),
 					total: row[1].Total,
 					Received: parseInt(row[1].Advance),
 					Pending: row[1].Total - parseInt(row[1].Advance),
@@ -89,12 +89,15 @@ function SaleInvoice () {
 				await AddSalePayment(newPayment);
 			}
 			row[0]?.map(async (record) => {
-				const filterID = itemResponse?.data?.filter((item) => item.ItemName === record.Item && item.ItemCode === record.ItemCode && item.UID === user.uid);
-				const ID = filterID[0].id;
+				const filterID = itemResponse.data?.filter((item) => item.ItemName === record.Item && item.ItemCode == record.ItemCode && item.UID === user.uid);
+				const ID = filterID[0]?.id;
+				
+
 				const Stock = {
 					Quantity: filterID[0].Quantity - record.QTY
 				};
 				await UpdateItem({ ID, Stock });
+				
 			});
 		} else {
 			swal("Oops...!", "Something went wrong!", "error");

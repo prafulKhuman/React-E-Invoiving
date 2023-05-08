@@ -42,28 +42,29 @@ function PaymentOut () {
 				icon: "success",
 				button: "Done!"
 			});
+		
+			const filter = rows?.filter((item) => item.partyName === key.PartyName && item.PhoneNo == key.MobailNo && item.UID === user.uid);
+			console.log(filter, "hello");
+			if (filter) {
+
+				const id = filter[0]?.id;
+
+				const updatedPayment = {
+					partyName: filter[0]?.partyName,
+					total: filter[0]?.total,
+					Paid: filter[0]?.Paid + parseInt(key.Amount),
+					Unpaid: filter[0]?.Unpaid - parseInt(key.Amount)
+				};
+
+				const ans = await UpdatePurchasePayment({ id, updatedPayment });
+				if (ans.error) {
+					swal("Oops...!", "Payment Data Not Found!", "error");
+				}
+			} else if (filter === []) {
+				swal("Oops...!", " Party Data Not Found!", "error");
+			}
 		} else {
 			swal("Oops...!", "Something went wrong!", "error");
-		}
-		const filter = rows?.filter((item) => item.partyName === key.PartyName && item.PhoneNo === key.MobailNo && item.UID === user.uid);
-		console.log(filter, "hello");
-		if (filter) {
-
-			const id = filter[0]?.id;
-
-			const updatedPayment = {
-				partyName: filter[0]?.partyName,
-				total: filter[0]?.total,
-				Paid: filter[0]?.Paid + parseInt(key.Amount),
-				Unpaid: filter[0]?.Unpaid - parseInt(key.Amount)
-			};
-
-			const ans = await UpdatePurchasePayment({ id, updatedPayment });
-			if (ans.error) {
-				swal("Oops...!", "Payment Data Not Found!", "error");
-			}
-		} else if (filter === []) {
-			swal("Oops...!", " Party Data Not Found!", "error");
 		}
 	};
 

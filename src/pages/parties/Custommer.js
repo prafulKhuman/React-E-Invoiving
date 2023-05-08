@@ -8,12 +8,13 @@ import swal from "sweetalert";
 import { useState } from "react";
 import Report from "../../components/report/Report";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
-import { useAddPartiesMutation, useFetchPartiesQuery, useDeletePartiesMutation, useFatchSaleInvoiceQuery, useFetchSaleReturnQuery, useFetchPaymentInOutQuery, useFatchSalePaymentQuery, useDeleteSaleInvoiceMutation, useDeletePaymentInOutMutation, useDeleteSaleReturnMutation } from "../../redux";
+import { useAddPartiesMutation, useDeleteSalePaymentMutation , useFetchPartiesQuery, useDeletePartiesMutation, useFatchSaleInvoiceQuery, useFetchSaleReturnQuery, useFetchPaymentInOutQuery, useFatchSalePaymentQuery, useDeleteSaleInvoiceMutation, useDeletePaymentInOutMutation, useDeleteSaleReturnMutation } from "../../redux";
 let combine;
 function Custommer () {
 	const { user } = useUserAuth();
 	const [AddParties] = useAddPartiesMutation();
 	const [DeleteParties] = useDeletePartiesMutation();
+	const [DeleteSalePayment] = useDeleteSalePaymentMutation();
 	const saleInvoice = useFatchSaleInvoiceQuery();
 	const salePayments = useFatchSalePaymentQuery();
 	const saleReturn = useFetchSaleReturnQuery();
@@ -77,7 +78,10 @@ function Custommer () {
 		}).then(async (willDelete) => {
 			if (willDelete) {
 				const response = await DeleteParties(key);
-				if (response.data === "ok") {
+				const filterparty = data?.filter((party)=> party.id === key);
+				const filterPayment = salePayments.data?.filter((payment)=> payment.partyName.toLowerCase() == filterparty[0]?.PartyName.toLowerCase() && payment.PhoneNo == filterparty[0]?.PhoneNo && payment.UID === user.uid);
+				const res =await DeleteSalePayment(filterPayment[0]?.id);
+				if (response.data === "ok" && res.data === "ok") {
 					swal({
 						title: "Party Removed!",
 						icon: "success",

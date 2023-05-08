@@ -5,11 +5,11 @@ import { useUserAuth } from "../../context/Auth/UserAuthContext";
 function PartiesFrom({ onsubmit }) {
 	const { user } = useUserAuth();
 	const partiesSchema = Yup.object().shape({
-		PartyName: Yup.string().min(2).required("Can't Empty Party Name"),
-		Email: Yup.string().min(5).required("Can't Empty Email"),
-		PhoneNo: Yup.number().min(10).required("Can't Empty Phone No"),
-		BillingAddress: Yup.string().min(5).required("Can't Empty Billing Address"),
-		PartyType: Yup.string().required("Can't Empty Party Type")
+		PartyName: Yup.string("Invalid String").min(2).required("Can't Empty Party Name"),
+		Email: Yup.string().email("Invalid Email").min(5).required("Can't Empty Email"),
+		PhoneNo: Yup.number("Invalid Number").min(10).required("Can't Empty Phone No"),
+		BillingAddress: Yup.string("Invalid String").min(5).required("Can't Empty Billing Address"),
+		PartyType: Yup.string("Invalid String").required("Can't Empty Party Type")
 	});
 
 	const { values, errors, touched, handleBlur, handleChange, handleSubmit } =

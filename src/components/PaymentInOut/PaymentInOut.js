@@ -38,10 +38,11 @@ function PaymentInOut({ file, AddData, ID }) {
 			},
 			validationSchema: paymentInOutSchema,
 			onSubmit: (values, action) => {
+				
 				const payment = {
 					...values,
 					UID: user.uid,
-					PartyName: selectedOption.label
+					PartyName : selectedOption.label
 				};
 				AddData(payment);
 				action.resetForm();
@@ -53,13 +54,13 @@ function PaymentInOut({ file, AddData, ID }) {
 	// Filter Party If Party Type Custommer
 	const filterCustommer = data?.filter((item) => item.UID === user.uid && item.PartyType === "Custommer");
 	const custommer = filterCustommer?.map((item) => ({
-		label: item.PartyName
+		label: (item.PartyName).toLowerCase(),
 	}));
 	
 	// Filter Party If Party Type Custommer
 	const filterSaller = data?.filter((item) => item.UID === user.uid && item.PartyType === "Saller");
 	const saller = filterSaller?.map((item) => ({
-		label: item.PartyName
+		label: (item.PartyName).toLowerCase(),
 	}));
 
 	
@@ -69,7 +70,7 @@ function PaymentInOut({ file, AddData, ID }) {
 	if (file === "Payment-In") {
 		options = custommer;
 		const hint = filterCustommer?.map((item) => {
-			if (item.PartyName === selectedOption?.label) {
+			if (item.PartyName.toLowerCase() === selectedOption?.label) {
 				return item.PhoneNo;
 			}else{
 				return "";
@@ -80,7 +81,7 @@ function PaymentInOut({ file, AddData, ID }) {
 	} else {
 		options = saller;
 		const hint  = filterSaller?.map((item) => {
-			if (item.PartyName === selectedOption?.label) {
+			if (item.PartyName.toLowerCase() === selectedOption?.label) {
 				return item.PhoneNo;
 			}else{
 				return "";
@@ -90,6 +91,7 @@ function PaymentInOut({ file, AddData, ID }) {
 		phone = hint ;
 	}
 	const phoneHint = phone ? phone : [""];
+
 
 	return (
 		<>

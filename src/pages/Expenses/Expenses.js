@@ -266,7 +266,7 @@ function Expenses () {
 							<div className="card">
 								<div className="card-header">
 									<div className="item_right">
-										<ExpensesFrom Cat={data} ID={expanses.data?.length}/>
+										<ExpensesFrom Cat={data} ID={filterRecords?.length}/>
 									</div>
 								</div>
 								<div className="card-body">

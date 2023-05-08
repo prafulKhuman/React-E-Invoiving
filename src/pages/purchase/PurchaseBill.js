@@ -55,7 +55,7 @@ function PurchaseBill () {
 		if (filter[0]?.partyName === row[1].PartyName) {
 			const id = filter[0].id;
 			const updatedPayment = {
-				partyName: filter[0].partyName,
+				
 				total: filter[0].total + row[1].Total,
 				Paid: filter[0].Paid + parseInt(row[1].Advance),
 				Unpaid: filter[0].Unpaid + (row[1].Total - parseInt(row[1].Advance))
@@ -64,7 +64,7 @@ function PurchaseBill () {
 			await UpdatePurchasePayment({ id, updatedPayment });
 		} else {
 			const newPayment = {
-				partyName: row[1].PartyName,
+				partyName: row[1].PartyName.toLowerCase(),
 				total: row[1].Total,
 				Paid: parseInt(row[1].Advance),
 				Unpaid: row[1].Total - parseInt(row[1].Advance),

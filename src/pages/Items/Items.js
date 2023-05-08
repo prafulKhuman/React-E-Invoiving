@@ -262,7 +262,7 @@ function Items () {
 								<div className="card-header">
 									<div className="row">
 										<div className="col">
-											<h5 className="card-title">Item Name : {item?.itemCode}</h5>
+											<h5 className="card-title">Item Name : {item?.itemName}</h5>
 										</div>
 										<div className="col text-right">
 											<Stock ID={item?.Action} data={item}/>

@@ -46,7 +46,7 @@ function SaleReturn () {
 				button: "Done!"
 			});
 
-			const filter = rows?.filter((item) => item.partyName === row[1].PartyName && item.UID === row[2].UID && item.PhoneNo === row[1].PhoneNo);
+			const filter = rows?.filter((item) => item.partyName === row[1].PartyName.toLowerCase() && item.UID === row[2].UID && item.PhoneNo == row[1].PhoneNo);
 
 			if (filter) {
 				const id = filter[0].id;
@@ -63,7 +63,7 @@ function SaleReturn () {
 				}
 
 				const updatedPayment = {
-					partyName: filter[0].partyName,
+				
 					total: filter[0].total - row[1].Total,
 					Received : received,
 					Pending :pending
@@ -72,7 +72,7 @@ function SaleReturn () {
 				await UpdateSalePayment({ id, updatedPayment });
 
 				row[0]?.map(async (record) => {
-					const filterID = itemResponse?.data?.filter((item) => item.ItemName === record.Item && item.ItemCode === record.ItemCode && item.UID === user.uid);
+					const filterID = itemResponse?.data?.filter((item) => item.ItemName === record.Item && item.ItemCode == record.ItemCode && item.UID === user.uid);
 					const ID = filterID[0].id;
 					const Stock = {
 						Quantity: filterID[0].Quantity + record.QTY
