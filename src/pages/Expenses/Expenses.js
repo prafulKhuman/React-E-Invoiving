@@ -20,11 +20,22 @@ function Expenses () {
 	const [exp, setExp] = useState();
 	const [expData, setExpData] = useState([]);
 
+
+	// Error Handling
+
+	if(expanses.error){
+		swal("Error", " Error While Fatching Expenses Data", "error");
+	}
+
+
+	// fatch Expense data
 	useEffect(() => {
 		const filterExp = expanses.data?.filter((item) => item.Category === exp && item.UID === user.uid);
 		setExpData(filterExp);
 	}, []);
 
+
+	// add category
 	const handleSubmit = async (key) => {
 		const response = await AddCategory(key);
 		if (response.data === "ok") {
@@ -38,6 +49,7 @@ function Expenses () {
 		}
 	};
 
+	// delete expense
 	const handleDeleteRow = (key) => {
 		swal({
 			title: "Are you sure?",
@@ -59,16 +71,19 @@ function Expenses () {
 			}
 		});
 	};
+
+	// serch category
 	const handleSearch = (e) => {
 		setSearch(e.target.value);
 	};
-
 	const filteredData = data?.filter((item) =>
 		item.UID === user.uid
 			? item.Category.toLowerCase().includes(search.toLowerCase())
 			: ""
 	);
 
+
+	// category object
 	let Data = [];
 	let content;
 	if (isFetching) {
@@ -83,6 +98,7 @@ function Expenses () {
 		}));
 	}
 
+	// category config
 	const config = [
 		{
 			label: "#",
@@ -102,16 +118,20 @@ function Expenses () {
 
 	];
 
+	// set expense data
 	const handleOpen = (key) => {
 		setExp(key);
 		const filterExp = expanses.data?.filter((item) => item.Category === key && item.UID === user.uid);
 		setExpData(filterExp);
 	};
+
+	// calculate total expense amount
 	const total = expData?.reduce(getTotal, 0);
 	function getTotal (total, num) {
 		return total + parseInt(num.ExpAmount);
 	}
 
+	// expense data object
 	const record = expData?.map((item, index) => ({
 		id: index + 1,
 		ExpDate: item.timestamp,
@@ -121,6 +141,8 @@ function Expenses () {
 		Action: item.id
 
 	}));
+
+	// expense data config 
 	const expconfig = [
 		{
 			label: "#",
@@ -161,6 +183,8 @@ function Expenses () {
 
 	const keyfn = (item) => item.Id;
 
+
+	// delete Category
 	const handleDelete = (key) => {
 		swal({
 			title: "Are you sure?",

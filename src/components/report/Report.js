@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-
 import SaleTable from "./SaleTable";
 import PaymentTable from "./PaymentTable";
 import ReturnTable from "./ReturnTable";
@@ -9,6 +8,7 @@ import CaseTable from "./CaseTable";
 
 function Report({ file, data, config, parties }) {
 	const [month, setMonth] = useState("");
+
 	const handleFilter = (e) => {
 		if (e.target.value === "--- Select ---") {
 			setMonth("");
@@ -16,6 +16,7 @@ function Report({ file, data, config, parties }) {
 			setMonth(e.target.value);
 		}
 	};
+	
 	let filteredData;
 	if (file === "Case") {
 		filteredData = data;

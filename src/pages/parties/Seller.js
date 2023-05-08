@@ -28,14 +28,36 @@ function Seller () {
 	const [searchParties, setSearchParties] = useState("");
 	const [purchasePayment, setPurchasePayment] = useState();
 
-	const handleSearch = (e) => {
-		setSearch(e.target.value);
-	};
+
+	
+	// Error Handling
+
+	if(purchaseBill.error){
+		swal("Error", " Error While Fatching Purchase Bill Data", "error");
+	}else if(purchaseReturn.error){
+		swal("Error", " Error While Fatching Purchase Return Data", "error");
+	}else if(purchasePayments.error){
+		swal("Error", " Error While Fatching Purchase Payments Data", "error");
+	}else if(paymentOut.error){
+		swal("Error", " Error While Fatching Payment Out Data", "error");
+	}
+
+
 	let partyData;
 	if (openParty) {
 	
 		partyData = openParty[0];
 	}
+
+	// Search Parties Records
+	const handleSearch = (e) => {
+		setSearch(e.target.value);
+	};
+
+	
+	
+
+	// Add Parties
 	const handleSubmit = async (data) => {
 		const response = await AddParties(data);
 		if (response.data === "ok") {
@@ -49,6 +71,7 @@ function Seller () {
 		}
 	};
 
+	// Delete Parties
 	const handleDeleteParty = (key) => {
 		swal({
 			title: "Are you sure?",
@@ -74,12 +97,13 @@ function Seller () {
 		});
 	};
 
+	// Search Parties
 	const handleSearchPaties = (e) => {
 		setSearchParties(e.target.value);
 	};
 
+	// Filter And Fatch Parties Data
 	const filterType = data?.filter((item) => item.PartyType === "Saller" && item.UID === user.uid);
-
 	const filteredData = filterType?.filter((item) =>
 		item.PartyName.toLowerCase().includes(searchParties.toLowerCase())
 	);
@@ -93,7 +117,7 @@ function Seller () {
 	} else {
 		Data = filteredData?.map((item, index) => ({
 			Id: index + 1,
-			PartiesName: item.PartyName,
+			PartiesName: item.PartyName.toLowerCase(),
 			PhoneNo: item.PhoneNo,
 			Email: item.Email,
 			Address: item.BillingAddress,
@@ -102,6 +126,7 @@ function Seller () {
 		}));
 	}
 
+	// Config For Parties Table
 	const configTable = [
 		{
 			label: "#",
@@ -121,6 +146,7 @@ function Seller () {
 
 	];
 
+	// Delete Parties Records
 	const handleDeleteRow = async (ID) => {
 		swal({
 			title: "Are you sure?",
@@ -146,13 +172,15 @@ function Seller () {
 		});
 	};
 
+
+	// Show Party Data
 	const handleOpenParty = (key) => {
 		const filteredParty = Data?.filter((item) => item.PartiesName === key);
 		setOpenParty(filteredParty);
 
 		const purchasebillData = purchaseBill.data?.filter((item) => item[1].PartyName === key && item[1].PhoneNo == filteredParty[0].PhoneNo && item[2]?.UID === user.uid);
 		const purchasereturnData = purchaseReturn.data?.filter((item) => item[1].PartyName === key && item[1]?.PhoneNo == filteredParty[0]?.PhoneNo && item[2]?.UID === user.uid);
-		const purchasepaymentData = purchasePayment.data?.filter((item) => item.partyName === key && item?.PhoneNo == filteredParty[0]?.PhoneNo && item?.UID === user.uid);
+		const purchasepaymentData = purchasePayments.data?.filter((item) => item.partyName === key && item?.PhoneNo == filteredParty[0]?.PhoneNo && item?.UID === user.uid);
 		const paymentoutData = paymentOut.data?.filter((item) => item.PartyName === key && item.TransectionType === "Payment-Out" && item?.MobailNo == filteredParty[0]?.PhoneNo && item?.UID === user.uid);
 
 		if (purchasepaymentData) {
@@ -198,6 +226,8 @@ function Seller () {
 		combine = [...obj1, ...obj2, ...obj3];
 	};
 
+
+	// Search Parties Record
 	const filteredRecord = combine?.filter((item) =>
 
 		item.Id?.toString().toLowerCase().includes(search.toLowerCase()) ||
@@ -210,6 +240,7 @@ function Seller () {
 
 	);
 
+	// Parties Records table Data Object
 	const record = filteredRecord?.map((item, index) => ({
 		No: index + 1,
 		Order_No: item.Order_No,
@@ -221,6 +252,7 @@ function Seller () {
 		Type: item.Type
 	}));
 
+	// Records Table Config
 	const finalconfig = [
 		{
 			label: "#",

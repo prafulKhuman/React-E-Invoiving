@@ -41,7 +41,7 @@ function Invoice({ billInfo, file }) {
 	if (info) {
 		details = info[0];
 	}
-	console.log(details , "dt");
+
 	const advance = parseInt(details?.Advance);
 
 	return (<>

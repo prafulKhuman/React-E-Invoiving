@@ -5,6 +5,7 @@ function Header () {
 	const { logOut, user } = useUserAuth();
 	const navigate = useNavigate();
 
+	// Logout User
 	const handleLogout = () => {
 		try {
 			swal({

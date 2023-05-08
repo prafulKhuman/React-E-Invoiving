@@ -21,6 +21,12 @@ function PaymentOut () {
 	const [UpdatePurchasePayment] = useUpdatePurchasePaymentMutation();
 	const purchasePayment = useFatchPurchasePaymentQuery();
 
+	// Error Handling
+
+	if(purchasePayment.error){
+		swal("Error", " Error While Fatching Purchase Payment Data", "error");
+	}
+
 	useEffect(() => {
 		if (purchasePayment.data) {
 			const data = purchasePayment.data;

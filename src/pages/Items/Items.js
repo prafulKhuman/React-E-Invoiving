@@ -15,12 +15,19 @@ function Items () {
 	const [AddItem] = useAddItemMutation();
 	const [DeleteItem] = useDeleteItemMutation();
 	const [DeleteStock] = useDeleteStockMutation();
-	const response = useFetchStockQuery();
+	const stockresponse = useFetchStockQuery();
 	const { data, error, isFetching } = useFetchItemQuery();
 	const [searchItem, setSearchItem] = useState("");
 	const [openItem, setOpenItem] = useState();
 	const [show, setShow] = useState(false);
 
+	// Error Handling
+
+	if(stockresponse.error){
+		swal("Error", " Error While Fatching Stock Data", "error");
+	}
+
+	// Add Item 
 	const handleSubmit = async (key) => {
 		const response = await AddItem(key);
 		if (response.data === "ok") {
@@ -34,6 +41,7 @@ function Items () {
 		}
 	};
 
+	// Delete Item
 	const handleDeleteItem = (key) => {
 		swal({
 			title: "Are you sure?",
@@ -57,13 +65,18 @@ function Items () {
 		});
 	};
 
+	// Search item
 	const handleSearchIteam = (e) => {
 		setSearchItem(e.target.value);
 	};
 
+
+	// Filter data of current user
 	const filteredUID = data?.filter((item) =>
 		item.UID?.toLowerCase().includes(user.uid.toLowerCase())
 	);
+
+	// search item
 	const filteredData = filteredUID?.filter((item) =>
 		item.ItemName?.toLowerCase().includes(searchItem?.toLowerCase())
 	);
@@ -106,12 +119,14 @@ function Items () {
 
 	];
 
+	// open item
 	const handleOpenItem = (key) => {
 		const filteredItem = Data?.filter((item) => item.itemName === key);
 		setOpenItem(filteredItem);
 		setShow(true);
 	};
 
+	// delete Item Data
 	const handleDeleteRow = (key) => {
 		swal({
 			title: "Are you sure?",
@@ -142,10 +157,10 @@ function Items () {
 
 	let records = [];
 	const Content = <Skeleton count={5} height={40} />;
-	if (Response?.error) {
+	if (stockresponse?.error) {
 		swal("Oops...!", "Something went wrong!", "error");
 	} else {
-		const filterRecord = Response?.data?.filter((items) => items.ItemID === item?.Action);
+		const filterRecord = stockresponse?.data?.filter((items) => items.ItemID === item?.Action);
 
 		records = filterRecord?.map((item, index) => ({
 			id: index + 1,

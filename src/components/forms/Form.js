@@ -7,8 +7,6 @@ import { useFetchPartiesQuery } from "../../redux";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 import { Hint } from "react-autocomplete-hint";
 
-
-// initialValues for useFormik
 let initialValues = {
 	No: "",
 	Item: "",
@@ -20,12 +18,11 @@ let initialValues = {
 };
 
 
-let row;
+
 function Form({ file, onsubmit, ID }) {
-	// No Is Show Hint Of Invoice No , Return No , Order No 
+
 	const No = ID + 1;
 
-	// this is intialvalue for fild state 
 	const intial = {
 		PartyName: "",
 		PhoneNo: "",
@@ -46,28 +43,19 @@ function Form({ file, onsubmit, ID }) {
 	const [filds, setFilds] = useState(intial);
 	const [Select, setSelect] = useState("");
 
+	// Error Handling
 
-	// this function is fatch item and filter by current user id  
-	if (itemResponse.data) {
-		const filterUID = itemResponse.data?.filter((item) => item.UID === user.uid);
-		const item = filterUID?.map((key) => ({
-			ItemName: key.ItemName,
-			ItemCode: key.ItemCode,
-			MRP: key.SalePrice,
-			id: key.id
-
-		}));
-		row = item;
+	if(response.error){
+		swal("Error", " Error While Fatching Parties Data", "error");
+	}else if(itemResponse.error){
+		swal("Error", " Error While Fatching Item Data", "error");
 	}
-
-	// this handler is store party name , mobile no , email , address , id , due date , and total , advance into filds state
+	
+	// Get Custommer And Saller Personal Details And Total , Advance
 	const handleChange2 = (e) => {
 		const { name, value } = e.target;
 		setFilds({ ...filds, [name]: value });
 	};
-
-
-	// this handler is combine data state , fild state , user id , and send to perent component   
 	const handleSubmit2 = (e) => {
 		e.preventDefault();
 		const main = [data, filds, { ["UID"]: user.uid }];
@@ -75,8 +63,9 @@ function Form({ file, onsubmit, ID }) {
 		setData([]);
 		setFilds(intial);
 	};
+	// End
 
-
+	// Get Products Data using useFormik Validation
 	const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
 		useFormik({
 			initialValues,
@@ -93,17 +82,17 @@ function Form({ file, onsubmit, ID }) {
 
 			},
 		});
+	//End
 
-	// calculate total bill amount
+	// Calculate Total Amount 
 	const totalAmount = data.reduce(getTotal, 0);
 	function getTotal(total, num) {
 		return total + num.Amount;
 	}
-
-	//store total amount into fild state 
 	filds.Total = totalAmount;
+	//End Total Amount
 
-	// delete product 
+	// delete Item Start
 	const handleRemoveItem = (rows) => {
 
 		swal({
@@ -140,14 +129,26 @@ function Form({ file, onsubmit, ID }) {
 
 
 	};
+	// Delete Item End
 
-	// user type anything in item code fild , get value and store select state 
-	const handleClick = (e) => {
+	//Item Start
+	const handleItemCode = (e) => {
 		setSelect(e.target.value);
 	};
 
+	let row;
+	if (itemResponse.data) {
+		const filterUID = itemResponse.data?.filter((item) => item.UID === user.uid);
+		const item = filterUID?.map((key) => ({
+			ItemName: key.ItemName,
+			ItemCode: key.ItemCode,
+			MRP: key.SalePrice,
+			id: key.id
 
-	// filter item data using item code and store into selectitem 
+		}));
+		row = item;
+	}
+
 	const filterItem = row?.filter((item) => item.ItemCode === Select);
 	let selectItem;
 	if (filterItem) {
@@ -155,15 +156,25 @@ function Form({ file, onsubmit, ID }) {
 		ID = selectItem?.id;
 	}
 
-	// this handler is store only party name fild value into fild state
+	const code = row?.map((item) => {
+		return item.ItemCode;
+	});
+
+	const itemCodeHint = code ? code : [""];
+	const itemNameHint = selectItem ? [selectItem.ItemName] : [""];
+	
+	// Item End
+
+	// Set Party value To Fild State
 	const handleParty = (e) => {
 		const partyName = e.target.name;
 		const partyValue = e.target.value;
 		const Values = partyValue ? partyValue.toString().toLowerCase() : partyValue;
 		setFilds({ ...filds, [partyName]: Values });
 	};
+	// End
 
-	// filter party data 
+	// Party Name Hint 
 	let filterUIDC ;
 	if(file==="Sale-Invoice" || file === "Sale-Order" || file==="Sale-Return"){
 		filterUIDC = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Custommer");
@@ -171,28 +182,21 @@ function Form({ file, onsubmit, ID }) {
 		filterUIDC = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Saller");
 	}
 
-
 	const parties = filterUIDC?.map((user) => {
 		return (user.PartyName).toLowerCase();
 	});
-
 	const partyHint = parties ? parties : [""];
-
-	const code = row?.map((item) => {
-		return item.ItemCode;
-	});
+	// End
 
 
-	const itemCodeHint = code ? code : [""];
-	const itemNameHint = selectItem ? [selectItem.ItemName] : [""];
-
-
+	// Party mobile Number Hint
 	const filterMobile = filterUIDC?.filter((item) => item.PartyName.toLowerCase() === filds.PartyName);
 	const partyMobile = filterMobile?.map((user) => {
 		return user.PhoneNo;
 	});
-	
 	const mobile = partyMobile != "" ? partyMobile : "Enter Mobile No";
+	// End 
+
 	
 	return (
 
@@ -474,7 +478,7 @@ function Form({ file, onsubmit, ID }) {
 													value={values.ItemCode}
 													onChange={(event) => {
 														handleChange(event);
-														handleClick(event);
+														handleItemCode(event);
 													}}
 													onBlur={handleBlur}
 													className="form-control"

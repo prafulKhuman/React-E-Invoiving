@@ -15,16 +15,37 @@ function Case() {
 	const expenses = useFetchExpenseQuery();
 	const [search, setSearch] = useState("");
 
+	// Error Handling
+
+	if(salePayment.error){
+		swal("Error", " Error While Fatching Sale Payment Data", "error");
+	}else if(purchasePayment.error){
+		swal("Error", " Error While Fatching Purchase Payment Data", "error");
+	}else if(expenses.error){
+		swal("Error", " Error While Fatching Expenses Data", "error");
+	}
+
+
 	const handleSearch = (e) => {
 		setSearch(e.target.value);
 	};
 
+	// Filter Sale Payment
 	const filterPayIn = salePayment.data?.filter((item) => item.UID === user.uid);
+
+	// filter purchase payment
 	const filterPayOut = purchasePayment.data?.filter((item) => item.UID === user.uid);
+
+	// filter expenses
 	const filterExp = expenses.data?.filter((item) => item.UID === user.uid);
 
+	// calculate total payment in 
 	const totalPayIn = filterPayIn?.reduce(getTotalSale, 0);
+
+	// calculate total payment out
 	const totalPayOut = filterPayOut?.reduce(getTotalPurchase, 0);
+
+	// calculate total expenses
 	const totalExp = filterExp?.reduce(getTotalExp, 0);
 
 	function getTotalSale(total, num) {
@@ -37,8 +58,11 @@ function Case() {
 		return total + parseInt(num.ExpAmount);
 	}
 
+	// calculate total case in hand
 	const Case = (totalPayIn - totalPayOut - totalExp);
 
+
+	// fatching records
 	let Entry = [];
 	let content;
 	if (salePayment.isFetching || purchasePayment.isFetching || expenses.isFetching) {
@@ -82,6 +106,8 @@ function Case() {
 		Entry = [...payIn, ...payOut, ...exp];
 	}
 
+
+	// filter records
 	const filteredCase = Entry?.filter((item) =>
 
 		item.partyName.toString().toLowerCase().includes(search.toLowerCase()) ||
@@ -92,6 +118,8 @@ function Case() {
 
 	);
 
+
+	// all combine records object
 	const caseInfo = filteredCase?.map((item, index) => ({
 		No: index + 1,
 
@@ -101,6 +129,8 @@ function Case() {
 		Done: item.Done,
 		Pending: item.Pending
 	}));
+
+	// table config
 	const config = [
 		{
 			label: "#",

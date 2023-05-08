@@ -23,6 +23,13 @@ function PurchasReturn () {
 	const [printData, setPrintData] = useState([]);
 	const [rows, setrows] = useState([]);
 
+	// Error Handling
+
+	if(purchasePayment.error){
+		swal("Error", " Error While Fatching Purchase Payment Data", "error");
+	}
+
+	
 	useEffect(() => {
 		if (purchasePayment.data) {
 			const filterUID = purchasePayment.data?.filter((item) => item.UID === user.uid);

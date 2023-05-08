@@ -13,11 +13,13 @@ function PaymentInOut({ file, AddData, ID }) {
 	const [selectedOption, setSelectedOption] = useState(null);
 	const {data , error} =  useFetchPartiesQuery();
 	
+
 	if(error){
 		swal("Oops...!", "Problem While Fatching Party Data", "error");
 	}
 	
-	
+
+	// Payment In Out Form Handling Using useFormik
 	const paymentInOutSchema = Yup.object().shape({
 		receiptno: Yup.number().min(1).required("Can't Empty This Field "),
 		Description: Yup.string().min(5).required("Can't Empty This Field"),
@@ -45,24 +47,25 @@ function PaymentInOut({ file, AddData, ID }) {
 				action.resetForm();
 			}
 		});
-	
+	// End 
+
+
+	// Filter Party If Party Type Custommer
 	const filterCustommer = data?.filter((item) => item.UID === user.uid && item.PartyType === "Custommer");
-	
 	const custommer = filterCustommer?.map((item) => ({
 		label: item.PartyName
 	}));
 	
+	// Filter Party If Party Type Custommer
 	const filterSaller = data?.filter((item) => item.UID === user.uid && item.PartyType === "Saller");
-
 	const saller = filterSaller?.map((item) => ({
 		label: item.PartyName
 	}));
 
 	
-
+	
 	let options;
 	let phone = [""];
-
 	if (file === "Payment-In") {
 		options = custommer;
 		const hint = filterCustommer?.map((item) => {
@@ -86,7 +89,6 @@ function PaymentInOut({ file, AddData, ID }) {
 		
 		phone = hint ;
 	}
-	
 	const phoneHint = phone ? phone : [""];
 
 	return (

@@ -25,12 +25,15 @@ function Table({ data, config, keyfn, ...props }) {
 		convert(key);
 	};
 
+
 	const rendrecell = config.map((config) => {
 		if (config.header) {
 			return <Fragment key={config.label}>{config.header()}</Fragment>;
 		}
 		return <th scope="col" key={config.label}>{config.label}</th>;
 	});
+
+	
 	const rendreddata = data.map((item) => {
 		const rendredconfig = config.map((configitem) => (
 			<td key={configitem.label}>

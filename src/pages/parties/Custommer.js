@@ -27,13 +27,32 @@ function Custommer () {
 	const [searchParties, setSearchParties] = useState("");
 	const [salePayment, setSalePayment] = useState();
 
+
+	// Error Handling
+
+	if(saleInvoice.error){
+		swal("Error", " Error While Fatching Sale Invoice Data", "error");
+	}else if(salePayments.error){
+		swal("Error", " Error While Fatching Sale Payments Data", "error");
+	}else if(saleReturn.error){
+		swal("Error", " Error While Fatching Sale Return Data", "error");
+	}else if(paymentIn.error){
+		swal("Error", " Error While Fatching Payment In Data", "error");
+	}
+
+
+	//Search Parties Record
 	const handleSearch = (e) => {
 		setSearch(e.target.value);
 	};
+
+	// Parties Info Variable
 	let partyData;
 	if (openParty) {
 		partyData = openParty[0];
 	}
+
+	// Add Parties
 	const handleSubmit = async (data) => {
 		const response = await AddParties(data);
 		if (response.data === "ok") {
@@ -47,6 +66,7 @@ function Custommer () {
 		}
 	};
 
+	// Delete Parties
 	const handleDeleteParty = (key) => {
 		swal({
 			title: "Are you sure?",
@@ -70,12 +90,13 @@ function Custommer () {
 		});
 	};
 
+	// Search Parties
 	const handleSearchPaties = (e) => {
 		setSearchParties(e.target.value);
 	};
 
+	// Filter And Fatch Parties
 	const filterType = data?.filter((item) => item.PartyType === "Custommer" && item.UID === user.uid);
-
 	const filteredData = filterType?.filter((item) =>
 		item.PartyName.toLowerCase().includes(searchParties.toLowerCase())
 	);
@@ -89,7 +110,7 @@ function Custommer () {
 	} else {
 		Data = filteredData?.map((item, index) => ({
 			Id: index + 1,
-			PartiesName: item.PartyName,
+			PartiesName: item.PartyName.toLowerCase(),
 			PhoneNo: item.PhoneNo,
 			Email: item.Email,
 			Address: item.BillingAddress,
@@ -99,6 +120,7 @@ function Custommer () {
 		}));
 	}
 
+	// Parties Config
 	const configTable = [
 		{
 			label: "#",
@@ -118,6 +140,7 @@ function Custommer () {
 
 	];
 
+	//Delete Parties Records
 	const handleDeleteRow = async (ID) => {
 		swal({
 			title: "Are you sure?",
@@ -143,6 +166,8 @@ function Custommer () {
 		});
 	};
 
+
+	// Open Parties Details
 	const handleOpenParty = (key) => {
 		const filteredParty = Data?.filter((item) => item.PartiesName === key && item.UID === user.uid);
 		setOpenParty(filteredParty);
@@ -150,7 +175,7 @@ function Custommer () {
 		const saleinvoice = saleInvoice.data?.filter((item) => item[1]?.PartyName === key && item[1].PhoneNo == filteredParty[0].PhoneNo && item[2]?.UID === user.uid);
 
 		const salereturn = saleReturn.data?.filter((item) => item[1]?.PartyName === key && item[1]?.PhoneNo == filteredParty[0]?.PhoneNo && item[2]?.UID === user.uid);
-		const salepaymentData = salePayment.data?.filter((item) => item?.partyName === key && item?.PhoneNo == filteredParty[0]?.PhoneNo && item?.UID === user.uid);
+		const salepaymentData = salePayments.data?.filter((item) => item?.partyName === key && item?.PhoneNo == filteredParty[0]?.PhoneNo && item?.UID === user.uid);
 		const paymentin = paymentIn.data?.filter((item) => item?.PartyName === key && item?.TransectionType === "Payment-In" && item?.MobailNo == filteredParty[0]?.PhoneNo && item?.UID === user.uid);
 		if (salepaymentData) {
 			setSalePayment(salepaymentData[0]);
@@ -195,6 +220,8 @@ function Custommer () {
 		combine = [...obj1, ...obj2, ...obj3];
 	};
 
+
+	// Filter Parties Details 
 	const filteredRecord = combine?.filter((item) =>
 
 		item.Id?.toString().toLowerCase().includes(search.toLowerCase()) ||
@@ -207,6 +234,7 @@ function Custommer () {
 
 	);
 
+	// Parties Details Data Object
 	const record = filteredRecord?.map((item, index) => ({
 		No: index + 1,
 		Order_No: item.Order_No,
@@ -218,6 +246,8 @@ function Custommer () {
 		Type: item.Type
 	}));
 
+
+	// Parties Details Config Array
 	const finalconfig = [
 		{
 			label: "#",

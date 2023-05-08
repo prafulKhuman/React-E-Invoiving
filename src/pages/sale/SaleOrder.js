@@ -21,6 +21,12 @@ function SaleOrder () {
 	const [printData, setPrintData] = useState([]);
 	const [rows, setrows] = useState([]);
 
+	// Error Handling
+
+	if(salePayment.error){
+		swal("Error", " Error While Fatching Sale Payment Data", "error");
+	}
+	
 	useEffect(() => {
 		if (salePayment.data) {
 			const filterUID = salePayment.data?.filter((item) => item.UID === user.uid);

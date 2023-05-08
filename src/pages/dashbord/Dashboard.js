@@ -2,6 +2,7 @@ import Charts from "../../utility/charts/Charts";
 import Linecharts from "../../utility/charts/Linecharts";
 import { useFatchSalePaymentQuery, useFetchExpenseQuery, useFatchPurchasePaymentQuery, useFatchSaleInvoiceQuery, useFetchPurchaseBillQuery } from "../../redux";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
+import swal from "sweetalert";
 
 function Dashboard() {
 	const { user } = useUserAuth();
@@ -11,41 +12,62 @@ function Dashboard() {
 	const expenses = useFetchExpenseQuery();
 	const purchaseOrder = useFetchPurchaseBillQuery();
 
-	const filterPayIn = salePayment.data?.filter((item) => item.UID === user.uid);
+	// Error Handling
 
+	if(salePayment.error){
+		swal("Error", " Error While Fatching Sale Payment Data", "error");
+	}else if(purchasePayment.error){
+		swal("Error", " Error While Fatching Purchase Payment Data", "error");
+	}else if(expenses.error){
+		swal("Error", " Error While Fatching Expenses Data", "error");
+	}else if(saleOrder.error){
+		swal("Error", " Error While Fatching Sale Order Data", "error");
+	}
+
+	// fatch sale payment and calculate total payment in 
+	const filterPayIn = salePayment.data?.filter((item) => item.UID === user.uid);
 	const totalPayIn = filterPayIn?.reduce(getTotalSale, 0);
 	function getTotalSale(total, num) {
 		return total + num.total;
 	}
 
+	// fatch purchase payment and calculate total payment out 
 	const filterPayOut = purchasePayment.data?.filter((item) => item.UID === user.uid);
 	const totalPayOut = filterPayOut?.reduce(getTotalPayOut, 0);
 	function getTotalPayOut(total, num) {
 		return total + num.total;
 	}
 
+	// calculate total payment received
 	const totalReceived = filterPayIn?.reduce(getTotalR, 0);
 	function getTotalR(total, num) {
 		return total + num.Received;
 	}
 
+	// calculate total payment Paid
 	const totalPaid = filterPayOut?.reduce(getTotalP, 0);
 	function getTotalP(total, num) {
 		return total + num.Paid;
 	}
 
+	// filter and calculate total expenses
 	const filterExp = expenses.data?.filter((item) => item.UID === user.uid);
 	const totalExp = filterExp?.reduce(getTotalExp, 0);
 	function getTotalExp(total, num) {
 		return total + parseInt(num.ExpAmount);
 	}
 
+	// calculate profit
 	const Sub = (totalPayIn - totalPayOut - totalExp);
+
+	//calculate total case in hand
 	const Case = (totalReceived - totalPaid - totalExp);
 
+	// filter and find total sale order
 	const filterOrder = saleOrder.data?.filter((item) => item[2].UID === user.uid);
 	const saleLength = filterOrder?.length;
 
+	// filter and find total purchase order
 	const filterPurchaseOrder = purchaseOrder.data?.filter((item) => item[2].UID === user.uid);
 	const purchaseLength = filterPurchaseOrder?.length;
 	return (

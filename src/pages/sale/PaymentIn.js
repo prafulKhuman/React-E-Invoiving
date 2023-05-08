@@ -20,6 +20,13 @@ function PaymentIn () {
 	const [UpdateSalePayment] = useUpdateSalePaymentMutation();
 	const salePayment = useFatchSalePaymentQuery();
 
+	// Error Handling
+
+	if(salePayment.error){
+		swal("Error", " Error While Fatching Sale Payment Data", "error");
+	}
+
+
 	useEffect(() => {
 		if (salePayment.data) {
 			const data = salePayment.data;

@@ -7,7 +7,6 @@ function PartiesTable ({ filteredData, config, parties }) {
 	}
 
 	if (parties) {
-		// setParties(parties[0]);
 		party = parties[0];
 	}
 
