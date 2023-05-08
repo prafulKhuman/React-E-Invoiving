@@ -39,9 +39,9 @@ function Invoice({ billInfo, file }) {
 	}).flat();
 	let details;
 	if (info) {
-		// eslint-disable-next-line no-unused-vars
 		details = info[0];
 	}
+	console.log(details , "dt");
 	const advance = parseInt(details?.Advance);
 
 	return (<>
@@ -53,13 +53,13 @@ function Invoice({ billInfo, file }) {
 					<div id="boot-icon" className="col" style={{ fontSize: "30px" }}> {file === "Sale-Return" || file === "Purchase-Return" ? "Return Invoice" : "Invoice"} </div>
 
 					<div className="col mr-5 text-right">
-						<h4 className="">Ref No - {details?.invoiceNo} </h4>
+						<h4 className="">Ref No - {details?.invoiceNo } </h4>
 						<span className="">{details?.Date}</span>
 					</div>
 				</div>
 				<hr />
 				<div className="row ">
-
+					
 					<div className="col from ">
 						<p className="lead marginbottom font-weight-bold">TO : {details?.PartyName}</p><br />
 						<p>{details?.Address}</p>
@@ -137,6 +137,7 @@ function Invoice({ billInfo, file }) {
 							<label className="font-weight-bold"> {file === "Purchase-Bill" ? "UnPaid" : "Balance"} : </label>
 							<span>{details?.TotalAmount - advance}</span>
 						</p><p>
+							
 							<label className="font-weight-bold"> {file === "Purchase-Bill" ? "Paid" : "Received"}: </label>
 							<span> {advance} </span>
 						</p></>

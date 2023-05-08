@@ -187,13 +187,13 @@ function Form({ file, onsubmit, ID }) {
 	const itemNameHint = selectItem ? [selectItem.ItemName] : [""];
 
 
-	const filterMobile = filterUIDC?.filter((item) => item.PartyName === filds.PartyName);
+	const filterMobile = filterUIDC?.filter((item) => item.PartyName.toLowerCase() === filds.PartyName);
 	const partyMobile = filterMobile?.map((user) => {
 		return user.PhoneNo;
 	});
-
+	
 	const mobile = partyMobile != "" ? partyMobile : "Enter Mobile No";
-
+	
 	return (
 
 		<>

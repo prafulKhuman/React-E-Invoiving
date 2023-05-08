@@ -5,12 +5,18 @@ import { useState } from "react";
 import Select from "react-select";
 import { useFetchPartiesQuery } from "../../redux";
 import { Hint } from "react-autocomplete-hint";
+import swal from "sweetalert";
 
 function PaymentInOut({ file, AddData, ID }) {
 	const { user } = useUserAuth();
 
 	const [selectedOption, setSelectedOption] = useState(null);
-	const response = useFetchPartiesQuery();
+	const {data , error} =  useFetchPartiesQuery();
+	
+	if(error){
+		swal("Oops...!", "Problem While Fatching Party Data", "error");
+	}
+	
 	
 	const paymentInOutSchema = Yup.object().shape({
 		receiptno: Yup.number().min(1).required("Can't Empty This Field "),
@@ -39,14 +45,14 @@ function PaymentInOut({ file, AddData, ID }) {
 				action.resetForm();
 			}
 		});
-
-	const filterCustommer = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Custommer");
-
+	
+	const filterCustommer = data?.filter((item) => item.UID === user.uid && item.PartyType === "Custommer");
+	
 	const custommer = filterCustommer?.map((item) => ({
 		label: item.PartyName
 	}));
-
-	const filterSaller = response.data?.filter((item) => item.UID === user.uid && item.PartyType === "Saller");
+	
+	const filterSaller = data?.filter((item) => item.UID === user.uid && item.PartyType === "Saller");
 
 	const saller = filterSaller?.map((item) => ({
 		label: item.PartyName
@@ -55,27 +61,33 @@ function PaymentInOut({ file, AddData, ID }) {
 	
 
 	let options;
-	let phone;
+	let phone = [""];
 
 	if (file === "Payment-In") {
 		options = custommer;
 		const hint = filterCustommer?.map((item) => {
 			if (item.PartyName === selectedOption?.label) {
 				return item.PhoneNo;
+			}else{
+				return "";
 			}
 		});
-		phone = hint;
+		phone = hint ;
+		
 	} else {
 		options = saller;
-		const hint = filterSaller?.map((item) => {
+		const hint  = filterSaller?.map((item) => {
 			if (item.PartyName === selectedOption?.label) {
 				return item.PhoneNo;
+			}else{
+				return "";
 			}
 		});
-		phone = hint;
+		
+		phone = hint ;
 	}
-
-	const phoneHint = phone || [""];
+	
+	const phoneHint = phone ? phone : [""];
 
 	return (
 		<>
@@ -112,9 +124,10 @@ function PaymentInOut({ file, AddData, ID }) {
 										</div>
 										<div className="invoice_No  col-md-4 ms-auto">
 
-											<label>Receipt No . </label>
+											<label htmlFor="ReceiptNo">Receipt No . </label>
 											<input type="number"
 												name="receiptno"
+												id="ReceiptNo"
 												placeholder={`ID - ${ID + 1}`}
 												required
 												className=" bottom_border ml-2 "
@@ -134,14 +147,15 @@ function PaymentInOut({ file, AddData, ID }) {
 										<div className="input-group  col-md-3">
 											<Hint options={phoneHint} allowTabFill={true} allowEnterFill={true}>
 
-												<input type="number"
+												<input 
+													type="number"
 													className="form-control"
 													name="MobailNo"
 													required
 													value={values.MobailNo}
 													onChange={handleChange}
 													onBlur={handleBlur}
-													placeholder={phoneHint || "Mobile No"}
+													placeholder={phoneHint  ?  phoneHint : "Phone No"   }
 													aria-describedby="inputGroup-sizing-default"
 													aria-label="Default"
 

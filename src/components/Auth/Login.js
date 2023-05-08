@@ -52,7 +52,7 @@ function Login() {
 			}
 		});
 
-	const handleClick = () => {
+	const handleSendEmail = () => {
 		swal("Enter Email:", {
 			content: "input",
 			button: {
@@ -87,7 +87,7 @@ function Login() {
 
 					<div className="col-md-9 col-lg-6 col-xl-5">
 						<div className="justify-content-center">
-							<p className="font-weight-bold lead " style={{ fontFamily: "Cursive" }}><h3>E - Invoicing Application</h3></p>
+							<span className="font-weight-bold lead" style={{ fontFamily: "Cursive" }}><h3> E - Invoicing Application </h3></span>
 						</div>
 						<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
 							className="img-fluid" alt="Sample image" />
@@ -160,7 +160,7 @@ function Login() {
 
 								</div>
 
-								<i onClick={handleClick} className="link-danger"><b> Forgot Password ?</b></i>
+								<i onClick={handleSendEmail} className="link-danger"><b> Forgot Password ?</b></i>
 
 							</div>
 
