@@ -146,6 +146,7 @@ function Custommer () {
 
 	//Delete Parties Records
 	const handleDeleteRow = async (ID) => {
+		console.log(ID);
 		swal({
 			title: "Are you sure?",
 			text: "Once deleted, you will not be able to recover this Data!",
@@ -192,7 +193,7 @@ function Custommer () {
 			Due_Date: item[1].DueDate,
 			Total_Amount: item[1].Total,
 			Advance: item[1].Advance,
-			Action: item.id,
+			Action: item.Id,
 			Type: "Sale-Invoice"
 
 		}));
@@ -220,11 +221,11 @@ function Custommer () {
 			Type: item.TransectionType
 
 		}));
-
+		
 		combine = [...obj1, ...obj2, ...obj3];
 	};
 
-
+	
 	// Filter Parties Details 
 	const filteredRecord = combine?.filter((item) =>
 
@@ -234,10 +235,11 @@ function Custommer () {
 		item.Due_Date?.toString().toLowerCase().includes(search.toLowerCase()) ||
 		item.Total_Amount?.toString().toLowerCase().includes(search.toLowerCase()) ||
 		item.Advance?.toString().toLowerCase().includes(search.toLowerCase()) ||
-		item.Type?.toString().toLowerCase().includes(search.toLowerCase())
+		item.Type?.toString().toLowerCase().includes(search.toLowerCase()) ||
+		item.Action != null 
 
 	);
-
+	
 	// Parties Details Data Object
 	const record = filteredRecord?.map((item, index) => ({
 		No: index + 1,
@@ -255,50 +257,50 @@ function Custommer () {
 	const finalconfig = [
 		{
 			label: "#",
-			render: (Record) => Record.No,
-			sortValue: (Record) => Record.No
+			render: (record) => record.No,
+			sortValue: (record) => record.No
 		},
 
 		{
 			label: "Ref No",
-			render: (Record) => Record.Order_No,
-			sortValue: (Record) => Record.Order_No
+			render: (record) => record.Order_No,
+			sortValue: (record) => record.Order_No
 
 		},
 		{
 			label: "Transection Type",
-			render: (Record) => Record.Type,
-			sortValue: (Record) => Record.Type
+			render: (record) => record.Type,
+			sortValue: (record) => record.Type
 
 		},
 		{
 			label: "Transection Date",
-			render: (Record) => Record.Date,
-			sortValue: (Record) => Record.Date
+			render: (record) => record.Date,
+			sortValue: (record) => record.Date
 
 		},
 		{
 			label: "Due Date",
-			render: (Record) => Record.Due_Date,
-			sortValue: (Record) => Record.Due_Date
+			render: (record) => record.Due_Date,
+			sortValue: (record) => record.Due_Date
 
 		},
 		{
 			label: "Amount",
-			render: (Record) => Record.Total_Amount,
-			sortValue: (Record) => Record.Total_Amount
+			render: (record) => record.Total_Amount,
+			sortValue: (record) => record.Total_Amount
 
 		},
 		{
 			label: "Received",
-			render: (Record) => Record.Advance,
-			sortValue: (Record) => Record.Advance
+			render: (record) => record.Advance,
+			sortValue: (record) => record.Advance
 
 		},
 		{
 			label: "",
-			render: (Record) => Record.Action,
-			sortValue: (Record) => Record.Action
+			render: (record) => record.Action,
+			sortValue: (record) => record.Action
 
 		}
 
@@ -333,7 +335,7 @@ function Custommer () {
 									<div className="input-group-prepend">
 										<span className="input-group-text ml-5"><i className=" bi bi-search" /></span>
 									</div>
-									<input type="text" onChange={handleSearchPaties} className="form-control" placeholder="Search Parties" aria-label="Username" aria-describedby="basic-addon1" />
+									<input type="text" onChange={handleSearchPaties} className="form-control mr-3" placeholder="Search Parties" aria-label="Username" aria-describedby="basic-addon1" />
 								</div>
 								<div className="card-body p_height">
 

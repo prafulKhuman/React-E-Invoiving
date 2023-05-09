@@ -53,6 +53,7 @@ function SaleInvoice () {
 	}
 	const handlesubmit = async (row) => {
 		const response = await AddSaleInvoice(row);
+		
 		if (response.data === "ok") {
 			swal({
 				title: "Data Saved Success!",
@@ -64,8 +65,8 @@ function SaleInvoice () {
 				item.UID === row[2].UID &&
 				item.PhoneNo == row[1].PhoneNo
 			);
-
-			if (filter) {
+			
+			if (filter[0]?.partyName === row[1].PartyName) {
 				const id = filter[0]?.id;
 				const updatedPayment = {
 					
@@ -74,7 +75,8 @@ function SaleInvoice () {
 					Pending: filter[0].Pending + (row[1].Total - parseInt(row[1].Advance))
 				};
 
-				await UpdateSalePayment({ id, updatedPayment });
+				const up = await UpdateSalePayment({ id, updatedPayment });
+				console.log(up , "up");
 			} else {
 				const newPayment = {
 					partyName: row[1].PartyName.toLowerCase(),
@@ -85,8 +87,9 @@ function SaleInvoice () {
 					PhoneNo: row[1].PhoneNo
 
 				};
-
+				
 				await AddSalePayment(newPayment);
+				
 			}
 			row[0]?.map(async (record) => {
 				const filterID = itemResponse.data?.filter((item) => item.ItemName === record.Item && item.ItemCode == record.ItemCode && item.UID === user.uid);
@@ -245,7 +248,7 @@ function SaleInvoice () {
 				<div className="content-top-gap">
 					<div className="card ">
 						<div className="card-header">
-							<span className="lead font-weight-bold">Payment</span>
+							<span className="lead font-weight-bold">Sale Invoice</span>
 							<div className="invoice_No mr-3 " >
 								<Report file="SALE-INVOICE" data={Data} config={config}/>
 

@@ -141,14 +141,16 @@ function PurchaseBill () {
 		}));
 	}
 
-	const totalPaid = Data?.reduce(getPaid, 0);
+
+
+	const totalPaid = rows?.reduce(getPaid, 0);
 	function getPaid (total, num) {
-		return total + parseInt(num.Advance);
+		return total + parseInt(num.Paid);
 	}
 
-	const totalUnPaid = Data?.reduce(getUnPaid, 0);
+	const totalUnPaid = rows?.reduce(getUnPaid, 0);
 	function getUnPaid (total, num) {
-		return total + parseInt(num.Balance);
+		return total + parseInt(num.Unpaid);
 	}
 
 	const config = [

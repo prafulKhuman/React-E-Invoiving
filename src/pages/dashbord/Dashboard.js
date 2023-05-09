@@ -1,6 +1,11 @@
 import Charts from "../../utility/charts/Charts";
 import Linecharts from "../../utility/charts/Linecharts";
-import { useFatchSalePaymentQuery, useFetchExpenseQuery, useFatchPurchasePaymentQuery, useFatchSaleInvoiceQuery, useFetchPurchaseBillQuery } from "../../redux";
+import { useFatchSalePaymentQuery 
+	, useFetchExpenseQuery, 
+	useFatchPurchasePaymentQuery, 
+	useFatchSaleInvoiceQuery, 
+	useFetchPurchaseBillQuery ,
+} from "../../redux";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 import swal from "sweetalert";
 
@@ -24,6 +29,7 @@ function Dashboard() {
 		swal("Error", " Error While Fatching Sale Order Data", "error");
 	}
 
+	
 	// fatch sale payment and calculate total payment in 
 	const filterPayIn = salePayment.data?.filter((item) => item.UID === user.uid);
 	const totalPayIn = filterPayIn?.reduce(getTotalSale, 0);

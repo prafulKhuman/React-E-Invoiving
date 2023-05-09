@@ -17,6 +17,7 @@ function Table({ data, config, keyfn, ...props }) {
 
 	const handledeleteItem = (key) => {
 		ID(key);
+		
 	};
 	const handlePrint = (key) => {
 		printID(key);

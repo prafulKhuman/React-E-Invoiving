@@ -33,7 +33,7 @@ function Expenses () {
 	useEffect(() => {
 		const filterExp = expanses.data?.filter((item) => item.Category === exp && item.UID === user.uid);
 		setExpData(filterExp);
-	}, []);
+	}, [expData]);
 
 
 	// add category
@@ -77,6 +77,8 @@ function Expenses () {
 	const handleSearch = (e) => {
 		setSearch(e.target.value);
 	};
+
+
 	const filteredData = data?.filter((item) =>
 		item.UID === user.uid
 			? item.Category.toLowerCase().includes(search.toLowerCase())
@@ -251,7 +253,7 @@ function Expenses () {
 									<div className="input-group-prepend">
 										<span className="input-group-text ml-5"><i className=" bi bi-search" /></span>
 									</div>
-									<input type="text" className="form-control" onChange={handleSearch} placeholder="Search Category" aria-label="Username" aria-describedby="basic-addon1" />
+									<input type="text" className="form-control mr-3" onChange={handleSearch} placeholder="Search Category" aria-label="Username" aria-describedby="basic-addon1" />
 								</div>
 								<div className="card-body Expheight">
 									<div className="card-text ">

@@ -243,7 +243,7 @@ function Items () {
 									<div className="input-group-prepend">
 										<span className="input-group-text ml-5"><i className=" bi bi-search" /></span>
 									</div>
-									<input type="search" className="form-control" onChange={handleSearchIteam} placeholder="Search Items" aria-label="Username" aria-describedby="basic-addon1" />
+									<input type="search" className="form-control mr-3" onChange={handleSearchIteam} placeholder="Search Items" aria-label="Username" aria-describedby="basic-addon1" />
 								</div>
 								<div className="card-body Par_height">
 

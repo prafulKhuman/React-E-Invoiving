@@ -5,7 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import PartiesFrom from "../../containers/Parties/PartiesFrom";
 import swal from "sweetalert";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import Report from "../../components/report/Report";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 
@@ -29,8 +29,13 @@ function Seller () {
 	const [searchParties, setSearchParties] = useState("");
 	const [purchasePayment, setPurchasePayment] = useState();
 
-
 	
+	let partyData;
+	if (openParty) {
+	
+		partyData = openParty[0];
+	}
+
 	// Error Handling
 
 	if(purchaseBill.error){
@@ -44,11 +49,7 @@ function Seller () {
 	}
 
 
-	let partyData;
-	if (openParty) {
 	
-		partyData = openParty[0];
-	}
 
 	// Search Parties Records
 	const handleSearch = (e) => {
@@ -168,6 +169,7 @@ function Seller () {
 				const response2 = await DeletePurchaseBill(ID);
 				const response3 = await DeletePurchaseReturn(ID);
 				if (response1.data === "ok" || response2.data === "ok" || response3.data === "ok") {
+				
 					swal("Data Deleted Success", {
 						icon: "success"
 					});
@@ -194,8 +196,8 @@ function Seller () {
 		if (purchasepaymentData) {
 			setPurchasePayment(purchasepaymentData[0]);
 		}
-
-		const obj1 = purchasebillData.map((item) => ({
+		//console.log(purchasebillData);
+		const obj1 = purchasebillData?.map((item) => ({
 
 			Order_No: item[1].ID,
 			Date: item.timestamp,
@@ -206,7 +208,7 @@ function Seller () {
 			Type: "Purchase-Bill"
 
 		}));
-
+		
 		const obj2 = purchasereturnData?.map((item) => ({
 
 			Order_No: item[1].ID,
@@ -232,6 +234,8 @@ function Seller () {
 		}));
 
 		combine = [...obj1, ...obj2, ...obj3];
+
+	
 	};
 
 
@@ -342,7 +346,7 @@ function Seller () {
 									<div className="input-group-prepend">
 										<span className="input-group-text ml-5"><i className=" bi bi-search" /></span>
 									</div>
-									<input type="text" onChange={handleSearchPaties} className="form-control" placeholder="Search Parties" aria-label="Username" aria-describedby="basic-addon1" />
+									<input type="text" onChange={handleSearchPaties} className="form-control mr-3" placeholder="Search Parties" aria-label="Username" aria-describedby="basic-addon1" />
 								</div>
 								<div className="card-body p_height">
 
