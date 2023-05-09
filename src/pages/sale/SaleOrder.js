@@ -154,7 +154,7 @@ function SaleOrder () {
 					const ID = filterID[0]?.id;
 					
 	
-					
+				
 					const Stock = {
 						Quantity: filterID[0].Quantity - record.QTY
 					};

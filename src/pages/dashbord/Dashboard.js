@@ -10,7 +10,6 @@ import { useUserAuth } from "../../context/Auth/UserAuthContext";
 import swal from "sweetalert";
 
 function Dashboard() {
-	
 	const { user } = useUserAuth();
 	const salePayment = useFatchSalePaymentQuery();
 	const purchasePayment = useFatchPurchasePaymentQuery();

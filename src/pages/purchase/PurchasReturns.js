@@ -51,13 +51,12 @@ function PurchasReturn () {
 		}
 
 		const filter = rows?.filter((item) => item.partyName === row[1]?.PartyName && item.UID === row[2].UID && item.PhoneNo === row[1].PhoneNo);
-
 		if (filter) {
 			const id = filter[0].id;
 			let paid;
 			let unpaid;
 
-			
+
 			if (filter[0].Pending >= row[1].Total) {
 				unpaid = filter[0].Unpaid - row[1].Total;
 				paid = filter[0].Paid;

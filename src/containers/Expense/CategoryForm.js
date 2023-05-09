@@ -8,7 +8,6 @@ function CategoryForm({ onCategory }) {
 		Category: Yup.string().min(5).required("Can't Empty Category")
 
 	});
-
 	
 	const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
 		useFormik({

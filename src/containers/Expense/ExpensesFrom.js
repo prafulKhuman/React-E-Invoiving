@@ -15,7 +15,6 @@ function ExpensesFrom({ Cat, ID }) {
 		ExpDesc: Yup.string().min(1).required("Can't Empty ExpDesc"),
 		ExpAmount: Yup.string().min(1).required("Can't Empty ExpAmount")
 	});
-
 	
 	const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
 		useFormik({

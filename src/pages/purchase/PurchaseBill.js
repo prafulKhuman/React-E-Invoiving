@@ -147,14 +147,13 @@ function PurchaseBill () {
 	function getPaid (total, num) {
 		return total + parseInt(num.Paid);
 	}
-
 	const totalUnPaid = rows?.reduce(getUnPaid, 0);
 	function getUnPaid (total, num) {
 		return total + parseInt(num.Unpaid);
 	}
 
 	const config = [
-		
+
 		{
 			label: "#",
 			render: (Data) => Data.Id,
