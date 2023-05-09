@@ -174,6 +174,8 @@ function Form({ file, onsubmit, ID }) {
 	};
 	// End
 
+	
+
 	// Party Name Hint 
 	let filterUIDC ;
 	if(file==="Sale-Invoice" || file === "Sale-Order" || file==="Sale-Return"){

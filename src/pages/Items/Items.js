@@ -249,6 +249,7 @@ function Items () {
 
 									<div className="card-text">
 
+
 					
 										{content || <MainTable data={Data} config={configTable} isopen={handleOpenItem} isDelete={handleDeleteItem}/> }
 

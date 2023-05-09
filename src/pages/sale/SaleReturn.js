@@ -71,6 +71,7 @@ function SaleReturn () {
 
 				await UpdateSalePayment({ id, updatedPayment });
 
+				
 				row[0]?.map(async (record) => {
 					const filterID = itemResponse?.data?.filter((item) => item.ItemName === record.Item && item.ItemCode == record.ItemCode && item.UID === user.uid);
 					const ID = filterID[0].id;

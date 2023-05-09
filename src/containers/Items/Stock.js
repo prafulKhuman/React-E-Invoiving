@@ -65,6 +65,7 @@ function Stock({ ID, data }) {
 					const res = await UpdateItem({ ID, Stock });
 				}
 				
+				
 				action.resetForm();
 				if (response.data === "ok") {
 					swal({

@@ -147,6 +147,7 @@ function PaymentInOut({ file, AddData, ID }) {
 
 										</div>
 									</div>
+									
 									<div className="row">
 										<div className="input-group  col-md-3">
 											<Hint options={phoneHint} allowTabFill={true} allowEnterFill={true}>

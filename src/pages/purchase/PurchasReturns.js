@@ -57,6 +57,7 @@ function PurchasReturn () {
 			let paid;
 			let unpaid;
 
+			
 			if (filter[0].Pending >= row[1].Total) {
 				unpaid = filter[0].Unpaid - row[1].Total;
 				paid = filter[0].Paid;

@@ -154,6 +154,7 @@ function PurchaseBill () {
 	}
 
 	const config = [
+		
 		{
 			label: "#",
 			render: (Data) => Data.Id,

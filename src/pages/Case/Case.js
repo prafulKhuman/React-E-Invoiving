@@ -9,6 +9,7 @@ import Report from "../../components/report/Report";
 import { useState } from "react";
 
 function Case() {
+	
 	const { user } = useUserAuth();
 	const salePayment = useFatchSalePaymentQuery();
 	const purchasePayment = useFatchPurchasePaymentQuery();

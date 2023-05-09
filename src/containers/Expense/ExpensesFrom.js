@@ -7,6 +7,8 @@ import { useUserAuth } from "../../context/Auth/UserAuthContext";
 function ExpensesFrom({ Cat, ID }) {
 	const { user } = useUserAuth();
 	const [AddExpenses] = useAddExpensesMutation();
+	
+
 	const expensSchema = Yup.object().shape({
 		ExpNo: Yup.string().min(1).required("Can't Empty ExpNo"),
 		Category: Yup.string().required("Can't Empty Category"),
@@ -14,6 +16,7 @@ function ExpensesFrom({ Cat, ID }) {
 		ExpAmount: Yup.string().min(1).required("Can't Empty ExpAmount")
 	});
 
+	
 	const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
 		useFormik({
 			initialValues: {
