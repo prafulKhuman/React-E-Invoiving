@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import { useUserAuth } from "../../context/Auth/UserAuthContext";
 import { useState } from "react";
+
 function Register() {
 	const { signUp } = useUserAuth();
 	const navigate = useNavigate();

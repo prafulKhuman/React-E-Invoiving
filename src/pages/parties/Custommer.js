@@ -132,7 +132,7 @@ function Custommer () {
 
 		},
 		{
-			label: "PARTY",
+			label: "Client",
 			render: (Data) => Data.PartiesName
 
 		},
@@ -235,8 +235,8 @@ function Custommer () {
 		item.Due_Date?.toString().toLowerCase().includes(search.toLowerCase()) ||
 		item.Total_Amount?.toString().toLowerCase().includes(search.toLowerCase()) ||
 		item.Advance?.toString().toLowerCase().includes(search.toLowerCase()) ||
-		item.Type?.toString().toLowerCase().includes(search.toLowerCase()) ||
-		item.Action != null 
+		item.Type?.toString().toLowerCase().includes(search.toLowerCase()) 
+		
 
 	);
 	
@@ -268,13 +268,13 @@ function Custommer () {
 
 		},
 		{
-			label: "Transection Type",
+			label: "Transaction Type",
 			render: (record) => record.Type,
 			sortValue: (record) => record.Type
 
 		},
 		{
-			label: "Transection Date",
+			label: "Transaction Date",
 			render: (record) => record.Date,
 			sortValue: (record) => record.Date
 

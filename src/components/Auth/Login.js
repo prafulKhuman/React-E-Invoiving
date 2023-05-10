@@ -12,6 +12,7 @@ function Login() {
 	const { logIn, forgotPassword } = useUserAuth();
 	const [passwordType, setPasswordType] = useState("password");
 
+	
 	const togglePassword = () => {
 		if (passwordType === "password") {
 			setPasswordType("text");

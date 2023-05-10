@@ -237,11 +237,11 @@ function SaleInvoice () {
 
 	];
 
+	
 	const keyfn = (item) => item.Id;
 
 	return (
-		<>
-			
+		<>		
 
 			<div className="main-content">
 

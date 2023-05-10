@@ -152,6 +152,7 @@ function PurchaseBill () {
 		return total + parseInt(num.Unpaid);
 	}
 
+	
 	const config = [
 
 		{

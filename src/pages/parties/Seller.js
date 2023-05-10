@@ -279,13 +279,13 @@ function Seller () {
 
 		},
 		{
-			label: "Transection Type",
+			label: "Transaction Type",
 			render: (Record) => Record.Type,
 			sortValue: (Record) => Record.Type
 
 		},
 		{
-			label: "Transection Date",
+			label: "Transaction Date",
 			render: (Record) => Record.Date,
 			sortValue: (Record) => Record.Date
 

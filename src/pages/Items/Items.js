@@ -150,6 +150,7 @@ function Items () {
 		});
 	};
 
+	
 	let item;
 	if (openItem) {
 		item = openItem[0];
@@ -248,7 +249,6 @@ function Items () {
 								<div className="card-body Par_height">
 
 									<div className="card-text">
-
 
 				
 										{content || <MainTable data={Data} config={configTable} isopen={handleOpenItem} isDelete={handleDeleteItem}/> }

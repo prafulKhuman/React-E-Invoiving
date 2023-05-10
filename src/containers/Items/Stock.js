@@ -79,6 +79,7 @@ function Stock({ ID, data }) {
 			}
 		});
 
+		
 	return (<>
 		<button type="button" className="btn btn-primary" data-toggle="modal" data-target="#Stock">
 			Stock

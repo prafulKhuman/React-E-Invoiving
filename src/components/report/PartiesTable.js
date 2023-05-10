@@ -5,7 +5,7 @@ function PartiesTable ({ filteredData, config, parties }) {
 	function getTotal (total, num) {
 		return total + parseInt(num.Total_Amount);
 	}
-
+	
 	if (parties) {
 		party = parties[0];
 	}

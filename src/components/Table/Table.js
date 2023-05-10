@@ -19,6 +19,7 @@ function Table({ data, config, keyfn, ...props }) {
 		ID(key);
 		
 	};
+	
 	const handlePrint = (key) => {
 		printID(key);
 	};

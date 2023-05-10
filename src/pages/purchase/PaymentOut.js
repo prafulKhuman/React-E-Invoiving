@@ -56,7 +56,6 @@ function PaymentOut () {
 					Unpaid: filter[0]?.Unpaid - parseInt(key.Amount)
 				};
 
-			
 				const ans = await UpdatePurchasePayment({ id, updatedPayment });
 				if (ans.error) {
 					swal("Oops...!", "Payment Data Not Found!", "error");
@@ -73,6 +72,7 @@ function PaymentOut () {
 		setSearchTerm(e.target.value);
 	};
 
+	
 	const handleDeleteRow = async (ID) => {
 		swal({
 			title: "Are you sure?",

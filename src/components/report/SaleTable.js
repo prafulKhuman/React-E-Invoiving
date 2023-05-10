@@ -8,6 +8,7 @@ function SaleTable ({ filteredData, config }) {
 	function getBalance (total, num) {
 		return total + num.Balance;
 	}
+	
 	const totalReceived = filteredData?.reduce(getReceived, 0);
 	function getReceived (total, num) {
 		return total + parseInt(num.Advance);

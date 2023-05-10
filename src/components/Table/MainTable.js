@@ -18,6 +18,7 @@ function MainTable ({ data, config, isopen, isDelete }) {
 			</td>
 		));
 
+		
 		return (
 			<tr key={index}>
 

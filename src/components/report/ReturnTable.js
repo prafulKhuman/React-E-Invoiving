@@ -11,7 +11,6 @@ function ReturnTable ({ filteredData, config }) {
 			<table className="table table-striped table-bordered w-full" >
 				<thead className="table-dark">
 					<tr>
-
 						{config?.map((collumn, index) => {
 							if (collumn.label != "Action") {
 								return (

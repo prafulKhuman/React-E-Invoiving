@@ -17,6 +17,7 @@ function Report({ file, data, config, parties }) {
 		}
 	};
 	
+	
 	let filteredData;
 	if (file === "Case") {
 		filteredData = data;

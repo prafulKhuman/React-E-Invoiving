@@ -12,6 +12,7 @@ function SortableTable (props) {
 		getIcon
 	} = useSortableTable(config, data);
 
+	
 	const updatedConfig = config.map((column) => {
 		if (!column.sortValue) {
 			return column;

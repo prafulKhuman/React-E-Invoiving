@@ -12,6 +12,7 @@ function Invoice({ billInfo, file }) {
 		Advance: info[1].Advance
 	}));
 
+	
 	const allProperties = billInfo?.map((obj) => {
 		if (Array.isArray(obj[0])) {
 			return obj[0].map((nestedObj) => {

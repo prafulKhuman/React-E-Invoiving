@@ -139,12 +139,12 @@ function PaymentInOut({ file, AddData, ID }) {
 												onChange={handleChange}
 												onBlur={handleBlur}
 											/>
+											
 											{errors.receiptno && touched.receiptno
 												? (
 													<p className="form-error text-danger">{errors.receiptno}</p>
 												)
 												: null}
-
 										</div>
 									</div>
 								

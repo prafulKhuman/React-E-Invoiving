@@ -29,6 +29,7 @@ function Receipt ({ billInfo, file }) {
 
 					</div>
 
+
 					<div className="col text-right payment-details">
 						<p className="lead marginbottom payment-info font-weight-bold">Payment details</p><br />
 						<p>

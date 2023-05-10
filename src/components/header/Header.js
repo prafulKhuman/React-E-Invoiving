@@ -25,7 +25,7 @@ function Header () {
 			swal("Oops...!", "Something went wrong!", "error");
 		}
 	};
-
+	
 	return (
 		<div className="header sticky-header">
 

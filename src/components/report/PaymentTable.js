@@ -7,7 +7,6 @@ function PaymentTable ({ filteredData, config }) {
 
 	return (<>
 		<div className="mt-5 table-responsive " >
-
 			<table className="table table-striped table-bordered w-full" >
 				<thead className="table-dark">
 					<tr>

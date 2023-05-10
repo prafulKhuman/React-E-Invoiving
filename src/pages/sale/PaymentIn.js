@@ -99,7 +99,7 @@ function PaymentIn () {
 			? item.Amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			item.Description.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			item.PartyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			item.receiptno.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			item.receiptno   ==  searchTerm  ||
 			item.timestamp.toLowerCase().includes(searchTerm.toLowerCase())
 			: ""
 	);

@@ -162,7 +162,6 @@ function Form({ file, onsubmit, ID }) {
 
 	const itemCodeHint = code ? code : [""];
 	const itemNameHint = selectItem ? [selectItem.ItemName] : [""];
-	
 	// Item End
 
 	// Set Party value To Fild State

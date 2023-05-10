@@ -69,6 +69,7 @@ function SaleReturn () {
 					Pending :pending
 				};
 
+				
 				await UpdateSalePayment({ id, updatedPayment });
 
 				row[0]?.map(async (record) => {

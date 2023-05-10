@@ -17,6 +17,7 @@ function Case() {
 
 	// Error Handling
 
+	
 	if(salePayment.error){
 		swal("Error", " Error While Fatching Sale Payment Data", "error");
 	}else if(purchasePayment.error){

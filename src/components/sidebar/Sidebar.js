@@ -7,6 +7,7 @@ function Sidebar () {
 	const [purchaseOpen, setPurchaseOpen] = useState("menu-list");
 	const [partyOpen, setpartyOpen] = useState("menu-list");
 
+	
 	return (
 		<div className="sidebar-menu sticky-sidebar-menu">
 
