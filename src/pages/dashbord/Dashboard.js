@@ -225,7 +225,7 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-success number">₹{purchaseLength 
+											<h3 className="text-success number">₹{salePayment 
 												? (Case > 0 ? Case : 0)
 												: <div className="spinner-border" role="status">
 													<span className="sr-only">Loading...</span>
