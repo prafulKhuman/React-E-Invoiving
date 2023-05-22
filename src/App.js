@@ -7,7 +7,6 @@ function App () {
 
 		<UserAuthContextProvider>
 			<BrowserRouter>
-
 				<RouteConfig/>
 			</BrowserRouter>
 		</UserAuthContextProvider>

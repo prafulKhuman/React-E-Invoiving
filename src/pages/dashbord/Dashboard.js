@@ -65,7 +65,7 @@ function Dashboard() {
 	}
 
 	// calculate profit
-	const Sub = (totalPayIn - totalPayOut - totalExp);
+	const sub = (totalPayIn - totalPayOut - totalExp);
 
 	//calculate total case in hand
 	const Case = (totalReceived - totalPaid - totalExp);
@@ -96,7 +96,7 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-primary number">₹{totalPayIn || <div className="spinner-border" role="status">
+											<h3 className="text-primary number">₹{totalPayIn === 0 ? 0 : totalPayIn ? totalPayIn : <div className="spinner-border" role="status">
 												<span className="sr-only">Loading...</span>
 											</div>
 											}</h3>
@@ -106,7 +106,7 @@ function Dashboard() {
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-secondary number">₹{totalPayOut || <div className="spinner-border" role="status">
+											<h3 className="text-secondary number">₹{totalPayOut  === 0 ? 0 : totalPayOut ? totalPayOut : <div className="spinner-border" role="status">
 												<span className="sr-only">Loading...</span>
 											</div>
 											}</h3>
@@ -120,7 +120,7 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-success number">{saleLength || <div className="spinner-border" role="status">
+											<h3 className="text-success number">{saleLength === 0 ? 0 : saleLength ? saleLength : <div className="spinner-border" role="status">
 												<span className="sr-only">Loading...</span>
 											</div>
 											}</h3>
@@ -130,7 +130,7 @@ function Dashboard() {
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-danger number">{purchaseLength || <div className="spinner-border" role="status">
+											<h3 className="text-danger number">{purchaseLength === 0 ? 0 : purchaseLength ? purchaseLength : <div className="spinner-border" role="status">
 												<span className="sr-only">Loading...</span>
 											</div>
 											}</h3>
@@ -197,8 +197,8 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-primary number">₹{purchaseLength
-												? (Sub > 0 ? Sub : 0)
+											<h3 className="text-primary number">₹{salePayment
+												? (sub > 0 ? sub : 0)
 												: <div className="spinner-border" role="status">
 													<span className="sr-only">Loading...</span>
 												</div>
@@ -209,8 +209,8 @@ function Dashboard() {
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-secondary number">₹{purchaseLength
-												? (Sub < 0 ? Sub : 0)
+											<h3 className="text-secondary number">₹{salePayment 
+												? (sub < 0 ? sub : 0)
 												: <div className="spinner-border" role="status">
 													<span className="sr-only">Loading...</span>
 												</div>
@@ -225,7 +225,7 @@ function Dashboard() {
 									<div className="col-sm-6 pr-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-success number">₹{purchaseLength
+											<h3 className="text-success number">₹{purchaseLength 
 												? (Case > 0 ? Case : 0)
 												: <div className="spinner-border" role="status">
 													<span className="sr-only">Loading...</span>
@@ -237,7 +237,7 @@ function Dashboard() {
 									<div className="col-sm-6 pl-sm-2 statistics-grid">
 										<div className="card card_border border-primary-top p-4">
 
-											<h3 className="text-danger number">₹{totalExp || <div className="spinner-border" role="status">
+											<h3 className="text-danger number">₹{totalExp === 0 ? 0 : totalExp ? totalExp :  <div className="spinner-border" role="status">
 												<span className="sr-only">Loading...</span>
 											</div>
 											}</h3>
