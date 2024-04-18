@@ -12,7 +12,7 @@ function Sidebar () {
 		<div className="sidebar-menu sticky-sidebar-menu">
 
 			<div className="logo">
-				<h1> <Link to="/"> E-Invoicing </Link></h1>
+				<h1> <Link to="/Home"> E-Invoicing </Link></h1>
 			</div>
 
 			<div className="logo-icon text-center">
